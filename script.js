@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // ========== GLOBAL DATA ==========
+  // ========== GLOBAL DATA & TRACKING ==========
   const WORKER_URL = "https://manifesthub-bridge.sadabsiperkhan.workers.dev/";
   const REPO_OWNER = "SteamAutoCracks";
 
@@ -53,6 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
   let searchable = [];
   let cooldownUntil = 0;
   const COOLDOWN_SECONDS = 60;
+
+  // --- Invisible Tracking Ping ---
+  function trackEvent(appId, name) {
+    const ping = new Image();
+    ping.src = `${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}`;
+  }
 
   function escapeHtml(text) {
     return String(text)
@@ -175,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (sortedAppids[mid] < depotId) left = mid + 1;
         else right = mid - 1;
       }
-
       if (left < sortedAppids.length) {
         const appId = sortedAppids[left];
         if (appId - depotId <= MAX_DISTANCE && appId >= depotId) {
@@ -183,7 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
           raw[appId].add(depotId);
         }
       }
-
       if (right >= 0) {
         const appId = sortedAppids[right];
         if (depotId - appId <= MAX_DISTANCE && depotId >= appId) {
@@ -285,9 +289,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("selectedGamePanel").classList.remove("hidden");
 
     const files = [];
-
-    // Check for Lua keys
     const depots = appDepots[appId] || [];
+
+    // 1. Generate Lua keys locally
     if (depots.length > 0) {
       const luaResult = generateLuaContent(appId, depots);
       if (luaResult.count > 0) {
@@ -305,7 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Fetch live manifests
+    // 2. Fetch live manifests
     const liveManifests = await fetchLiveManifests(appId, gameName);
     for (const manifest of liveManifests) {
       files.push({
@@ -318,7 +322,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Check GitHub manifest repo
+    // 3. Check GitHub manifest repo
     try {
       const githubCheck = await fetch(
         `https://api.github.com/repos/${REPO_OWNER}/ManifestHub/branches/${appId}`,
@@ -343,23 +347,23 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Render file list
+    // Render file list and attach tracking
     filesList.innerHTML = "";
     files.forEach((file) => {
       const fileDiv = document.createElement("div");
       fileDiv.className = "file-item";
       fileDiv.innerHTML = `
-                <div class="file-info">
-                    <i class="${file.icon} ${file.iconColor} file-icon"></i>
-                    <div class="file-details">
-                        <span class="file-name">${escapeHtml(file.name)}</span>
-                        <span class="file-meta">${file.type}${file.size ? ` · ${file.size}` : ""}</span>
-                    </div>
-                </div>
-                <a href="${file.url}" download="${file.name}" class="download-btn" target="_blank">
-                    <i class="fas fa-download"></i> Download
-                </a>
-            `;
+        <div class="file-info">
+            <i class="${file.icon} ${file.iconColor} file-icon"></i>
+            <div class="file-details">
+                <span class="file-name">${escapeHtml(file.name)}</span>
+                <span class="file-meta">${file.type}${file.size ? ` · ${file.size}` : ""}</span>
+            </div>
+        </div>
+        <a href="${file.url}" download="${file.name}" class="download-btn" target="_blank" onclick="trackEvent('${appId}', '${escapeHtml(gameName)} - ${escapeHtml(file.type)}')">
+            <i class="fas fa-download"></i> Download
+        </a>
+      `;
       filesList.appendChild(fileDiv);
     });
 
@@ -373,6 +377,10 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Loading ZIP library, please try again...");
       return;
     }
+
+    const zipBtn = document.getElementById("downloadAllZipBtn");
+    zipBtn.disabled = true;
+    zipBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Zipping...';
 
     const zip = new JSZip();
     for (const file of files) {
@@ -405,10 +413,22 @@ document.addEventListener("DOMContentLoaded", function () {
     a.download = `${gameName.replace(/[^a-z0-9]/gi, "_")}_${appId}_files.zip`;
     a.click();
     URL.revokeObjectURL(downloadUrl);
+
+    zipBtn.innerHTML = '<i class="fas fa-check"></i> Complete!';
+    setTimeout(() => {
+      zipBtn.disabled = false;
+      zipBtn.innerHTML = '<i class="fas fa-file-archive"></i> Download All';
+    }, 2000);
   }
 
   document.getElementById("downloadAllZipBtn").addEventListener("click", () => {
     if (currentFiles && currentFiles.length > 0 && currentSelectedGame) {
+      // Fire tracking ping for the ZIP payload
+      trackEvent(
+        currentSelectedGame.appId,
+        currentSelectedGame.gameName + " (ZIPPED)",
+      );
+
       generateZip(
         currentFiles,
         currentSelectedGame.gameName,
@@ -425,7 +445,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const query = this.value.toLowerCase().trim();
     searchResultsDiv.innerHTML = "";
 
-    // Reset selected game panel when search is cleared or changed
     if (query.length < 2) {
       document.getElementById("selectedGamePanel").classList.add("hidden");
       currentSelectedGame = null;
@@ -444,16 +463,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const div = document.createElement("div");
         div.className = "result-item";
         div.innerHTML = `
-                    <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/capsule_184x69.jpg" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
-                    <div class="result-info">
-                        <strong>${escapeHtml(name)}</strong>
-                        <div class="result-sub">
-                            <span class="badge badge-${type}">${type}</span>
-                            <span class="badge badge-depot">${depotCount} depot${depotCount !== 1 ? "s" : ""}</span>
-                            <span>AppID ${appId}</span>
-                        </div>
-                    </div>
-                `;
+          <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/capsule_184x69.jpg" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
+          <div class="result-info">
+              <strong>${escapeHtml(name)}</strong>
+              <div class="result-sub">
+                  <span class="badge badge-${type}">${type}</span>
+                  <span class="badge badge-depot">${depotCount} depot${depotCount !== 1 ? "s" : ""}</span>
+                  <span>AppID ${appId}</span>
+              </div>
+          </div>
+        `;
         div.addEventListener("click", () => {
           searchResultsDiv.innerHTML = "";
           gameSearchInput.value = name;
@@ -473,7 +492,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Reset when clicking outside or losing focus
   gameSearchInput.addEventListener("blur", function () {
     setTimeout(() => {
       if (
@@ -485,7 +503,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 200);
   });
 
-  // ========== LEGACY ARCHIVE CHECK (NO LUA FALLBACK) ==========
+  // ========== LEGACY ARCHIVE CHECK ==========
   const legacyCheckBtn = document.getElementById("legacyCheckBtn");
   const legacyAppId = document.getElementById("legacyAppId");
   const legacyResultsSection = document.getElementById("legacyResultsSection");
