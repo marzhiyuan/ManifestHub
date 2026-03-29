@@ -54,10 +54,12 @@ document.addEventListener("DOMContentLoaded", function () {
   let cooldownUntil = 0;
   const COOLDOWN_SECONDS = 60;
 
-  // --- Invisible Tracking Ping ---
+  // --- Tracking Ping (uses fetch so it works for both GET tracking and CORS) ---
   function trackEvent(appId, name) {
-    const ping = new Image();
-    ping.src = `${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}`;
+    fetch(`${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}`, {
+      method: "GET",
+      mode: "no-cors",
+    }).catch(() => {});
   }
 
   function escapeHtml(text) {
@@ -237,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ========== FETCH LIVE MANIFESTS ==========
-  async function fetchLiveManifests(appId, gameName) {
+  async function fetchLiveManifests(appId) {
     try {
       const response = await fetch(`https://api.steamcmd.net/v1/info/${appId}`);
       const data = await response.json();
@@ -275,10 +277,11 @@ document.addEventListener("DOMContentLoaded", function () {
   async function displayGameFiles(appId, gameName) {
     currentSelectedGame = { appId, gameName };
 
-    document.getElementById("selectedGameIcon").src =
-      `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
-    document.getElementById("selectedGameIcon").onerror = () => {
-      document.getElementById("selectedGameIcon").style.display = "none";
+    const gameIcon = document.getElementById("selectedGameIcon");
+    gameIcon.style.display = "";
+    gameIcon.src = `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
+    gameIcon.onerror = () => {
+      gameIcon.style.display = "none";
     };
     document.getElementById("selectedGameName").textContent = gameName;
     document.getElementById("selectedGameId").textContent = `AppID: ${appId}`;
@@ -310,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 2. Fetch live manifests
-    const liveManifests = await fetchLiveManifests(appId, gameName);
+    const liveManifests = await fetchLiveManifests(appId);
     for (const manifest of liveManifests) {
       files.push({
         name: `${manifest.depotId}_${manifest.manifestId}.manifest`,
@@ -329,8 +332,8 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       if (githubCheck.status === 200) {
         files.push({
-          name: `${appId}_manifest.zip`,
-          type: "Full Manifest (GitHub)",
+          name: `${appId}.zip`,
+          type: "Legacy Zip",
           icon: "fas fa-database",
           iconColor: "text-purple-400",
           url: `https://codeload.github.com/${REPO_OWNER}/ManifestHub/zip/refs/heads/${appId}`,
@@ -347,23 +350,38 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Render file list and attach tracking
+    // Render file list — use addEventListener (NOT onclick) so trackEvent closure works
     filesList.innerHTML = "";
     files.forEach((file) => {
       const fileDiv = document.createElement("div");
       fileDiv.className = "file-item";
       fileDiv.innerHTML = `
         <div class="file-info">
-            <i class="${file.icon} ${file.iconColor} file-icon"></i>
-            <div class="file-details">
-                <span class="file-name">${escapeHtml(file.name)}</span>
-                <span class="file-meta">${file.type}${file.size ? ` · ${file.size}` : ""}</span>
-            </div>
+          <i class="${file.icon} ${file.iconColor} file-icon"></i>
+          <div class="file-details">
+            <span class="file-name">${escapeHtml(file.name)}</span>
+            <span class="file-meta">${file.type}${file.size ? ` · ${file.size}` : ""}</span>
+          </div>
         </div>
-        <a href="${file.url}" download="${file.name}" class="download-btn" target="_blank" onclick="trackEvent('${appId}', '${escapeHtml(gameName)} - ${escapeHtml(file.type)}')">
-            <i class="fas fa-download"></i> Download
-        </a>
+        <button class="download-btn">
+          <i class="fas fa-download"></i> Download
+        </button>
       `;
+
+      fileDiv.querySelector(".download-btn").addEventListener("click", () => {
+        // Fire tracking ping — properly inside closure so trackEvent is reachable
+        trackEvent(appId, `${gameName} - ${file.type}`);
+
+        // Trigger the actual download programmatically
+        const a = document.createElement("a");
+        a.href = file.url;
+        a.download = file.name;
+        if (file.isExternal) a.target = "_blank";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+
       filesList.appendChild(fileDiv);
     });
 
@@ -380,28 +398,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const zipBtn = document.getElementById("downloadAllZipBtn");
     zipBtn.disabled = true;
-    zipBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Zipping...';
+    zipBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Zipping...';
 
     const zip = new JSZip();
     for (const file of files) {
       if (file.blob) {
         const content = await file.blob.text();
         zip.file(file.name, content);
-      } else if (file.url && !file.isExternal) {
+      } else if (file.url) {
         try {
           const response = await fetch(file.url);
           const blob = await response.blob();
           zip.file(file.name, blob);
         } catch (e) {
-          console.log("Failed to add", file.name);
-        }
-      } else if (file.url && file.isExternal) {
-        try {
-          const response = await fetch(file.url);
-          const blob = await response.blob();
-          zip.file(file.name, blob);
-        } catch (e) {
-          console.log("External file skip:", file.name);
+          console.log("Failed to add to zip:", file.name);
         }
       }
     }
@@ -410,25 +420,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const downloadUrl = URL.createObjectURL(content);
     const a = document.createElement("a");
     a.href = downloadUrl;
-    a.download = `${gameName.replace(/[^a-z0-9]/gi, "_")}_${appId}_files.zip`;
+    a.download = `${gameName.replace(/[^a-z0-9]/gi, "_")}_T9.zip`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(downloadUrl);
 
-    zipBtn.innerHTML = '<i class="fas fa-check"></i> Complete!';
+    zipBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Complete!';
     setTimeout(() => {
       zipBtn.disabled = false;
-      zipBtn.innerHTML = '<i class="fas fa-file-archive"></i> Download All';
+      zipBtn.innerHTML =
+        '<i class="fas fa-file-archive mr-2"></i> Download All';
     }, 2000);
   }
 
   document.getElementById("downloadAllZipBtn").addEventListener("click", () => {
     if (currentFiles && currentFiles.length > 0 && currentSelectedGame) {
-      // Fire tracking ping for the ZIP payload
       trackEvent(
         currentSelectedGame.appId,
-        currentSelectedGame.gameName + " (ZIPPED)",
+        currentSelectedGame.gameName + " (ZIP)",
       );
-
       generateZip(
         currentFiles,
         currentSelectedGame.gameName,
@@ -465,12 +476,12 @@ document.addEventListener("DOMContentLoaded", function () {
         div.innerHTML = `
           <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/capsule_184x69.jpg" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
           <div class="result-info">
-              <strong>${escapeHtml(name)}</strong>
-              <div class="result-sub">
-                  <span class="badge badge-${type}">${type}</span>
-                  <span class="badge badge-depot">${depotCount} depot${depotCount !== 1 ? "s" : ""}</span>
-                  <span>AppID ${appId}</span>
-              </div>
+            <strong>${escapeHtml(name)}</strong>
+            <div class="result-sub">
+              <span class="badge badge-${type}">${type}</span>
+              <span class="badge badge-depot">${depotCount} depot${depotCount !== 1 ? "s" : ""}</span>
+              <span>AppID ${appId}</span>
+            </div>
           </div>
         `;
         div.addEventListener("click", () => {
@@ -557,7 +568,7 @@ document.addEventListener("DOMContentLoaded", function () {
         await typeLegacyText(`> Preparing download link...\n`);
 
         const gameName = appNames[parseInt(gameId)] || "Unknown Game";
-        const trackingUrl = `${WORKER_URL}?download=${gameId}&name=${encodeURIComponent(gameName)}`;
+        const trackingUrl = `${WORKER_URL}?download=${gameId}&name=${encodeURIComponent(gameName + " (Legacy)")}`;
 
         legacyDownloadLink.removeAttribute("download");
         legacyDownloadLink.href = trackingUrl;
@@ -640,6 +651,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const requestForm = document.getElementById("requestForm");
   requestForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+
+    // Reset feedback state on every submission attempt
+    formFeedback.className = "form-feedback text-slate-400";
+    formFeedback.textContent = "";
+
     const appId = appIdField.value.trim();
     const gameName = document.getElementById("gamename").value.trim();
 
@@ -651,9 +667,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isGameBlacklisted(appId)) {
       const blacklistedInfo = getBlacklistedGameInfo(appId);
-      const blacklistedName = blacklistedInfo ? blacklistedInfo.name : gameName;
+      const blacklistedName = blacklistedInfo
+        ? escapeHtml(blacklistedInfo.name)
+        : escapeHtml(gameName);
       document.getElementById("unsupportedGameMessage").innerHTML =
-        `The game <span class="font-bold text-orange-400">"${blacklistedName}" (AppID: ${appId})</span> is not supported.`;
+        `The game <span class="font-bold text-orange-400">"${blacklistedName}" (AppID: ${escapeHtml(appId)})</span> is not supported.`;
       unsupportedModal.classList.remove("hidden");
       formFeedback.textContent = "❌ This game is blacklisted.";
       formFeedback.classList.add("text-red-400");
@@ -662,9 +680,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isGameAlreadyRequested(appId)) {
       const requestedInfo = getRequestedGameInfo(appId);
-      const requestedName = requestedInfo ? requestedInfo.name : gameName;
+      const requestedName = requestedInfo
+        ? escapeHtml(requestedInfo.name)
+        : escapeHtml(gameName);
       document.getElementById("requestedGameMessage").innerHTML =
-        `The game <span class="font-bold text-blue-400">"${requestedName}" (AppID: ${appId})</span> has already been requested.`;
+        `The game <span class="font-bold text-blue-400">"${requestedName}" (AppID: ${escapeHtml(appId)})</span> has already been requested.`;
       requestedModal.classList.remove("hidden");
       formFeedback.textContent = "ℹ️ This game has already been requested.";
       formFeedback.classList.add("text-blue-400");
@@ -682,7 +702,6 @@ document.addEventListener("DOMContentLoaded", function () {
     submitBtn.disabled = true;
     submitBtn.innerHTML =
       '<i class="fas fa-spinner fa-spin mr-2"></i> SENDING...';
-    formFeedback.textContent = "";
 
     try {
       const response = await fetch(requestForm.action, {
@@ -706,7 +725,10 @@ document.addEventListener("DOMContentLoaded", function () {
       formFeedback.textContent = "❌ Network error. Please check connection.";
       formFeedback.classList.add("text-red-400");
     } finally {
-      submitBtn.disabled = false;
+      // Only restore button if cooldown hasn't taken over
+      if (cooldownUntil <= Date.now()) {
+        submitBtn.disabled = false;
+      }
       submitBtn.innerHTML = originalText;
     }
   });
