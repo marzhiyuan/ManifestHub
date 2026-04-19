@@ -220,7 +220,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const supported = searchable.length;
     document.getElementById("statSupported").textContent = supported;
     document.getElementById("statsContainer").classList.remove("hidden");
-    document.getElementById("gameSearchInput").disabled = false;
+    
+    const searchInput = document.getElementById("gameSearchInput");
+    searchInput.disabled = false;
+    searchInput.placeholder = "Search for a game (e.g. Cyberpunk 2077)";
+    
     updateStatus(`✅ Ready! ${supported} supported apps`);
   }
 
@@ -514,6 +518,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 200);
   });
 
+  /*
   // ========== LEGACY ARCHIVE CHECK ==========
   const legacyCheckBtn = document.getElementById("legacyCheckBtn");
   const legacyAppId = document.getElementById("legacyAppId");
@@ -599,6 +604,7 @@ document.addEventListener("DOMContentLoaded", function () {
   legacyAppId.addEventListener("keypress", function (e) {
     if (e.key === "Enter") legacyCheckManifest();
   });
+  */
 
   // ========== REQUEST FORM HANDLING ==========
   const submitBtn = document.getElementById("submitRequestBtn");
