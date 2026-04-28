@@ -51,13 +51,13 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/*
+
 .terminal-text {
   font-family: "Courier New", monospace;
   background-color: rgba(30, 41, 59, 0.7);
   border-left: 3px solid #3b82f6;
 }
-*/
+
 
 .modal-overlay {
   position: fixed;

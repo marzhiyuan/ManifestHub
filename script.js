@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
       requestedModal.classList.add("hidden");
     });
 
+  
+  /*
+
   // ========== ACCORDION ==========
   const accordionBtn = document.getElementById("requestAccordionBtn");
   const requestFormContainer = document.getElementById("requestFormContainer");
@@ -29,8 +32,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const appIdField = document.getElementById("appid");
 
   accordionBtn.addEventListener("click", function () {
-    requestFormContainer.classList.toggle("hidden");
-    if (requestFormContainer.classList.contains("hidden")) {
+    requestFormContainer.classList.toggle("open");
+    if (!requestFormContainer.classList.contains("open")) {
       accordionIcon.className =
         "fas fa-chevron-down text-purple-400 transition-transform duration-300";
     } else {
@@ -40,9 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  */
+
   // ========== GLOBAL DATA & TRACKING ==========
   const WORKER_URL = "https://manifesthub-bridge.sadabsiperkhan.workers.dev/";
-  const REPO_OWNER = "SteamAutoCracks";
+  const REPO_OWNER = "SSMGAlt";
 
   let blacklistedGames = [];
   let requestedGames = [];
@@ -75,11 +80,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const infoBox = document.getElementById("infoBox");
     statusEl.innerHTML = message;
     if (isError) {
-      infoBox.className =
-        "bg-red-900/30 border border-red-700/50 rounded-lg p-3 mb-4 text-sm";
+      infoBox.classList.add("error");
     } else {
-      infoBox.className =
-        "bg-blue-900/30 border border-blue-700/50 rounded-lg p-3 mb-4 text-sm";
+      infoBox.classList.remove("error");
     }
   }
 
@@ -219,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const supported = searchable.length;
     document.getElementById("statSupported").textContent = supported;
-    document.getElementById("statsContainer").classList.remove("hidden");
+    document.getElementById("statsContainer").classList.add("visible");
     
     const searchInput = document.getElementById("gameSearchInput");
     searchInput.disabled = false;
@@ -332,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 3. Check GitHub manifest repo
     try {
       const githubCheck = await fetch(
-        `https://api.github.com/repos/${REPO_OWNER}/ManifestHub/branches/${appId}`,
+        `https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${appId}`,
       );
       if (githubCheck.status === 200) {
         files.push({
@@ -340,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
           type: "Legacy Zip",
           icon: "fas fa-database",
           iconColor: "text-purple-400",
-          url: `https://codeload.github.com/${REPO_OWNER}/ManifestHub/zip/refs/heads/${appId}`,
+          url: `https://codeload.github.com/${REPO_OWNER}/ManifestHub2/zip/refs/heads/${appId}`,
           isExternal: true,
         });
       }
@@ -518,7 +521,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 200);
   });
 
-  /*
+  
   // ========== LEGACY ARCHIVE CHECK ==========
   const legacyCheckBtn = document.getElementById("legacyCheckBtn");
   const legacyAppId = document.getElementById("legacyAppId");
@@ -565,7 +568,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       const response = await fetch(
-        `https://api.github.com/repos/${REPO_OWNER}/ManifestHub/branches/${gameId}`,
+        `https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${gameId}`,
       );
 
       if (response.status === 200) {
@@ -604,7 +607,9 @@ document.addEventListener("DOMContentLoaded", function () {
   legacyAppId.addEventListener("keypress", function (e) {
     if (e.key === "Enter") legacyCheckManifest();
   });
-  */
+  
+
+  /*
 
   // ========== REQUEST FORM HANDLING ==========
   const submitBtn = document.getElementById("submitRequestBtn");
@@ -739,6 +744,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  */
+ 
   // ========== INITIALIZE ==========
   Promise.all([loadBlacklist(), loadRequestedGames()]).then(() => {
     loadDepotKeys().then(() => {
