@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateStatus("Loading depot keys...");
     try {
       const response = await fetch(
-        "https://raw.githubusercontent.com/fylsdy/ManifestHub/refs/heads/main/depotkeys(178%2C474)(By%20Sudama).json",
+        "https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json",
       );
       depotKeys = await response.json();
       updateStatus(`✅ Loaded ${Object.keys(depotKeys).length} depot keys`);
