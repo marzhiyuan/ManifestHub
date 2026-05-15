@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile — ManifestHub</title>
+    <link rel="icon" type="image/png" href="assets/mhub.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #0d1117;
+        color: #c9d1d9;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+        min-height: 100vh;
+      }
+
+      /* Compact header — not a traditional navbar */
+      .profile-header {
+        background-color: #010409;
+        border-bottom: 1px solid #30363d;
+        padding: 0.6rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .profile-header a {
+        color: #c9d1d9;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .profile-header a:hover {
+        color: #58a6ff;
+      }
+
+      .page-wrap {
+        max-width: 860px;
+        margin: 2.5rem auto;
+        padding: 0 1rem;
+      }
+
+      /* Hero card */
+      .user-hero {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 1.75rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .avatar-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #238636, #58a6ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .user-info h1 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+      .user-info p {
+        color: #8b949e;
+        font-size: 0.875rem;
+      }
+
+      /* Tabs */
+      .tab-bar {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid #30363d;
+        margin-bottom: 1.5rem;
+      }
+      .tab-btn {
+        background: none;
+        border: none;
+        color: #8b949e;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .tab-btn:hover {
+        color: #c9d1d9;
+      }
+      .tab-btn.active {
+        color: #c9d1d9;
+        border-bottom-color: #f78166;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* Tables */
+      .data-table-wrap {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+      }
+      .data-table th {
+        background-color: #0d1117;
+        padding: 0.6rem 1rem;
+        color: #8b949e;
+        font-weight: 600;
+        text-align: left;
+        border-bottom: 1px solid #30363d;
+      }
+      .data-table td {
+        padding: 0.65rem 1rem;
+        border-bottom: 1px solid #21262d;
+        vertical-align: middle;
+      }
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+      .data-table tr:hover td {
+        background-color: #0d1117;
+      }
+      .empty-row td {
+        color: #8b949e;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      /* Section heading */
+      .section-heading {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #30363d;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Danger zone */
+      .danger-card {
+        background-color: rgba(248, 81, 73, 0.05);
+        border: 1px solid rgba(248, 81, 73, 0.4);
+        border-radius: 6px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .danger-card p {
+        font-size: 0.875rem;
+        color: #8b949e;
+        margin-top: 0.25rem;
+      }
+
+      .btn-danger {
+        background-color: #da3633;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn-danger:hover {
+        background-color: #b91c1c;
+      }
+
+      /* Auth gate */
+      #authGate {
+        text-align: center;
+        padding: 4rem 1rem;
+        color: #8b949e;
+      }
+      #authGate h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #c9d1d9;
+        margin-bottom: 0.75rem;
+      }
+      #authGate p {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Loading spinner */
+      .spinner {
+        display: inline-block;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Pagination count */
+      .history-meta {
+        font-size: 0.8rem;
+        color: #8b949e;
+        margin-bottom: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Auth Gate (shown when not logged in) -->
+    <div
+      id="authGate"
+      class="page-wrap"
+      style="display: block; text-align: center; padding-top: 5rem"
+    >
+      <img
+        src="assets/mhub.png"
+        alt="Logo"
+        style="width: 80px; margin-bottom: 2rem; border-radius: 12px"
+      />
+      <h1 style="font-size: 2rem; margin-bottom: 0.5rem">
+        Sign in to ManifestHub
+      </h1>
+      <p style="color: #8b949e; margin-bottom: 2rem">
+        Manage your download history and account settings.
+      </p>
+
+      <div style="display: flex; justify-content: center; gap: 1rem">
+        <button
+          id="gateLoginBtn"
+          class="btn-primary"
+          style="padding: 0.6rem 1.5rem; font-size: 1rem"
+        >
+          Sign in
+        </button>
+        <button
+          id="gateSignupBtn"
+          class="btn-secondary"
+          style="padding: 0.6rem 1.5rem; font-size: 1rem"
+        >
+          Create account
+        </button>
+      </div>
+
+      <div style="margin-top: 3rem">
+        <a
+          href="index.html"
+          style="color: #58a6ff; text-decoration: none; font-size: 0.9rem"
+          ><i class="fas fa-arrow-left"></i> Back to Home</a
+        >
+      </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal-overlay hidden">
+      <div class="auth-modal-wrapper">
+        <button id="closeAuthModal" class="auth-close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="auth-header">
+          <img src="assets/mhub.png" alt="Logo" class="auth-logo" />
+          <h2 id="authTitle" class="auth-title">Sign In</h2>
+          <p class="auth-subtitle">Access your Manifest Hub account</p>
+        </div>
+
+        <form id="authForm">
+          <div class="auth-input-group hidden" id="displayNameGroup">
+            <i class="fas fa-user"></i>
+            <input
+              type="text"
+              id="authDisplayName"
+              class="auth-input"
+              placeholder="Display name"
+            />
+          </div>
+          <div class="auth-input-group">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="email"
+              id="authEmail"
+              class="auth-input"
+              placeholder="Email address"
+              required
+            />
+          </div>
+          <div class="auth-input-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="authPassword"
+              class="auth-input"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
+            Sign In
+          </button>
+          <div
+            id="authError"
+            class="hidden"
+            style="
+              color: #f85149;
+              font-size: 0.875rem;
+              margin-top: 1rem;
+              text-align: center;
+            "
+          ></div>
+
+          <div
+            style="
+              margin-top: 1.5rem;
+              text-align: center;
+              font-size: 0.875rem;
+              color: #8b949e;
+            "
+          >
+            <span id="authSwitchText">Don't have an account?</span>
+            <button
+              type="button"
+              id="authSwitchBtn"
+              style="
+                background: none;
+                border: none;
+                color: #58a6ff;
+                font-weight: 600;
+                cursor: pointer;
+                padding: 0 0.25rem;
+              "
+            >
+              Sign Up
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main Profile (hidden until auth confirmed) -->
+    <div id="profileContent" class="page-wrap" style="display: none">
+      <div style="margin-bottom: 2rem">
+        <a
+          href="index.html"
+          style="color: #8b949e; text-decoration: none; font-size: 0.9rem"
+          ><i class="fas fa-arrow-left"></i> Back to Home</a
+        >
+      </div>
+
+      <!-- User Hero -->
+      <div class="user-hero">
+        <div class="avatar-circle" id="avatarCircle">?</div>
+        <div class="user-info">
+          <h1 id="profileDisplayName">Loading...</h1>
+          <p
+            id="profileEmail"
+            style="color: #8b949e; font-size: 0.9rem; margin-bottom: 0.25rem"
+          >
+            —
+          </p>
+          <p id="profileMeta">ManifestHub Member</p>
+        </div>
+        <div style="margin-left: auto">
+          <button id="signOutBtn" class="btn-secondary" style="color: #f85149">
+            <i class="fas fa-sign-out-alt"></i> Sign out
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="history">
+          <i class="fas fa-history"></i> Download History
+        </button>
+        <button class="tab-btn" data-tab="settings">
+          <i class="fas fa-cog"></i> Settings
+        </button>
+      </div>
+
+      <!-- Tab: History -->
+      <div id="tab-history" class="tab-panel active">
+        <p class="history-meta" id="historyMeta">Loading your downloads...</p>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Game</th>
+                <th>Type</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr class="empty-row">
+                <td colspan="3">
+                  <i class="fas fa-spinner spinner"></i> Loading...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Settings -->
+      <div id="tab-settings" class="tab-panel">
+        <h3 class="section-heading"><i class="fas fa-user-cog"></i> Account</h3>
+        <div
+          style="
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+            "
+          >
+            <div>
+              <div style="font-weight: 600; margin-bottom: 0.2rem">
+                Display Name
+              </div>
+              <div style="color: #8b949e" id="settingsDisplayName">—</div>
+            </div>
+            <button
+              id="updateNameBtn"
+              class="btn-secondary"
+              style="padding: 0.25rem 0.75rem; font-size: 0.8rem"
+            >
+              Edit
+            </button>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div>
+              <div style="font-weight: 600; margin-bottom: 0.2rem">Email</div>
+              <div style="color: #8b949e" id="settingsEmail">—</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-heading" style="color: #f85149">
+          <i class="fas fa-exclamation-triangle"></i> Danger Zone
+        </h3>
+        <div class="danger-card">
+          <div>
+            <strong style="font-size: 0.9rem">Sign out everywhere</strong>
+            <p>This will sign you out of all active sessions.</p>
+          </div>
+          <button id="signOutEverywhereBtn" class="btn-danger">
+            Sign out everywhere
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const SUPABASE_URL = "https://fbmlbukvzyrzevjmaujp.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibWxidWt2enlyemV2am1hdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDM3NDMsImV4cCI6MjA5MzkxOTc0M30.HXnKhqT8Gq8WFUxqOsofjE-dSC9Oo4Yem8FTANUnX30";
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      let currentUser = null;
+      let isLoginMode = true;
+
+      // ===== AUTH MODAL =====
+      function openAuthModal(mode) {
+        isLoginMode = mode === "login";
+        updateAuthModalMode();
+        document.getElementById("authModal").classList.remove("hidden");
+      }
+
+      function updateAuthModalMode() {
+        const isLogin = isLoginMode;
+        const displayNameGroup = document.getElementById("displayNameGroup");
+        document.getElementById("authTitle").textContent = isLogin
+          ? "Sign In"
+          : "Sign Up";
+        document.getElementById("authSubmitBtn").textContent = isLogin
+          ? "Sign In"
+          : "Sign Up";
+        const switchText = document.getElementById("authSwitchText");
+        const switchBtn = document.getElementById("authSwitchBtn");
+        if (switchText)
+          switchText.textContent = isLogin
+            ? "Don't have an account?"
+            : "Already have an account?";
+        if (switchBtn) switchBtn.textContent = isLogin ? "Sign Up" : "Sign In";
+
+        if (displayNameGroup) {
+          if (isLogin) displayNameGroup.classList.add("hidden");
+          else displayNameGroup.classList.remove("hidden");
+        }
+
+        document.getElementById("authError").classList.add("hidden");
+      }
+
+      const switchBtn = document.getElementById("authSwitchBtn");
+      if (switchBtn) {
+        switchBtn.addEventListener("click", () => {
+          isLoginMode = !isLoginMode;
+          updateAuthModalMode();
+        });
+      }
+
+      document
+        .getElementById("closeAuthModal")
+        .addEventListener("click", () => {
+          document.getElementById("authModal").classList.add("hidden");
+        });
+
+      document
+        .getElementById("gateLoginBtn")
+        .addEventListener("click", () => openAuthModal("login"));
+      document
+        .getElementById("gateSignupBtn")
+        .addEventListener("click", () => openAuthModal("signup"));
+
+      document
+        .getElementById("authForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("authSubmitBtn");
+          const errEl = document.getElementById("authError");
+          errEl.classList.add("hidden");
+          btn.disabled = true;
+          btn.textContent = "Please wait...";
+
+          const email = document.getElementById("authEmail").value;
+          const password = document.getElementById("authPassword").value;
+          let error = null;
+
+          if (isLoginMode) {
+            const result = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+            error = result.error;
+          } else {
+            const displayName =
+              document.getElementById("authDisplayName")?.value || "";
+            const result = await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: { display_name: displayName },
+              },
+            });
+            error = result.error;
+          }
+
+          if (error) {
+            console.error("Auth Error:", error);
+            errEl.textContent = error.message;
+            errEl.classList.remove("hidden");
+          } else {
+            document.getElementById("authModal").classList.add("hidden");
+          }
+          btn.disabled = false;
+          btn.textContent = isLoginMode ? "Sign In" : "Sign Up";
+        });
+
+      // ===== TAB SWITCHING =====
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-panel")
+            .forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          document
+            .getElementById("tab-" + btn.dataset.tab)
+            .classList.add("active");
+        });
+      });
+
+      // Check if we should open to history tab (via #history anchor)
+      if (window.location.hash === "#history") {
+        document.querySelector('[data-tab="history"]').click();
+      }
+
+      // ===== LOAD HISTORY =====
+      async function loadHistory(user) {
+        const tbody = document.getElementById("historyTableBody");
+        const meta = document.getElementById("historyMeta");
+        if (!tbody || !meta) return;
+        try {
+          const { data, error } = await supabase
+            .from("download_history")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(50);
+
+          if (error) throw error;
+
+          meta.textContent = `${data.length} download${data.length !== 1 ? "s" : ""} total`;
+
+          if (data.length === 0) {
+            tbody.innerHTML =
+              '<tr class="empty-row"><td colspan="3">No downloads yet. Go search for a game!</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = "";
+          data.forEach((item) => {
+            const tr = document.createElement("tr");
+            const date = new Date(item.created_at).toLocaleString();
+            tr.innerHTML = `
+            <td style="font-weight:500;">${escHtml(item.game_name || "Unknown")}</td>
+            <td style="color:#8b949e;">${escHtml(item.type || "Download")}</td>
+            <td style="color:#8b949e;font-size:0.8rem;">${date}</td>
+          `;
+            tbody.appendChild(tr);
+          });
+        } catch (e) {
+          tbody.innerHTML =
+            '<tr class="empty-row"><td colspan="3" style="color:#f85149;">Could not load history.</td></tr>';
+          meta.textContent = "";
+          console.error(e);
+        }
+      }
+
+      // ===== UPDATE UI based on session =====
+      function showProfile(user) {
+        currentUser = user;
+        document.getElementById("authGate").style.display = "none";
+        document.getElementById("profileContent").style.display = "block";
+
+        const displayName =
+          user.user_metadata?.display_name ||
+          user.email?.split("@")[0] ||
+          "User";
+        const initials = displayName[0].toUpperCase();
+        document.getElementById("avatarCircle").textContent = initials;
+        document.getElementById("profileDisplayName").textContent = displayName;
+        document.getElementById("profileEmail").textContent = user.email;
+        document.getElementById("settingsEmail").textContent = user.email;
+        document.getElementById("settingsDisplayName").textContent =
+          displayName;
+
+        const joinDate = user.created_at
+          ? new Date(user.created_at).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+            })
+          : "";
+        document.getElementById("profileMeta").textContent = joinDate
+          ? `Member since ${joinDate}`
+          : "ManifestHub Member";
+
+        // Update Display Name logic
+        document.getElementById("updateNameBtn").onclick = async () => {
+          const newName = prompt("Enter your new display name:", displayName);
+          if (newName !== null && newName !== displayName) {
+            const { data, error } = await supabase.auth.updateUser({
+              data: { display_name: newName },
+            });
+            if (error) alert(error.message);
+            else {
+              alert("Display name updated!");
+              showProfile(data.user);
+            }
+          }
+        };
+
+        loadHistory(user);
+      }
+
+      function showAuthGate() {
+        currentUser = null;
+        document.getElementById("authGate").style.display = "block";
+        document.getElementById("profileContent").style.display = "none";
+      }
+
+      // Sign out buttons
+      document
+        .getElementById("signOutBtn")
+        .addEventListener("click", async () => {
+          await supabase.auth.signOut();
+        });
+      document
+        .getElementById("signOutEverywhereBtn")
+        .addEventListener("click", async () => {
+          if (confirm("Sign out from all sessions?")) {
+            await supabase.auth.signOut({ scope: "global" });
+          }
+        });
+
+      // Helper
+      function escHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // Initial check & session handling
+      showAuthGate();
+      supabase.auth
+        .getSession()
+        .then(({ data: { session } }) => {
+          if (session?.user) showProfile(session.user);
+          else if (!currentUser) showAuthGate();
+        })
+        .catch((error) => {
+          console.error("Failed to load session", error);
+          if (!currentUser) showAuthGate();
+        });
+
+      function getStoredSession() {
+        try {
+          const raw = localStorage.getItem(
+            "sb-fbmlbukvzyrzevjmaujp-auth-token",
+          );
+          if (!raw) return null;
+          const parsed = JSON.parse(raw);
+          return parsed?.user ? parsed : null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      const storedSession = getStoredSession();
+      if (storedSession?.user) {
+        showProfile(storedSession.user);
+      }
+
+      // Listen for auth changes
+      supabase.auth.onAuthStateChange((event, session) => {
+        if (
+          (event === "INITIAL_SESSION" ||
+            event === "SIGNED_IN" ||
+            event === "TOKEN_REFRESHED") &&
+          session?.user
+        ) {
+          showProfile(session.user);
+        } else if (event === "SIGNED_OUT") {
+          showAuthGate();
+        }
+      });
+    </script>
+  </body>
+</html>

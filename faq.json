@@ -9,7 +9,7 @@
   },
   {
     "question": "Does this work on Linux / Ubuntu?",
-    "answer": "The official app is Windows-only. However, Linux users have two options:<br><br>• <strong>Native:</strong> Use the community tool Accela paired with SLSsteam on GitHub.<br>• <strong>Wine/Bottles:</strong> Install a compatibility layer like Bottles, run the Windows version of Steam inside it, and run the .exe in that same environment."
+    "answer": "The official app is Windows-only. However, Linux users have two options:<br><br>• <strong>Native:</strong> Use the community tool <a href=\"https://github.com/ciscosweater/enter-the-wired\" target=\"_blank\" style=\"color: #58a6ff; text-decoration: none;\">Accela</a> paired with <a href=\"https://github.com/AceSLS/SLSsteam\" target=\"_blank\" style=\"color: #58a6ff; text-decoration: none;\">SLSsteam</a> on GitHub.<br>• <strong>Wine/Bottles:</strong> Install a compatibility layer like Bottles, run the Windows version of Steam inside it, and run the .exe in that same environment."
   },
   {
     "question": "Can I use mods or the Steam Workshop?",

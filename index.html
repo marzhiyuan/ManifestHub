@@ -1,479 +1,396 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta charset="UTF-8" />
-    <meta
-      name="google-site-verification"
-      content="XAYg90sqbCgD-X0CFuKuFswF-DEyAB0ChXEjdB8KWJk"
-    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Steam Manifest & Lua Generator</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <title>ManifestHub - Steam Manifest &amp; Lua Generator</title>
+    <link rel="icon" type="image/png" href="assets/mhub.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
-  <body class="flex flex-col items-center justify-center p-4">
+
+  <body class="bg-github-canvas text-github-fg">
+    <!-- User Authentication Section (Fixed Top-Right) -->
+    <div class="user-auth-fixed">
+      <div id="authSection">
+        <button id="loginBtn" class="btn-secondary">Sign in</button>
+        <button id="signupBtn" class="btn-primary">Sign up</button>
+      </div>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal-overlay hidden">
+      <div class="auth-modal-wrapper">
+        <button id="closeAuthModal" class="auth-close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="auth-header">
+          <img src="assets/mhub.png" alt="Logo" class="auth-logo" />
+          <h2 id="authTitle" class="auth-title">Sign In</h2>
+          <p class="auth-subtitle">Access your Manifest Hub account</p>
+        </div>
+
+        <form id="authForm">
+          <div class="auth-input-group hidden" id="displayNameGroup">
+            <i class="fas fa-user"></i>
+            <input
+              type="text"
+              id="authDisplayName"
+              class="auth-input"
+              placeholder="Display name"
+            />
+          </div>
+          <div class="auth-input-group">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="email"
+              id="authEmail"
+              class="auth-input"
+              placeholder="Email address"
+              required
+            />
+          </div>
+          <div class="auth-input-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="authPassword"
+              class="auth-input"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
+            Sign In
+          </button>
+          <div id="authError" class="hidden"></div>
+
+          <div class="auth-form-divider">
+            <span id="authSwitchText">Don't have an account?</span>
+            <button type="button" id="authSwitchBtn">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- Disclaimer Modal -->
-    <div id="disclaimerModal" class="modal-overlay">
-      <div class="modal-content">
-        <div class="mb-6">
-          <i
-            class="fas fa-exclamation-triangle text-yellow-400 text-4xl mb-4"
-          ></i>
-          <h2 class="orbitron text-2xl font-bold text-white mb-4">
-            DISCLAIMER
+    <div id="disclaimerModal" class="modal-overlay hidden">
+      <div class="modal-content modal-disclaimer">
+        <div class="modal-disclaimer-content">
+          <div class="modal-disclaimer-icon-wrapper">
+            <i class="fas fa-balance-scale text-3xl modal-disclaimer-icon"></i>
+          </div>
+          <h2 class="text-2xl font-bold modal-disclaimer-heading">
+            Disclaimer
           </h2>
         </div>
-        <div class="text-left mb-6">
-          <h3 class="orbitron text-lg text-blue-400 mb-2">README:</h3>
-          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+        <div class="text-left mb-8">
+          <p class="modal-disclaimer-text">
             This website is for informational purposes only. We are not
             responsible for any consequences that may arise from using the
             provided data.
           </p>
-          <div class="warning-box">
-            <div class="warning-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <span class="orbitron text-sm">GAMES THAT WON'T WORK</span>
-            </div>
-            <ul class="warning-list text-xs">
-              <li>
-                <i class="fas fa-globe"></i> Online co-op / multiplayer only
-              </li>
-              <li><i class="fas fa-shield-alt"></i> Denuvo or advanced DRM</li>
-              <li>
-                <i class="fas fa-window-restore"></i> 3rd party launchers (EA
-                App, Ubi, Rockstar)
-              </li>
-              <li><i class="fas fa-link"></i> Always-online requirements</li>
-            </ul>
-          </div>
         </div>
-        <button
-          id="acceptDisclaimer"
-          class="orbitron bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full"
-        >
-          I Understand & Accept The Risks
-        </button>
+        <div class="modal-disclaimer-checkbox-wrapper">
+          <input type="checkbox" id="dontShowAgain" />
+          <label for="dontShowAgain">Don't show this again</label>
+        </div>
+        <button id="acceptDisclaimer" class="btn-primary">I Understand</button>
       </div>
     </div>
 
     <!-- Unsupported Game Modal -->
     <div id="unsupportedModal" class="modal-overlay hidden">
-      <div
-        class="modal-content border-orange-500"
-        style="border-color: #f97316"
-      >
-        <div class="mb-6">
-          <i
-            class="fas fa-exclamation-circle unsupported-icon text-5xl mb-4"
-          ></i>
-          <h2 class="orbitron text-2xl font-bold text-white mb-4">
-            UNSUPPORTED GAME
-          </h2>
+      <div class="modal-content modal-unsupported">
+        <div class="mb-4 flex items-center gap-2 unsupported-icon">
+          <i class="fas fa-exclamation-circle text-2xl"></i>
+          <h2 class="text-xl font-bold text-github-fg">Unsupported Game</h2>
         </div>
         <div class="text-left mb-6">
-          <p
-            class="text-slate-300 text-md leading-relaxed"
-            id="unsupportedGameMessage"
-          ></p>
+          <p class="text-github-muted text-sm" id="unsupportedGameMessage"></p>
         </div>
         <button
           id="closeUnsupportedModal"
-          class="orbitron bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 w-full"
+          class="btn-secondary w-full py-2 rounded font-semibold"
         >
-          GOT IT
+          Dismiss
         </button>
       </div>
     </div>
 
-    <!-- Already Requested Modal -->
+    <!-- Requested Game Modal -->
     <div id="requestedModal" class="modal-overlay hidden">
-      <div class="modal-content border-blue-500" style="border-color: #3b82f6">
-        <div class="mb-6">
-          <i class="fas fa-info-circle info-icon text-5xl mb-4"></i>
-          <h2 class="orbitron text-2xl font-bold text-white mb-4">
-            ALREADY REQUESTED
-          </h2>
+      <div class="modal-content modal-requested">
+        <div class="mb-4 flex items-center gap-2 info-icon">
+          <i class="fas fa-info-circle text-2xl"></i>
+          <h2 class="text-xl font-bold text-github-fg">Already Requested</h2>
         </div>
         <div class="text-left mb-6">
-          <p
-            class="text-slate-300 text-md leading-relaxed"
-            id="requestedGameMessage"
-          ></p>
+          <p class="text-github-muted text-sm" id="requestedGameMessage"></p>
         </div>
         <button
           id="closeRequestedModal"
-          class="orbitron bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+          class="btn-secondary w-full py-2 rounded font-semibold"
         >
-          GOT IT
+          Dismiss
         </button>
       </div>
     </div>
 
-    <div class="max-w-4xl w-full mx-auto">
-      <!-- Header -->
-      <header class="text-center mb-8">
-        <h1 class="orbitron text-4xl md:text-5xl font-bold mb-2 glow-text">
-          MANIFEST HUB
-        </h1>
-        <p class="text-slate-300 text-lg">
-          Steam manifest & Lua depot key generator
-        </p>
+    <!-- ===== PAGE LAYOUT: CENTERED ===== -->
+    <div class="page-wrapper">
+      <!--
+    <aside>
+      <h2>
+        <i class="fas fa-chart-line"></i> Top 10 Downloads
+      </h2>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Game</th>
+            </tr>
+          </thead>
+          <tbody id="top10List">
+            <tr><td colspan="2">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </aside>
+    -->
 
-        <div class="mt-4 flex justify-center gap-6 text-sm">
-          <a
-            href="https://steamdb.info/"
-            class="text-blue-400 hover:text-blue-300 transition-colors font-medium"
-            target="_blank"
-          >
-            <i class="fas fa-database mr-1"></i> SteamDB
-          </a>
-          <span class="text-slate-600">|</span>
-          <a
-            href="https://www.steamtools.net/"
-            class="text-blue-400 hover:text-blue-300 transition-colors font-medium"
-            target="_blank"
-          >
-            <i class="fas fa-download mr-1"></i> SteamTools
-          </a>
-          <span class="text-slate-600">|</span>
-          <a
-            href="https://discord.com/invite/x6AjUMngpF"
-            class="text-blue-400 hover:text-blue-300 transition-colors font-medium"
-            target="_blank"
-          >
-            <i class="fab fa-discord mr-1"></i> Discord
-          </a>
-        </div>
-
-        <div class="flex justify-center mt-4">
-          <div
-            class="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-          ></div>
-        </div>
-      </header>
-
-      <!-- Main Card -->
-      <main
-        class="cyber-border bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 md:p-8 glow-box"
-      >
-        <!-- Status & Progress -->
-        <div
-          id="infoBox"
-          class="bg-blue-900/30 border border-blue-700/50 rounded-lg p-3 mb-4 text-sm"
-        >
-          <i class="fas fa-circle-notch fa-spin text-blue-400 mr-2"></i>
-          <span id="statusText">Loading data...</span>
-        </div>
-
-        <!-- Stats -->
-        <div id="statsContainer" class="grid grid-cols-3 gap-3 mb-6 hidden">
-          <div class="bg-slate-800/80 rounded-lg p-3 text-center">
-            <div class="text-2xl font-bold text-blue-400" id="statDepots">
-              0
-            </div>
-            <div class="text-xs text-slate-400">Depot Keys</div>
-          </div>
-          <div class="bg-slate-800/80 rounded-lg p-3 text-center">
-            <div class="text-2xl font-bold text-green-400" id="statSupported">
-              0
-            </div>
-            <div class="text-xs text-slate-400">Supported</div>
-          </div>
-          <div class="bg-slate-800/80 rounded-lg p-3 text-center">
-            <div class="text-2xl font-bold text-purple-400" id="statTotal">
-              0
-            </div>
-            <div class="text-xs text-slate-400">Total Apps</div>
-          </div>
-        </div>
-
-        <!-- Search Bar 1: Search Games -->
-        <div class="mb-8">
-          <h2 class="orbitron text-xl mb-4 flex items-center">
-            <i class="fas fa-search text-blue-400 mr-3"></i>
-            SEARCH GAMES
-          </h2>
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-            >
-              <i class="fas fa-gamepad text-blue-400"></i>
-            </div>
-            <input
-              type="text"
-              id="gameSearchInput"
-              placeholder="Loading games data... Please wait."
-              disabled
-              class="input-glow pl-10 w-full bg-slate-700/50 border border-slate-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      <!-- ===== CENTER: Main Content ===== -->
+      <main>
+        <header class="header-center">
+          <div class="header-logo-wrapper">
+            <img
+              src="assets/mhub.png"
+              alt="Manifest Hub Logo"
+              class="header-logo"
             />
+            <h1 class="header-title">Manifest Hub</h1>
           </div>
-          <div id="searchResults" class="search-results mt-2"></div>
+          <p class="header-subtitle">
+            Find Steam manifests and Lua depot keys.
+          </p>
+        </header>
+
+        <!-- Status Box -->
+        <div id="infoBox">
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span id="statusText">Loading database...</span>
         </div>
 
-        <!-- Selected Game Panel -->
-        <div id="selectedGamePanel" class="hidden mb-8">
-          <div
-            class="bg-gradient-to-r from-slate-800/80 to-slate-800/40 rounded-xl p-5 border border-slate-700"
-          >
-            <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-              <div class="flex items-center gap-3">
-                <img
-                  id="selectedGameIcon"
-                  class="w-12 h-12 rounded-lg"
-                  src=""
-                  alt=""
-                />
-                <div>
-                  <h3
-                    id="selectedGameName"
-                    class="orbitron text-xl font-bold"
-                  ></h3>
-                  <p id="selectedGameId" class="text-slate-400 text-sm"></p>
-                </div>
+        <!-- Combined Search Bar -->
+        <div class="search-container">
+          <div class="search-bar-wrapper">
+            <select id="searchEngineSelect" class="search-dropdown">
+              <option value="database">Main Database</option>
+              <option value="legacy">Legacy Archive</option>
+            </select>
+            <div class="search-input-wrapper">
+              <div class="search-icon-wrapper">
+                <i class="fas fa-search" id="searchIcon"></i>
               </div>
-              <button
-                id="downloadAllZipBtn"
-                class="orbitron bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
-              >
-                <i class="fas fa-file-archive"></i> Download All
-              </button>
+              <input
+                type="text"
+                id="mainSearchInput"
+                placeholder="Loading... Please wait."
+                disabled
+                class="input-github search-input-combo"
+              />
             </div>
-            <div class="mt-4">
-              <h4 class="text-sm font-semibold text-slate-300 mb-3">
-                Available Files:
-              </h4>
-              <div id="availableFilesList" class="space-y-2"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Search Bar 2: LEGACY ARCHIVE CHECK -->
-        <div class="mb-8 pt-6 border-t border-slate-700/50">
-          <h2 class="orbitron text-xl mb-4 flex items-center">
-            <i class="fas fa-archive text-purple-400 mr-3"></i>
-            LEGACY ARCHIVE CHECK
-          </h2>
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <div class="relative">
-                <div
-                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                >
-                  <i class="fas fa-hashtag text-blue-400"></i>
-                </div>
-                <input
-                  type="text"
-                  id="legacyAppId"
-                  placeholder="Enter Steam AppID (e.g., 220968)"
-                  class="input-glow pl-10 w-full bg-slate-700/50 border border-slate-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                />
-              </div>
-            </div>
-            <div class="flex items-end">
-              <button
-                id="legacyCheckBtn"
-                class="pulse-animation orbitron bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                CHECK ARCHIVE
-              </button>
-            </div>
+            <button id="legacyCheckBtn" class="btn-primary">Check</button>
           </div>
 
-          <!-- Terminal Output -->
-          <div id="legacyResultsSection" class="hidden mt-4">
-            <div class="terminal-text p-4 rounded-lg">
-              <div class="flex items-center mb-2">
-                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-                <div class="w-3 h-3 rounded-full bg-green-500"></div>
-              </div>
-              <pre
-                id="legacyTerminalOutput"
-                class="text-green-400 overflow-x-auto whitespace-pre-wrap font-mono text-sm"
-              ></pre>
+          <!-- Database Search Results -->
+          <div id="searchResults" class="search-results hidden"></div>
+
+          <!-- Legacy Terminal Output -->
+          <div id="legacyResultsSection" class="hidden">
+            <div class="terminal-text">
+              <pre id="legacyTerminalOutput"></pre>
             </div>
-            <div id="legacyDownloadSection" class="hidden text-center mt-4">
-              <a
-                id="legacyDownloadLink"
-                class="inline-block orbitron bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-                download
-              >
-                <i class="fas fa-download mr-2"></i> DOWNLOAD MANIFEST
+            <div id="legacyDownloadSection" class="hidden">
+              <a id="legacyDownloadLink" class="btn-primary" download>
+                <i class="fas fa-download"></i>
+                Download Manifest
               </a>
             </div>
-            <div id="legacyLuaSection" class="hidden text-center mt-4">
-              <div class="lua-suggestion">
-                <i class="fas fa-key text-green-400 text-2xl mb-2"></i>
-                <p class="text-slate-300 mb-3">
-                  Wait! Lua keys are available in our database.
+            <div id="legacyLuaSection" class="hidden">
+              <div class="lua-suggestion-box">
+                <p class="lua-suggestion-text">
+                  Lua keys are available in our database for this app.
                 </p>
-                <button
-                  id="legacyGenerateLuaBtn"
-                  class="orbitron bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-                >
-                  <i class="fas fa-file-code mr-2"></i> GENERATE LUA INSTEAD
+                <button id="legacyGenerateLuaBtn" class="btn-secondary">
+                  Generate Lua Instead
                 </button>
               </div>
             </div>
-            <div id="legacyNotFoundSection" class="hidden text-center mt-4">
-              <div
-                class="inline-flex items-center bg-red-900/30 border border-red-700/50 px-6 py-4 rounded-lg"
-              >
-                <i
-                  class="fas fa-exclamation-triangle text-red-400 mr-3 text-2xl"
-                ></i>
-                <div>
-                  <h3 class="orbitron text-red-300">MANIFEST NOT FOUND</h3>
-                  <p class="text-slate-300 text-sm" id="legacyNotFoundMessage">
-                    No manifests were found for this Steam application.
-                  </p>
-                </div>
-              </div>
+            <div id="legacyNotFoundSection" class="hidden">
+              <p class="error-text">
+                <i class="fas fa-exclamation-triangle"></i>Manifest not found.
+              </p>
             </div>
           </div>
         </div>
 
+        <!-- Selected Game Panel -->
+        <div id="selectedGamePanel" class="hidden">
+          <div class="game-panel-header">
+            <div class="game-info-wrapper">
+              <img id="selectedGameIcon" src="" alt="" />
+              <div>
+                <h3 id="selectedGameName"></h3>
+                <p id="selectedGameId"></p>
+              </div>
+            </div>
+            <button id="downloadAllZipBtn" class="btn-primary">
+              <i class="fas fa-file-archive"></i> Download All
+            </button>
+          </div>
+          <div>
+            <h4 class="files-section-header">Files</h4>
+            <div id="availableFilesList"></div>
+          </div>
+        </div>
 
-        <!-- Expandable/Collapsible Request Form Accordion --
-        <div class="pt-6 border-t border-slate-700/50">
-          <button
-            id="requestAccordionBtn"
-            class="accordion-button w-full flex items-center justify-between bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 border border-purple-500/30 rounded-lg p-4 transition-all duration-300"
-          >
-            <span class="orbitron text-lg flex items-center">
-              <i class="fas fa-paper-plane text-purple-400 mr-3"></i>
-              WANT TO REQUEST A GAME?
+        <!-- Request Game Section (Commented Out)
+        <div class="faq-wrapper" style="margin-top: 0; margin-bottom: 3rem;">
+          <button id="requestAccordionBtn" class="btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-radius: 8px; border: 1px dashed #30363d; background: #161b22;">
+            <span style="font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
+              <i class="fas fa-paper-plane" style="color: #a371f7;"></i>
+              Request a Game
             </span>
-            <i
-              id="accordionIcon"
-              class="fas fa-chevron-down text-purple-400 transition-transform duration-300"
-            ></i>
+            <i id="accordionIcon" class="fas fa-chevron-down" style="color: #8b949e; transition: transform 0.3s;"></i>
           </button>
 
-          <!-- Hidden Request Form Container --
-          <div id="requestFormContainer" class="hidden mt-4">
-            <div
-              id="cooldownContainer"
-              class="mb-3 text-sm text-orange-400 hidden"
-            >
-              <i class="fas fa-hourglass-half mr-1"></i> You can request again
-              in
-              <span id="cooldownSeconds" class="cooldown-timer">60</span>
-              seconds.
+          <div id="requestFormContainer" class="hidden" style="margin-top: 1rem; background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1.5rem;">
+            <div id="cooldownContainer" class="hidden" style="margin-bottom: 1rem; font-size: 0.875rem; color: #d29922; background: rgba(210, 153, 34, 0.1); padding: 0.75rem; border-radius: 6px;">
+              <i class="fas fa-hourglass-half mr-1"></i> You can request again in <span id="cooldownSeconds" style="font-weight: 700;">60</span>s
             </div>
 
-            <form
-              id="requestForm"
-              action="https://manifesthub-bridge.sadabsiperkhan.workers.dev/"
-              method="POST"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <form id="requestForm" action="https://manifesthub-bridge.sadabsiperkhan.workers.dev/" method="POST">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
                 <div>
-                  <label
-                    for="appid"
-                    class="block text-sm font-medium text-slate-300 mb-1 orbitron"
-                    >APP ID</label
-                  >
-                  <input
-                    type="text"
-                    name="appId"
-                    id="appid"
-                    placeholder="e.g. 220968"
-                    required
-                    class="w-full bg-slate-700/50 border border-slate-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <label for="appid" style="display: block; font-size: 0.75rem; font-weight: 600; color: #8b949e; margin-bottom: 0.5rem; text-transform: uppercase;">App ID</label>
+                  <input type="text" id="appid" name="appId" placeholder="e.g. 220968" required class="input-github" style="width: 100%; height: 38px;">
                 </div>
                 <div>
-                  <label
-                    for="gamename"
-                    class="block text-sm font-medium text-slate-300 mb-1 orbitron"
-                    >GAME NAME</label
-                  >
-                  <input
-                    type="text"
-                    name="gameName"
-                    id="gamename"
-                    placeholder="e.g. Cyberpunk 2077"
-                    required
-                    class="w-full bg-slate-700/50 border border-slate-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <label for="gamename" style="display: block; font-size: 0.75rem; font-weight: 600; color: #8b949e; margin-bottom: 0.5rem; text-transform: uppercase;">Game Name</label>
+                  <input type="text" id="gamename" name="gameName" placeholder="e.g. Cyberpunk 2077" required class="input-github" style="width: 100%; height: 38px;">
                 </div>
               </div>
-
-              <button
-                type="submit"
-                id="submitRequestBtn"
-                class="orbitron bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <i class="fas fa-send mr-2"></i> SUBMIT REQUEST
-              </button>
-              <p id="formFeedback" class="form-feedback text-slate-400"></p>
+              <button type="submit" id="submitRequestBtn" class="btn-primary" style="width: 100%; padding: 0.75rem; border-radius: 6px; font-weight: 700;">Submit Request</button>
+              <p id="formFeedback" style="margin-top: 1rem; text-align: center; font-size: 0.875rem;"></p>
             </form>
           </div>
         </div>
         -->
-        
-        <!-- Info Grid -->
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-slate-800/30 p-4 rounded-lg">
-            <div class="text-blue-400 mb-2">
-              <i class="fas fa-info-circle text-xl"></i>
+
+        <!-- FAQ Section -->
+        <div class="faq-wrapper">
+          <h2 class="faq-heading">Frequently Asked Questions</h2>
+
+          <!-- Games that won't work notice -->
+          <div class="warning-box">
+            <div class="warning-title">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>Games that won't work</span>
             </div>
-            <h3 class="orbitron text-lg mb-1">How Does It Work?</h3>
-            <p class="text-slate-300 text-sm">
-              Search for a game by name to see all available files.
-            </p>
+            <ul class="warning-list">
+              <li>
+                <i class="fas fa-globe"></i>
+                <span>Online co-op / always-online</span>
+              </li>
+              <li>
+                <i class="fas fa-shield-alt"></i>
+                <span>Denuvo or advanced DRM</span>
+              </li>
+              <li>
+                <i class="fas fa-window-restore"></i>
+                <span>3rd party launchers (EA App, Ubisoft, Rockstar)</span>
+              </li>
+            </ul>
           </div>
-          <div class="bg-slate-800/30 p-4 rounded-lg">
-            <div class="text-purple-400 mb-2">
-              <i class="fas fa-database text-xl"></i>
-            </div>
-            <h3 class="orbitron text-lg mb-1">Database</h3>
-            <p class="text-slate-300 text-sm">
-              The manifests and depot keys are stored on
-              <a
-                href="https://github.com/fylsdy/ManifestHub/"
-                class="text-purple-400 hover:text-purple-300 transition-colors"
-                target="_blank"
-                >GitHub</a
-              >.
-            </p>
-          </div>
-          <div class="bg-slate-800/30 p-4 rounded-lg">
-            <div class="text-green-400 mb-2">
-              <i class="fas fa-shield-alt text-xl"></i>
-            </div>
-            <h3 class="orbitron text-lg mb-1">Privacy</h3>
-            <p class="text-slate-300 text-sm">
-              No data is stored or logged. All checks happen client-side.
-            </p>
+
+          <div id="faqContainer">
+            <!-- FAQ Items injected by JS -->
           </div>
         </div>
-      </main>
 
-      <!-- Footer -->
-      <footer class="mt-12 text-center text-slate-400 text-sm">
-        <p>
-          © 2026 Steam Manifest Hub | Made By
-          <a
-            href="https://trionine.xyz"
-            target="_blank"
-            class="text-purple-400 hover:text-purple-300 transition-colors"
-            >TrioNine</a
-          >
-        </p>
-        <p class="mt-1">
-          Not affiliated with Valve, Steam or any other Valve products.
-        </p>
-      </footer>
+        <!--
+      <div id="historySection" class="hidden">
+        <h2>
+          <i class="fas fa-history"></i> Your Download History
+        </h2>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Game</th>
+                <th>Type</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="historyList">
+              <tr><td colspan="3">Loading history...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      --></main>
     </div>
+
+    <!-- ===== FLOATING SIDEBAR LINKS ===== -->
+    <div class="floating-sidebar">
+      <a
+        href="https://steamdb.info/"
+        target="_blank"
+        class="floating-btn"
+        title="SteamDB"
+      >
+        <i class="fas fa-database"></i>
+        <span class="btn-label">SteamDB</span>
+      </a>
+      <a
+        href="https://www.steamtools.net/"
+        target="_blank"
+        class="floating-btn"
+        title="SteamTools"
+      >
+        <i class="fas fa-download"></i>
+        <span class="btn-label">SteamTools</span>
+      </a>
+      <a
+        href="https://discord.com/invite/x6AjUMngpF"
+        target="_blank"
+        class="floating-btn"
+        title="Discord"
+      >
+        <i class="fab fa-discord"></i>
+        <span class="btn-label">Discord</span>
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>
+        &copy; 2026 Manifest Hub | Made By
+        <a href="https://trionine.xyz" target="_blank">TRIONINE</a>
+      </p>
+      <p>Not affiliated with Valve, Steam or any other Valve products.</p>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="script.js"></script>
