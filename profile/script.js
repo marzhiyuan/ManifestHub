@@ -192,11 +192,21 @@ function escHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
-// Initial session check — single source of truth
-supabase.auth.onAuthStateChange((event, session) => {
+// Initial session check — getSession() is the authoritative source
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
   if (session?.user) {
     showProfile(session.user);
-  } else if (event === "SIGNED_OUT" || event === "INITIAL_SESSION") {
+  } else {
+    showAuthGate();
+  }
+})();
+
+// Handle subsequent auth changes (sign in / sign out after page load)
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+    if (session?.user) showProfile(session.user);
+  } else if (event === "SIGNED_OUT") {
     showAuthGate();
   }
 });
