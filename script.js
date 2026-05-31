@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
           <div id="userDropdown" class="user-dropdown hidden">
             <div style="padding:0.75rem 1rem;border-bottom:1px solid #30363d;font-size:0.8rem;color:#8b949e;">Signed in as<br><strong style="color:#c9d1d9;">${currentUser.email}</strong></div>
-            <a href="profile.html" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-user" style="width:1rem;"></i> Your Profile</a>
+            <a href="profile/" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-user" style="width:1rem;"></i> Your Profile</a>
             <!-- <a href="profile.html#history" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-history" style="width:1rem;"></i> Download History</a> -->
             <div style="border-top:1px solid #30363d;">
               <button id="logoutBtn" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#f85149;background:none;border:none;cursor:pointer;width:100%;text-align:left;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-sign-out-alt" style="width:1rem;"></i> Sign out</button>
@@ -214,8 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const WORKER_URL = "https://manifesthub-bridge.sadabsiperkhan.workers.dev/";
   const REPO_OWNER = "SSMGAlt";
 
-  let blacklistedGames = [];
-  let requestedGames = [];
   let depotKeys = {};
   let appNames = {};
   let appTypes = {};
@@ -241,34 +239,13 @@ document.addEventListener("DOMContentLoaded", function () {
     statusEl.innerHTML = message;
     if (isError) {
       statusEl.style.color = "#f85149";
-      if (icon) icon.className = "fas fa-exclamation-triangle mr-2";
-      if (icon) icon.style.color = "#f85149";
+      if (icon) { icon.className = "fas fa-exclamation-triangle mr-2"; icon.style.color = "#f85149"; }
     } else {
       statusEl.style.color = "";
     }
   }
 
   // ========== LOAD DATA ==========
-  async function loadBlacklist() {
-    try {
-      const response = await fetch("blacklist.json");
-      if (response.ok) {
-        blacklistedGames = await response.json();
-        if (!Array.isArray(blacklistedGames)) blacklistedGames = [];
-      }
-    } catch (e) { }
-  }
-
-  async function loadRequestedGames() {
-    try {
-      const response = await fetch("requests.json");
-      if (response.ok) {
-        requestedGames = await response.json();
-        if (!Array.isArray(requestedGames)) requestedGames = [];
-      }
-    } catch (e) { }
-  }
-
   async function loadDepotKeys() {
     updateStatus("Loading depot keys...");
     try {
@@ -708,59 +685,6 @@ document.addEventListener("DOMContentLoaded", function () {
   legacyCheckBtn.addEventListener("click", legacyCheckManifest);
 
 
-  // ========== TOP 10 DOWNLOADED GAMES (Google Sheets CSV) ==========
-  async function loadTop10FromSheet() {
-    const top10List = document.getElementById("top10List");
-    if (!top10List) return;
-    // Place your Google Sheet CSV publish link here
-    const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ3jRzz4KRJwwAo2uJwo1QUt8wQHT2EviAFMM5Q611fdEdtlKlHZcUUFjABKMtERuxxbe8SrAsiTmL/pub?gid=0&single=true&output=csv";
-
-    // Only bail if the user hasn't set a URL yet
-    if (!sheetCsvUrl || sheetCsvUrl === "YOUR_GOOGLE_SHEET_CSV_URL") {
-      top10List.innerHTML = `<tr><td colspan="2" style="padding: 1rem; text-align: center; color: #8b949e; font-size: 0.75rem;">No sheet URL configured.</td></tr>`;
-      return;
-    }
-
-    try {
-      const response = await fetch(sheetCsvUrl);
-      const csvText = await response.text();
-
-      // Simple CSV parser (GameName in first column)
-      const lines = csvText.split('\n').filter(l => l.trim() !== '');
-      // Skip header row
-      const games = [];
-      for (let i = 1; i < lines.length; i++) {
-        const row = lines[i].split(',');
-        if (row.length >= 1) {
-          const gameName = row[0].replace(/(^"|"$)/g, '').trim();
-          if (gameName) games.push({ name: gameName });
-        }
-        if (games.length >= 10) break;
-      }
-
-      top10List.innerHTML = "";
-      if (games.length === 0) {
-        top10List.innerHTML = `<tr><td colspan="2" style="padding: 1rem; text-align: center; color: #8b949e;">No data found.</td></tr>`;
-        return;
-      }
-
-      games.forEach((game, index) => {
-        const tr = document.createElement("tr");
-        tr.style.borderBottom = "1px solid #30363d";
-        tr.onmouseover = () => { tr.style.backgroundColor = "#0d1117"; };
-        tr.onmouseout = () => { tr.style.backgroundColor = ""; };
-        tr.innerHTML = `
-          <td style="padding: 0.4rem 0.5rem; text-align: center; color: #8b949e; font-size: 0.75rem;">${index + 1}</td>
-          <td style="padding: 0.4rem 0.5rem; font-size: 0.75rem; word-break: break-word;">${escapeHtml(game.name)}</td>
-        `;
-        top10List.appendChild(tr);
-      });
-    } catch (e) {
-      console.warn("Failed to load Top 10 from Google Sheet", e);
-      top10List.innerHTML = `<tr><td colspan="2" style="padding: 1rem; text-align: center; color: #f85149; font-size: 0.75rem;">Failed to load leaderboard.</td></tr>`;
-    }
-  }
-
   /*
   // ========== REQUEST FORM HANDLING ==========
   const requestAccordionBtn = document.getElementById("requestAccordionBtn");
@@ -896,8 +820,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ========== INIT ==========
   loadFAQ();
-  loadTop10FromSheet();
-  Promise.all([loadBlacklist(), loadRequestedGames()]).then(() => {
-    loadDepotKeys().then(() => loadAppLists());
-  });
+  loadDepotKeys().then(() => loadAppLists());
 });

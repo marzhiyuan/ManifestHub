@@ -1073,3 +1073,226 @@ footer a {
 footer p:last-child {
   margin-top: 0.25rem;
 }
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+    padding-bottom: 6rem;
+  }
+
+  .page-wrapper {
+    margin: 1rem auto 2rem;
+    padding: 0 0.75rem;
+  }
+
+  .header-center {
+    margin-bottom: 1.25rem;
+  }
+
+  .header-logo-wrapper {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .header-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .user-auth-fixed {
+    position: static;
+    margin: 0.75rem 0.75rem 0;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  #authSection {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  #authSection .btn-primary,
+  #authSection .btn-secondary {
+    flex: 1 1 8rem;
+    min-width: 7rem;
+    justify-content: center;
+  }
+
+  #infoBox {
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .search-bar-wrapper {
+    flex-direction: column;
+    height: auto;
+    gap: 0.75rem;
+  }
+
+  .search-dropdown {
+    width: 100%;
+    min-height: 42px;
+    border-right: 1px solid #30363d;
+    border-radius: 6px;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+  }
+
+  .search-input-combo {
+    border-radius: 6px;
+  }
+
+  #legacyCheckBtn {
+    width: 100%;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+  }
+
+  .search-results {
+    max-height: 320px;
+  }
+
+  .result-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .result-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .result-sub {
+    gap: 0.35rem;
+  }
+
+  #selectedGamePanel {
+    padding: 0.85rem;
+  }
+
+  .game-panel-header {
+    align-items: stretch;
+  }
+
+  .game-info-wrapper {
+    width: 100%;
+  }
+
+  #downloadAllZipBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .file-info {
+    width: 100%;
+  }
+
+  .download-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .warning-list {
+    grid-template-columns: 1fr;
+  }
+
+  .warning-list li {
+    padding: 0.75rem;
+  }
+
+  .auth-modal-wrapper,
+  .modal-content {
+    width: calc(100vw - 1.5rem);
+    max-width: 100%;
+    padding: 1.25rem;
+  }
+
+  .auth-modal-wrapper {
+    border-radius: 10px;
+  }
+
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .floating-sidebar {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: calc(0.9rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(13, 17, 23, 0.95);
+    border: 1px solid #30363d;
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  .floating-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .floating-btn:hover {
+    width: 42px;
+    padding-left: 0;
+    justify-content: center;
+  }
+
+  .floating-btn i {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 0 0.5rem;
+  }
+
+  .header-title {
+    font-size: 1.55rem;
+  }
+
+  #infoBox,
+  .search-container,
+  #selectedGamePanel,
+  .faq-wrapper,
+  footer {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+
+  .auth-modal-wrapper,
+  .modal-content {
+    width: calc(100vw - 1rem);
+    padding: 1rem;
+  }
+
+  footer {
+    padding: 1.25rem 0.75rem;
+    font-size: 0.7rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+}
