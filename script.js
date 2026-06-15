@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   // ========== SUPABASE SETUP ==========
-  const supabaseUrl = 'https://fbmlbukvzyrzevjmaujp.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibWxidWt2enlyemV2am1hdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDM3NDMsImV4cCI6MjA5MzkxOTc0M30.HXnKhqT8Gq8WFUxqOsofjE-dSC9Oo4Yem8FTANUnX30';
+  const supabaseUrl = "https://fbmlbukvzyrzevjmaujp.supabase.co";
+  const supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibWxidWt2enlyemV2am1hdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDM3NDMsImV4cCI6MjA5MzkxOTc0M30.HXnKhqT8Gq8WFUxqOsofjE-dSC9Oo4Yem8FTANUnX30";
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
   let currentUser = null;
 
@@ -19,58 +20,71 @@ document.addEventListener("DOMContentLoaded", function () {
   let isLoginMode = true;
 
   function openAuthModal(mode) {
-    isLoginMode = mode === 'login';
+    isLoginMode = mode === "login";
     updateAuthModalMode();
-    if (authError) authError.classList.add('hidden');
-    authModal.classList.remove('hidden');
+    if (authError) authError.classList.add("hidden");
+    authModal.classList.remove("hidden");
   }
 
   function updateAuthModalMode() {
     const displayNameGroup = document.getElementById("displayNameGroup");
-    authTitle.textContent = isLoginMode ? 'Sign In' : 'Sign Up';
-    authSubmitBtn.textContent = isLoginMode ? 'Sign In' : 'Sign Up';
-    if (authSwitchText) authSwitchText.textContent = isLoginMode ? "Don't have an account?" : "Already have an account?";
-    if (authSwitchBtn) authSwitchBtn.textContent = isLoginMode ? "Sign Up" : "Sign In";
+    authTitle.textContent = isLoginMode ? "Sign In" : "Sign Up";
+    authSubmitBtn.textContent = isLoginMode ? "Sign In" : "Sign Up";
+    if (authSwitchText)
+      authSwitchText.textContent = isLoginMode
+        ? "Don't have an account?"
+        : "Already have an account?";
+    if (authSwitchBtn)
+      authSwitchBtn.textContent = isLoginMode ? "Sign Up" : "Sign In";
     if (displayNameGroup) {
-      if (isLoginMode) displayNameGroup.classList.add('hidden');
-      else displayNameGroup.classList.remove('hidden');
+      if (isLoginMode) displayNameGroup.classList.add("hidden");
+      else displayNameGroup.classList.remove("hidden");
     }
-    if (authError) authError.classList.add('hidden');
+    if (authError) authError.classList.add("hidden");
   }
 
   if (authSwitchBtn) {
-    authSwitchBtn.addEventListener('click', () => {
+    authSwitchBtn.addEventListener("click", () => {
       isLoginMode = !isLoginMode;
       updateAuthModalMode();
     });
   }
 
-  if (loginBtn) loginBtn.addEventListener('click', () => openAuthModal('login'));
-  if (signupBtn) signupBtn.addEventListener('click', () => openAuthModal('signup'));
-  if (closeAuthModal) closeAuthModal.addEventListener('click', () => authModal.classList.add('hidden'));
+  if (loginBtn)
+    loginBtn.addEventListener("click", () => openAuthModal("login"));
+  if (signupBtn)
+    signupBtn.addEventListener("click", () => openAuthModal("signup"));
+  if (closeAuthModal)
+    closeAuthModal.addEventListener("click", () =>
+      authModal.classList.add("hidden"),
+    );
 
   if (authForm) {
-    authForm.addEventListener('submit', async (e) => {
+    authForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      authError.classList.add('hidden');
+      authError.classList.add("hidden");
       authSubmitBtn.disabled = true;
-      authSubmitBtn.textContent = 'Please wait...';
+      authSubmitBtn.textContent = "Please wait...";
 
       const email = document.getElementById("authEmail").value;
       const password = document.getElementById("authPassword").value;
 
       let error = null;
       if (isLoginMode) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
         error = signInError;
       } else {
-        const displayName = document.getElementById("authDisplayName")?.value || "";
+        const displayName =
+          document.getElementById("authDisplayName")?.value || "";
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { display_name: displayName }
-          }
+            data: { display_name: displayName },
+          },
         });
         error = signUpError;
       }
@@ -78,12 +92,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (error) {
         console.error("Auth Error:", error);
         authError.textContent = error.message;
-        authError.classList.remove('hidden');
+        authError.classList.remove("hidden");
       } else {
-        authModal.classList.add('hidden');
+        authModal.classList.add("hidden");
       }
       authSubmitBtn.disabled = false;
-      authSubmitBtn.textContent = isLoginMode ? 'Sign In' : 'Sign Up';
+      authSubmitBtn.textContent = isLoginMode ? "Sign In" : "Sign Up";
     });
   }
 
@@ -91,7 +105,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const authSection = document.getElementById("authSection");
 
     if (currentUser) {
-      const displayName = currentUser.user_metadata?.display_name || currentUser.email?.split('@')[0] || "User";
+      const displayName =
+        currentUser.user_metadata?.display_name ||
+        currentUser.email?.split("@")[0] ||
+        "User";
       const initials = displayName[0].toUpperCase();
       authSection.innerHTML = `
         <div class="user-menu-wrap" style="position:relative;">
@@ -114,20 +131,30 @@ document.addEventListener("DOMContentLoaded", function () {
         e.stopPropagation();
         document.getElementById("userDropdown").classList.toggle("hidden");
       });
-      document.addEventListener("click", () => {
-        const dd = document.getElementById("userDropdown");
-        if (dd) dd.classList.add("hidden");
-      }, { once: false });
-      document.getElementById("logoutBtn").addEventListener("click", async () => {
-        await supabase.auth.signOut();
-      });
+      document.addEventListener(
+        "click",
+        () => {
+          const dd = document.getElementById("userDropdown");
+          if (dd) dd.classList.add("hidden");
+        },
+        { once: false },
+      );
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", async () => {
+          await supabase.auth.signOut();
+        });
     } else {
       authSection.innerHTML = `
         <button id="loginBtn" class="btn-secondary" style="padding:0.25rem 0.75rem;border-radius:6px;font-size:0.875rem;font-weight:600;">Sign in</button>
         <button id="signupBtn" class="btn-primary" style="padding:0.25rem 0.75rem;border-radius:6px;font-size:0.875rem;font-weight:600;">Sign up</button>
       `;
-      document.getElementById("loginBtn").addEventListener("click", () => openAuthModal("login"));
-      document.getElementById("signupBtn").addEventListener("click", () => openAuthModal("signup"));
+      document
+        .getElementById("loginBtn")
+        .addEventListener("click", () => openAuthModal("login"));
+      document
+        .getElementById("signupBtn")
+        .addEventListener("click", () => openAuthModal("signup"));
     }
   }
 
@@ -143,25 +170,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const requestedModal = document.getElementById("requestedModal");
 
   // Check LocalStorage for disclaimer
-  if (!localStorage.getItem('disclaimerAccepted')) {
+  if (!localStorage.getItem("disclaimerAccepted")) {
     disclaimerModal.classList.remove("hidden");
   }
 
-  document.getElementById("acceptDisclaimer").addEventListener("click", function () {
-    const dontShow = document.getElementById("dontShowAgain").checked;
-    if (dontShow) {
-      localStorage.setItem('disclaimerAccepted', 'true');
-    }
-    disclaimerModal.classList.add("hidden");
-  });
+  document
+    .getElementById("acceptDisclaimer")
+    .addEventListener("click", function () {
+      const dontShow = document.getElementById("dontShowAgain").checked;
+      if (dontShow) {
+        localStorage.setItem("disclaimerAccepted", "true");
+      }
+      disclaimerModal.classList.add("hidden");
+    });
 
-  document.getElementById("closeUnsupportedModal").addEventListener("click", function () {
-    unsupportedModal.classList.add("hidden");
-  });
+  document
+    .getElementById("closeUnsupportedModal")
+    .addEventListener("click", function () {
+      unsupportedModal.classList.add("hidden");
+    });
 
-  document.getElementById("closeRequestedModal").addEventListener("click", function () {
-    requestedModal.classList.add("hidden");
-  });
+  document
+    .getElementById("closeRequestedModal")
+    .addEventListener("click", function () {
+      requestedModal.classList.add("hidden");
+    });
 
   // ========== LOAD FAQ ==========
   async function loadFAQ() {
@@ -170,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (response.ok) {
         const faqs = await response.json();
         const container = document.getElementById("faqContainer");
-        faqs.forEach(faq => {
+        faqs.forEach((faq) => {
           const item = document.createElement("div");
           item.className = "faq-item";
           item.innerHTML = `
@@ -187,10 +220,11 @@ document.addEventListener("DOMContentLoaded", function () {
           questionDiv.addEventListener("click", () => {
             const isOpen = answerDiv.classList.contains("open");
             // Close all other open ones (optional, good for accordion)
-            document.querySelectorAll(".faq-answer.open").forEach(el => {
+            document.querySelectorAll(".faq-answer.open").forEach((el) => {
               if (el !== answerDiv) {
                 el.classList.remove("open");
-                el.previousElementSibling.querySelector("i").style.transform = "rotate(0deg)";
+                el.previousElementSibling.querySelector("i").style.transform =
+                  "rotate(0deg)";
               }
             });
 
@@ -211,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ========== GLOBAL DATA & TRACKING ==========
-  const WORKER_URL = "https://manifesthub-bridge.sadabsiperkhan.workers.dev/";
+  const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/";
   const REPO_OWNER = "SSMGAlt";
 
   let depotKeys = {};
@@ -225,11 +259,15 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(`${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}`, {
       method: "GET",
       mode: "no-cors",
-    }).catch(() => { });
+    }).catch(() => {});
   }
 
   function escapeHtml(text) {
-    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function updateStatus(message, isError = false) {
@@ -239,7 +277,10 @@ document.addEventListener("DOMContentLoaded", function () {
     statusEl.innerHTML = message;
     if (isError) {
       statusEl.style.color = "#f85149";
-      if (icon) { icon.className = "fas fa-exclamation-triangle mr-2"; icon.style.color = "#f85149"; }
+      if (icon) {
+        icon.className = "fas fa-exclamation-triangle mr-2";
+        icon.style.color = "#f85149";
+      }
     } else {
       statusEl.style.color = "";
     }
@@ -249,7 +290,9 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadDepotKeys() {
     updateStatus("Loading depot keys...");
     try {
-      const response = await fetch("https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json");
+      const response = await fetch(
+        "https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json",
+      );
       depotKeys = await response.json();
       updateStatus(`Loaded ${Object.keys(depotKeys).length} depot keys`);
     } catch (e) {
@@ -272,30 +315,49 @@ document.addEventListener("DOMContentLoaded", function () {
         "https://raw.githubusercontent.com/jsnli/steamappidlist/refs/heads/master/data/",
       ];
       for (const base of bases) {
-        try { return await fetchJson(base + path); } catch (e) { /* try next */ }
+        try {
+          return await fetchJson(base + path);
+        } catch (e) {
+          /* try next */
+        }
       }
       throw new Error("All mirrors failed for " + path);
     }
 
     let loaded = 0;
     const tasks = [
-      fetchWithFallback("games_appid.json").then(games => {
-        games.forEach(app => { appNames[app.appid] = app.name; appTypes[app.appid] = "game"; });
-        loaded++;
-        updateStatus(`Loading... (${loaded}/3 catalogues)`);
-      }).catch(() => console.warn("games list failed")),
+      fetchWithFallback("games_appid.json")
+        .then((games) => {
+          games.forEach((app) => {
+            appNames[app.appid] = app.name;
+            appTypes[app.appid] = "game";
+          });
+          loaded++;
+          updateStatus(`Loading... (${loaded}/3 catalogues)`);
+        })
+        .catch(() => console.warn("games list failed")),
 
-      fetchWithFallback("dlc_appid.json").then(dlcs => {
-        dlcs.forEach(app => { appNames[app.appid] = app.name; appTypes[app.appid] = "dlc"; });
-        loaded++;
-        updateStatus(`Loading... (${loaded}/3 catalogues)`);
-      }).catch(() => console.warn("dlc list failed")),
+      fetchWithFallback("dlc_appid.json")
+        .then((dlcs) => {
+          dlcs.forEach((app) => {
+            appNames[app.appid] = app.name;
+            appTypes[app.appid] = "dlc";
+          });
+          loaded++;
+          updateStatus(`Loading... (${loaded}/3 catalogues)`);
+        })
+        .catch(() => console.warn("dlc list failed")),
 
-      fetchWithFallback("software_appid.json").then(sw => {
-        sw.forEach(app => { appNames[app.appid] = app.name; appTypes[app.appid] = "software"; });
-        loaded++;
-        updateStatus(`Loading... (${loaded}/3 catalogues)`);
-      }).catch(() => console.warn("software list failed")),
+      fetchWithFallback("software_appid.json")
+        .then((sw) => {
+          sw.forEach((app) => {
+            appNames[app.appid] = app.name;
+            appTypes[app.appid] = "software";
+          });
+          loaded++;
+          updateStatus(`Loading... (${loaded}/3 catalogues)`);
+        })
+        .catch(() => console.warn("software list failed")),
     ];
 
     await Promise.all(tasks);
@@ -310,12 +372,15 @@ document.addEventListener("DOMContentLoaded", function () {
   function buildMapping() {
     updateStatus("Building app mapping...");
     const MAX_DISTANCE = 100;
-    const sortedAppids = Object.keys(appNames).map(Number).sort((a, b) => a - b);
+    const sortedAppids = Object.keys(appNames)
+      .map(Number)
+      .sort((a, b) => a - b);
     const raw = {};
 
     Object.keys(depotKeys).forEach((depotStr) => {
       const depotId = parseInt(depotStr);
-      let left = 0, right = sortedAppids.length - 1;
+      let left = 0,
+        right = sortedAppids.length - 1;
       while (left <= right) {
         const mid = Math.floor((left + right) / 2);
         if (sortedAppids[mid] < depotId) left = mid + 1;
@@ -345,8 +410,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    searchable = Object.keys(appDepots).map((appId) => parseInt(appId)).sort((a, b) => a - b)
-      .map((appId) => ({ appId, name: appNames[appId], nameLower: appNames[appId].toLowerCase(), appIdStr: appId.toString() }));
+    searchable = Object.keys(appDepots)
+      .map((appId) => parseInt(appId))
+      .sort((a, b) => a - b)
+      .map((appId) => ({
+        appId,
+        name: appNames[appId],
+        nameLower: appNames[appId].toLowerCase(),
+        appIdStr: appId.toString(),
+      }));
 
     const supported = searchable.length;
 
@@ -358,7 +430,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const infoBox = document.getElementById("infoBox");
     const icon = infoBox.querySelector("i");
-    if (icon) { icon.className = "fas fa-check mr-2"; icon.style.color = "#3fb950"; }
+    if (icon) {
+      icon.className = "fas fa-check mr-2";
+      icon.style.color = "#3fb950";
+    }
     updateStatus(`Ready! ${supported.toLocaleString()} supported apps.`);
   }
 
@@ -437,13 +512,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (count === 0) {
-      searchResultsDiv.innerHTML = '<div class="no-results">🚫 No supported game matches this search.</div>';
+      searchResultsDiv.innerHTML =
+        '<div class="no-results">🚫 No supported game matches this search.</div>';
     }
   });
 
   mainSearchInput.addEventListener("blur", function () {
     setTimeout(() => {
-      if (!searchResultsDiv.matches(":hover") && !mainSearchInput.matches(":focus")) {
+      if (
+        !searchResultsDiv.matches(":hover") &&
+        !mainSearchInput.matches(":focus")
+      ) {
         searchResultsDiv.classList.add("hidden");
       }
     }, 200);
@@ -480,7 +559,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const depots = data.data[appId].depots;
         const manifests = [];
         for (const depotId in depots) {
-          if (!isNaN(depotId) && depots[depotId].manifests && depots[depotId].manifests.public) {
+          if (
+            !isNaN(depotId) &&
+            depots[depotId].manifests &&
+            depots[depotId].manifests.public
+          ) {
             const manifestId = depots[depotId].manifests.public.gid;
             const depotName = depots[depotId].name || `Depot ${depotId}`;
             manifests.push({
@@ -493,7 +576,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return manifests;
       }
-    } catch (e) { }
+    } catch (e) {}
     return [];
   }
 
@@ -503,12 +586,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const gameIcon = document.getElementById("selectedGameIcon");
     gameIcon.style.display = "";
     gameIcon.src = `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
-    gameIcon.onerror = () => { gameIcon.style.display = "none"; };
+    gameIcon.onerror = () => {
+      gameIcon.style.display = "none";
+    };
     document.getElementById("selectedGameName").textContent = gameName;
     document.getElementById("selectedGameId").textContent = `AppID: ${appId}`;
 
     const filesList = document.getElementById("availableFilesList");
-    filesList.innerHTML = '<div class="text-center py-4 text-github-muted"><i class="fas fa-spinner fa-spin"></i> Loading files...</div>';
+    filesList.innerHTML =
+      '<div class="text-center py-4 text-github-muted"><i class="fas fa-spinner fa-spin"></i> Loading files...</div>';
     document.getElementById("selectedGamePanel").classList.remove("hidden");
 
     const files = [];
@@ -520,8 +606,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const luaBlob = new Blob([luaResult.content], { type: "text/plain" });
         const luaUrl = URL.createObjectURL(luaBlob);
         files.push({
-          name: `${appId}.lua`, type: "Lua Keys", size: `${luaResult.content.length} bytes`,
-          icon: "fas fa-file-code", iconColor: "text-green-400", url: luaUrl, blob: luaBlob,
+          name: `${appId}.lua`,
+          type: "Lua Keys",
+          size: `${luaResult.content.length} bytes`,
+          icon: "fas fa-file-code",
+          iconColor: "text-green-400",
+          url: luaUrl,
+          blob: luaBlob,
         });
       }
     }
@@ -529,23 +620,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const liveManifests = await fetchLiveManifests(appId);
     for (const manifest of liveManifests) {
       files.push({
-        name: `${manifest.depotId}_${manifest.manifestId}.manifest`, type: "Manifest (Live)",
-        icon: "fas fa-file-archive", iconColor: "text-blue-400", url: manifest.downloadUrl, isExternal: true,
+        name: `${manifest.depotId}_${manifest.manifestId}.manifest`,
+        type: "Manifest (Live)",
+        icon: "fas fa-file-archive",
+        iconColor: "text-blue-400",
+        url: manifest.downloadUrl,
+        isExternal: true,
       });
     }
 
     try {
-      const githubCheck = await fetch(`https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${appId}`);
+      const githubCheck = await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${appId}`,
+      );
       if (githubCheck.status === 200) {
         files.push({
-          name: `${appId}.zip`, type: "Legacy Zip", icon: "fas fa-database", iconColor: "text-purple-400",
-          url: `https://codeload.github.com/${REPO_OWNER}/ManifestHub2/zip/refs/heads/${appId}`, isExternal: true,
+          name: `${appId}.zip`,
+          type: "Legacy Zip",
+          icon: "fas fa-database",
+          iconColor: "text-purple-400",
+          url: `https://codeload.github.com/${REPO_OWNER}/ManifestHub2/zip/refs/heads/${appId}`,
+          isExternal: true,
         });
       }
-    } catch (e) { }
+    } catch (e) {}
 
     if (files.length === 0) {
-      filesList.innerHTML = '<div class="text-center py-4 text-github-muted">No files available for this game yet.</div>';
+      filesList.innerHTML =
+        '<div class="text-center py-4 text-github-muted">No files available for this game yet.</div>';
       document.getElementById("downloadAllZipBtn").classList.add("hidden");
       currentFiles = [];
       return;
@@ -583,48 +685,55 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ========== ZIP DOWNLOAD ==========
-  document.getElementById("downloadAllZipBtn").addEventListener("click", async () => {
-    if (currentFiles && currentFiles.length > 0 && currentSelectedGame) {
-      trackEvent(currentSelectedGame.appId, currentSelectedGame.gameName + " (ZIP)");
-      if (typeof JSZip === "undefined") {
-        alert("Loading ZIP library, please try again...");
-        return;
-      }
-      const zipBtn = document.getElementById("downloadAllZipBtn");
-      zipBtn.disabled = true;
-      zipBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Zipping...';
-
-      const zip = new JSZip();
-      for (const file of currentFiles) {
-        if (file.blob) {
-          const content = await file.blob.text();
-          zip.file(file.name, content);
-        } else if (file.url) {
-          try {
-            const response = await fetch(file.url);
-            const blob = await response.blob();
-            zip.file(file.name, blob);
-          } catch (e) { }
+  document
+    .getElementById("downloadAllZipBtn")
+    .addEventListener("click", async () => {
+      if (currentFiles && currentFiles.length > 0 && currentSelectedGame) {
+        trackEvent(
+          currentSelectedGame.appId,
+          currentSelectedGame.gameName + " (ZIP)",
+        );
+        if (typeof JSZip === "undefined") {
+          alert("Loading ZIP library, please try again...");
+          return;
         }
+        const zipBtn = document.getElementById("downloadAllZipBtn");
+        zipBtn.disabled = true;
+        zipBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin mr-2"></i> Zipping...';
+
+        const zip = new JSZip();
+        for (const file of currentFiles) {
+          if (file.blob) {
+            const content = await file.blob.text();
+            zip.file(file.name, content);
+          } else if (file.url) {
+            try {
+              const response = await fetch(file.url);
+              const blob = await response.blob();
+              zip.file(file.name, blob);
+            } catch (e) {}
+          }
+        }
+
+        const content = await zip.generateAsync({ type: "blob" });
+        const downloadUrl = URL.createObjectURL(content);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = `${currentSelectedGame.gameName.replace(/[^a-z0-9]/gi, "_")}_T9.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(downloadUrl);
+
+        zipBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Complete!';
+        setTimeout(() => {
+          zipBtn.disabled = false;
+          zipBtn.innerHTML =
+            '<i class="fas fa-file-archive mr-2"></i> Download All';
+        }, 2000);
       }
-
-      const content = await zip.generateAsync({ type: "blob" });
-      const downloadUrl = URL.createObjectURL(content);
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      a.download = `${currentSelectedGame.gameName.replace(/[^a-z0-9]/gi, "_")}_T9.zip`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(downloadUrl);
-
-      zipBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Complete!';
-      setTimeout(() => {
-        zipBtn.disabled = false;
-        zipBtn.innerHTML = '<i class="fas fa-file-archive mr-2"></i> Download All';
-      }, 2000);
-    }
-  });
+    });
 
   // ========== LEGACY ARCHIVE CHECK LOGIC ==========
   const legacyTerminalOutput = document.getElementById("legacyTerminalOutput");
@@ -644,17 +753,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     legacyCheckBtn.disabled = true;
-    legacyCheckBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Checking';
+    legacyCheckBtn.innerHTML =
+      '<i class="fas fa-spinner fa-spin mr-2"></i> Checking';
     legacyResultsSection.classList.remove("hidden");
     document.getElementById("legacyDownloadSection").classList.add("hidden");
     document.getElementById("legacyNotFoundSection").classList.add("hidden");
     legacyTerminalOutput.textContent = "";
 
-    await typeLegacyText(`> Initiating manifest check for Steam AppID: ${gameId}\n`);
+    await typeLegacyText(
+      `> Initiating manifest check for Steam AppID: ${gameId}\n`,
+    );
     await typeLegacyText(`> Searching GitHub repository...\n`);
 
     try {
-      const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${gameId}`);
+      const response = await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${gameId}`,
+      );
       if (response.status === 200) {
         await typeLegacyText(`> ✅ Manifest found in database!\n`);
         const gameName = appNames[parseInt(gameId)] || "Unknown Game";
@@ -669,21 +783,24 @@ document.addEventListener("DOMContentLoaded", function () {
           trackEvent(gameId, gameName + " (Legacy)");
         };
 
-        document.getElementById("legacyDownloadSection").classList.remove("hidden");
+        document
+          .getElementById("legacyDownloadSection")
+          .classList.remove("hidden");
         legacyCheckBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Check';
       } else {
         await typeLegacyText(`> ❌ Manifest not found in GitHub archive.\n`);
-        document.getElementById("legacyNotFoundSection").classList.remove("hidden");
-        legacyCheckBtn.innerHTML = 'Check Again';
+        document
+          .getElementById("legacyNotFoundSection")
+          .classList.remove("hidden");
+        legacyCheckBtn.innerHTML = "Check Again";
       }
     } catch (error) {
       await typeLegacyText(`> ⚠️ Error checking manifest.\n`);
-      legacyCheckBtn.innerHTML = 'Check Again';
+      legacyCheckBtn.innerHTML = "Check Again";
     }
     legacyCheckBtn.disabled = false;
   }
   legacyCheckBtn.addEventListener("click", legacyCheckManifest);
-
 
   /*
   // ========== REQUEST FORM HANDLING ==========
