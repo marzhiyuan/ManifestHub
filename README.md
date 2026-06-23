@@ -9,17 +9,19 @@ Manifest Hub allows users to search through game manifests, view manifest detail
 ## Screenshots
 
 <details>
-<summary>Click to expand screenshots</summary>
+<summary>Click to expand screenshot slider</summary>
+<br>
 
-![Homepage](assets/Screenshot_20260623_153129.png)
+<table>
+  <tr>
+    <td valign="top"><p align="center"><strong>Homepage</strong></p><img src="assets/screenshots/Screenshot_20260623_153129.png" width="500" alt="Homepage"></td>
+    <td valign="top"><p align="center"><strong>Search Results</strong></p><img src="assets/screenshots/Screenshot_20260623_153230.png" width="500" alt="Search Results"></td>
+    <td valign="top"><p align="center"><strong>Legacy Archive</strong></p><img src="assets/screenshots/Screenshot_20260623_153309.png" width="500" alt="Legacy Archive"></td>
+    <td valign="top"><p align="center"><strong>Download History</strong></p><img src="assets/screenshots/Screenshot_20260623_202028.png" width="500" alt="Download History"></td>
+    <td valign="top"><p align="center"><strong>Account Settings</strong></p><img src="assets/screenshots/Screenshot_20260623_201936.png" width="500" alt="Account Settings"></td>
+  </tr>
+</table>
 
-![Search Results](assets/Screenshot_20260623_153230.png)
-
-![Legacy Archive](assets/Screenshot_20260623_153309.png)
-
-![User Download History](assets/Screenshot_20260623_202028.png)
-
-![User Account Controls](assets/Screenshot_20260623_201936.png)
 </details>
 
 ## Usage
@@ -30,6 +32,38 @@ Manifest Hub allows users to search through game manifests, view manifest detail
 4. Click **Download** on any file, or **Download All** to get everything at once.
 
 You can also use the **Legacy Archive** mode to look up a specific AppID directly.
+
+## Project Structure
+
+The project is organized cleanly into the following folders and files:
+
+```text
+ManifestHub/
+├── .github/workflows/
+│   └── update-trending.yml    # Daily GitHub Action to fetch trending downloads
+├── assets/
+│   ├── manifesthub.png        # Brand assets & logos
+│   ├── mhub.png
+│   └── screenshots/           # Reorganized documentation screenshots
+├── backend/
+│   ├── cloudflare-worker.js   # Cloudflare Worker bridge source code
+│   └── manifesthub-record.gs  # Google Apps Script database trigger backup
+├── css/
+│   ├── profile-styles.css     # User profile page styling
+│   └── styles.css             # Main stylesheet (Tailwind & GitHub design components)
+├── data/
+│   ├── faq.json               # Frequently Asked Questions catalog
+│   └── trending-data.json     # Cached daily trending downloads statistics
+├── js/
+│   ├── profile.js             # User account settings, caching & Supabase history logic
+│   └── script.js              # Core search client, Steam API & generated config logic
+├── scripts/
+│   └── update-trending.js     # Lightweight Node script that queries Worker and outputs JSON
+├── index.html                 # Main portal page
+├── profile.html               # User profile dashboard
+├── _redirects                 # Netlify clean URLs redirect mapping
+└── README.md
+```
 
 ## Data Sources
 

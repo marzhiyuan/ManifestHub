@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // ========== LOAD FAQ ==========
   async function loadFAQ() {
     try {
-      const response = await fetch("faq.json");
+      const response = await fetch("data/faq.json");
       if (response.ok) {
         const faqs = await response.json();
         const container = document.getElementById("faqContainer");
@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
     } catch (e) {
-      console.warn("Could not load faq.json");
+      console.warn("Could not load data/faq.json");
     }
   }
 
@@ -1028,7 +1028,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const grid = document.getElementById("trendingGrid");
     if (!grid) return;
     try {
-      const response = await fetch("js/trending-data.json");
+      const response = await fetch("data/trending-data.json");
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
       

@@ -14,16 +14,12 @@ export default {
     const downloadId = url.searchParams.get("download");
 
     // --- 📩 CONFIGURATION: REQUESTS ---
-    const requestWebhookUrl =
-      "https://ptb.discord.com/api/webhooks/1475958160324952145/rQSLjOekVzrRGraM_WR62x3pDXiv8aPdeqFj2stfVkLJqV0nYpr_lLidOw-4fdqBjQmB";
-    const requestSheetUrl =
-      "https://script.google.com/macros/s/AKfycbzp8pgrM-gQNPPdCRRu9gfxvrTvcQ4R7JqGsKSRj499keXhmyhE5r2WNhBKV4AMOJsgCA/exec";
+    const requestWebhookUrl = env.REQUEST_WEBHOOK_URL;
+    const requestSheetUrl = env.REQUEST_SHEET_URL;
 
     // --- 📥 CONFIGURATION: DOWNLOADS ---
-    const downloadWebhookUrl =
-      "https://ptb.discord.com/api/webhooks/1476278568492339272/SY1pLHDVnWLd9y7NHLD3SadNItQwKk6ppzqUHB5qBW-Lbu-qk_zOtt0wUyG_a6jbRqV6";
-    const downloadSheetUrl =
-      "https://script.google.com/macros/s/AKfycbyro8fNoBiryHgqDb-tj661LTPA2Y6Jkjc0u44eCszFSQ7r0L5Q5ArlGaJx3JMKNV-9Xg/exec";
+    const downloadWebhookUrl = env.DOWNLOAD_WEBHOOK_URL;
+    const downloadSheetUrl = env.DOWNLOAD_SHEET_URL;
 
     const userIp = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
 

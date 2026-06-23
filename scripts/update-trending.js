@@ -18,7 +18,7 @@ async function updateTrending() {
       throw new Error("Invalid data format: Expected an array of downloads");
     }
 
-    const outputPath = path.join(__dirname, '..', 'js', 'trending-data.json');
+    const outputPath = path.join(__dirname, '..', 'data', 'trending-data.json');
     
     // Ensure parent directory exists
     const dir = path.dirname(outputPath);
