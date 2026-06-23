@@ -567,7 +567,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const div = document.createElement("div");
         div.className = "result-item";
         div.innerHTML = `
-          <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/capsule_184x69.jpg" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
+          <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
           <div class="result-info">
             <strong>${escapeHtml(name)}</strong>
             <div class="result-sub">
@@ -1043,6 +1043,9 @@ document.addEventListener("DOMContentLoaded", function () {
       
       topItems.forEach((item) => {
         let name = item.gameName;
+        if (name) {
+          name = name.replace(/\s*\(LUA\)/gi, "").trim();
+        }
         // Fallback to local catalog if the sheet name is missing or "Unknown Game"
         if ((!name || name.toLowerCase() === "unknown game") && appNames[item.appId]) {
           name = appNames[item.appId];
@@ -1059,7 +1062,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const card = document.createElement("div");
         card.className = "flex items-center gap-3 bg-[#161b22] border border-[#30363d] rounded-md p-2 cursor-pointer hover:border-[#8b949e] transition-all hover:scale-[1.02] duration-200";
         card.innerHTML = `
-          <img class="w-[60px] h-[35px] object-cover rounded bg-[#0d1117] flex-shrink-0" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/capsule_184x69.jpg" alt="${name}" onerror="this.src='assets/mhub.png'; this.className='w-6 h-6 object-contain flex-shrink-0'">
+          <img class="w-[60px] h-[35px] object-cover rounded bg-[#0d1117] flex-shrink-0" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/header.jpg" alt="${name}" onerror="this.src='assets/mhub.png'; this.className='w-6 h-6 object-contain flex-shrink-0'">
           <div class="flex flex-col min-w-0 flex-grow">
             <strong class="text-xs font-semibold truncate" style="color: #c9d1d9;" title="${name}">${name}</strong>
             <span class="text-[0.65rem] text-github-muted flex items-center gap-1 mt-0.5">
