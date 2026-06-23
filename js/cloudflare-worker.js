@@ -27,9 +27,28 @@ export default {
 
     const userIp = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
 
-    // ==========================================
-    // JOB 1: DOWNLOAD & LUA TRACKING (GET)
-    // ==========================================
+    if (request.method === "GET" && url.searchParams.get("top") === "true") {
+      try {
+        const response = await fetch(`${downloadSheetUrl}?action=top`);
+        const data = await response.text();
+        return new Response(data, {
+          status: 200,
+          headers: {
+            ...headers,
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: {
+            ...headers,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    }
+
     if (request.method === "GET" && url.searchParams.get("history") === "true") {
       try {
         const response = await fetch(`${downloadSheetUrl}?ip=${encodeURIComponent(userIp)}`);

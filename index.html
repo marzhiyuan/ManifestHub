@@ -167,8 +167,13 @@
           </p>
         </header>
 
-        <!-- Status Box -->
-        <div id="infoBox">
+        <!-- Main Layout Wrapper -->
+        <div class="w-full mt-6">
+
+          <!-- Centered Main Content Area -->
+          <div class="relative order-1 xl:order-none w-full max-w-[860px] xl:max-w-[750px] 2xl:max-w-[860px] mx-auto min-w-0">
+            <!-- Status Box -->
+            <div id="infoBox">
           <i class="fas fa-circle-notch fa-spin"></i>
           <span id="statusText">Loading database...</span>
         </div>
@@ -227,6 +232,8 @@
           </div>
         </div>
 
+
+
         <!-- Selected Game Panel -->
         <div id="selectedGamePanel" class="hidden">
           <div class="game-panel-header">
@@ -277,6 +284,21 @@
             <!-- FAQ Items injected by JS -->
           </div>
         </div>
+        
+        <!-- Left Column: Popular Downloads (Sidebar) -->
+        <aside id="trendingPanel" class="xl:absolute xl:right-[calc(100%+24px)] xl:top-0 w-full xl:w-[240px] shrink-0 bg-[#161b22] border border-[#30363d] rounded-lg p-4 mt-6 xl:mt-0">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: #c9d1d9; font-size: 1rem; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 0;">
+            <i class="fas fa-fire text-orange-500"></i> Popular Downloads
+          </h2>
+          <div id="trendingGrid" class="flex flex-col gap-3">
+            <div class="text-center py-8" style="color: #8b949e;">
+              <i class="fas fa-spinner fa-spin mr-2"></i> Loading...
+            </div>
+          </div>
+        </aside>
+
+          </div> <!-- End of Centered Main Content Area -->
+        </div> <!-- End of Main Layout Wrapper -->
       </main>
     </div>
 

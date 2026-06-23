@@ -1024,7 +1024,66 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   */
 
+  async function loadTrendingDownloads() {
+    const grid = document.getElementById("trendingGrid");
+    if (!grid) return;
+    try {
+      const response = await fetch("js/trending-data.json");
+      if (!response.ok) throw new Error("Failed to fetch");
+      const data = await response.json();
+      
+      if (!data || data.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-github-muted text-center py-4">No trending data available.</div>';
+        return;
+      }
+
+      grid.innerHTML = "";
+      // Show only top 10 items
+      const topItems = data.slice(0, 10);
+      
+      topItems.forEach((item) => {
+        let name = item.gameName;
+        // Fallback to local catalog if the sheet name is missing or "Unknown Game"
+        if ((!name || name.toLowerCase() === "unknown game") && appNames[item.appId]) {
+          name = appNames[item.appId];
+        }
+        
+        if (name) {
+          name = escapeHtml(name);
+        } else {
+          name = "App ID " + item.appId;
+        }
+
+        const formattedCount = parseInt(item.count).toLocaleString();
+
+        const card = document.createElement("div");
+        card.className = "flex items-center gap-3 bg-[#161b22] border border-[#30363d] rounded-md p-2 cursor-pointer hover:border-[#8b949e] transition-all hover:scale-[1.02] duration-200";
+        card.innerHTML = `
+          <img class="w-[60px] h-[35px] object-cover rounded bg-[#0d1117] flex-shrink-0" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/capsule_184x69.jpg" alt="${name}" onerror="this.src='assets/mhub.png'; this.className='w-6 h-6 object-contain flex-shrink-0'">
+          <div class="flex flex-col min-w-0 flex-grow">
+            <strong class="text-xs font-semibold truncate" style="color: #c9d1d9;" title="${name}">${name}</strong>
+            <span class="text-[0.65rem] text-github-muted flex items-center gap-1 mt-0.5">
+              <i class="fas fa-download"></i> ${formattedCount}
+            </span>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          mainSearchInput.value = name;
+          displayGameFiles(item.appId, name);
+          const selectPanel = document.getElementById("selectedGamePanel");
+          if (selectPanel) selectPanel.scrollIntoView({ behavior: "smooth" });
+        });
+
+        grid.appendChild(card);
+      });
+    } catch (err) {
+      console.warn("Failed to load trending downloads:", err);
+      grid.innerHTML = '<div class="col-span-full text-github-muted text-center py-4">Could not load trending downloads.</div>';
+    }
+  }
+
   // ========== INIT ==========
   loadFAQ();
-  loadDepotKeys().then(() => loadAppLists());
+  loadDepotKeys().then(() => loadAppLists().then(() => loadTrendingDownloads()));
 });

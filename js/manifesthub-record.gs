@@ -27,8 +27,53 @@ function doPost(e) {
     }
 }
 
+function cleanGameName(name) {
+    return name
+        .replace(/\s*\(ZIP\)$/gi, "")
+        .replace(/\s*\(Legacy\)$/gi, "")
+        .replace(/\s*-\s*Lua\s*Keys$/gi, "")
+        .replace(/\s*-\s*Manifest\s*\(Live\)$/gi, "")
+        .replace(/\s*-\s*Manifest$/gi, "")
+        .replace(/\s*-\s*ZIP$/gi, "")
+        .trim();
+}
+
 function doGet(e) {
+    var action = e.parameter.action;
     var ip = e.parameter.ip;
+
+    if (action === "top") {
+        var doc = SpreadsheetApp.getActiveSpreadsheet();
+        var sheet = doc.getSheetByName("Stats");
+        if (!sheet) {
+            return ContentService.createTextOutput(JSON.stringify([]))
+                .setMimeType(ContentService.MimeType.JSON);
+        }
+
+        var data = sheet.getDataRange().getValues();
+        if (data.length <= 1) {
+            return ContentService.createTextOutput(JSON.stringify([]))
+                .setMimeType(ContentService.MimeType.JSON);
+        }
+
+        var results = [];
+        // Stats columns are: A: App ID, B: min Game Name, C: count App ID
+        for (var i = 1; i < data.length; i++) {
+            var row = data[i];
+            if (row[0]) {
+                var rawName = row[1] ? row[1].toString() : "Unknown Game";
+                results.push({
+                    appId: row[0].toString(),
+                    gameName: cleanGameName(rawName),
+                    count: parseInt(row[2]) || 0
+                });
+            }
+        }
+
+        return ContentService.createTextOutput(JSON.stringify(results))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+
     if (!ip) {
         return ContentService.createTextOutput(JSON.stringify({ error: "Missing ip parameter" }))
             .setMimeType(ContentService.MimeType.JSON);
