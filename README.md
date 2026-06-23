@@ -1,66 +1,51 @@
-# 🎮 Manifest Hub
+# Manifest Hub
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+A web application for searching, viewing, and downloading Steam manifests.
 
-**Manifest Hub** is a sleek, modern web application designed for searching, viewing, and downloading Steam manifests. Built with a high-contrast GitHub-inspired aesthetic, it provides a premium experience for managing game data.
+## About
 
----
+Manifest Hub allows users to search through game manifests, view manifest details, and download manifest archives sourced from GitHub repositories. It features user accounts, download history tracking, and a responsive design.
 
-## ✨ Features
+## Screenshots
 
-- **🔍 Smart Search:** Instantly search for games and manifests with a high-performance filtering system.
-- **👤 User Profiles:** Create an account to personalize your experience.
-- **🏷️ Display Names:** Set and update your custom display name.
-- **📊 Download History:** Track your past downloads and activity in a dedicated profile tab.
-- **📥 Direct Downloads:** Seamlessly download manifest archives directly from GitHub repositories.
-- **🛡️ Integrated Auth:** Secure authentication powered by Supabase.
-- **📱 Responsive Design:** Fully optimized for desktop and mobile browsing.
+<details>
+<summary>Click to expand screenshots</summary>
 
----
+![Homepage](assets/Screenshot_20260623_153129.png)
 
-## 🏗️ Architecture
+![Search Results](assets/Screenshot_20260623_153230.png)
 
-This project is a modern single-page application (SPA) architecture:
+![Legacy Archive](assets/Screenshot_20260623_153309.png)
 
-1. **Frontend:**
-   - **Vanilla JS & CSS:** No heavy frameworks, ensuring blazing fast load times and smooth animations.
-   - **Modern UI:** Custom-built components inspired by GitHub's design system.
-   
-2. **Backend (Supabase):**
-   - **Auth:** Handles secure login, sign-up, and user session management.
-   - **Database:** Stores user profiles and download history securely.
+</details>
 
----
+## Usage
 
-## 🚀 Setup & Development
+1. Visit the [Manifest Hub website](https://manifesthub.trionine.xyz).
+2. Search for a game by name or AppID.
+3. Browse the listed manifest files and Lua depot keys.
+4. Click **Download** on any file, or **Download All** to get everything at once.
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-repo/ManifestHub.git
-   ```
-2. **Configuration:**
-   - Update the Supabase URL and Key in `script.js` and `profile.html`.
-3. **Run locally:**
-   - Use a local server (like Live Server in VS Code) to open `index.html`.
+You can also use the **Legacy Archive** mode to look up a specific AppID directly.
 
----
+## Data Sources
 
-## ⚠️ Disclaimer
+The platform aggregates data from multiple external sources to serve files dynamically:
 
-This project is **not affiliated** with Valve, Steam, or any other Valve products. It is intended for informational and personal use only.
+- **[jsnli/steamappidlist](https://github.com/jsnli/steamappidlist)**: Provides the main database mapping game names to Steam AppIDs.
+- **[api.steamcmd.net](https://api.steamcmd.net/)**: Queried dynamically to find the latest live `manifestId` for a game's depots.
+- **[fylsdy/ManifestHub](https://github.com/fylsdy/ManifestHub)**: Hosts `depotkeys.json`, which is used to dynamically generate the `.lua` configuration files locally in your browser.
+- **[qwe213312/k25FCdfEOoEJ42S6](https://github.com/qwe213312/k25FCdfEOoEJ42S6)**: A massive repository hosting the actual live `.manifest` files that are downloaded.
+- **[SSMGAlt/ManifestHub2](https://github.com/SSMGAlt/ManifestHub2)**: The legacy archive, where older static backups (ZIPs of manifests and lua files) are stored in branches named by AppID.
 
----
-
-## 👥 Credits
+## Credits
 
 - **Developer:** [TRIONINE](https://trionine.xyz)
-- **Data Source:** [SteamAutoCracks/ManifestHub](https://github.com/SteamAutoCracks/ManifestHub/)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+This project is not affiliated with Valve or Steam.

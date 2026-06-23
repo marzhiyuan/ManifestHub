@@ -17,10 +17,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const authError = document.getElementById("authError");
   const authSwitchBtn = document.getElementById("authSwitchBtn");
   const authSwitchText = document.getElementById("authSwitchText");
-  let isLoginMode = true;
+  let authMode = "login"; // "login", "signup", "forgot"
 
   function openAuthModal(mode) {
-    isLoginMode = mode === "login";
+    authMode = mode;
     updateAuthModalMode();
     if (authError) authError.classList.add("hidden");
     authModal.classList.remove("hidden");
@@ -28,24 +28,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateAuthModalMode() {
     const displayNameGroup = document.getElementById("displayNameGroup");
-    authTitle.textContent = isLoginMode ? "Sign In" : "Sign Up";
-    authSubmitBtn.textContent = isLoginMode ? "Sign In" : "Sign Up";
-    if (authSwitchText)
-      authSwitchText.textContent = isLoginMode
-        ? "Don't have an account?"
-        : "Already have an account?";
-    if (authSwitchBtn)
-      authSwitchBtn.textContent = isLoginMode ? "Sign Up" : "Sign In";
-    if (displayNameGroup) {
-      if (isLoginMode) displayNameGroup.classList.add("hidden");
-      else displayNameGroup.classList.remove("hidden");
+    const passwordInput = document.getElementById("authPassword");
+    const passwordGroup = passwordInput?.closest(".auth-input-group");
+    const forgotPasswordWrap = document.getElementById("forgotPasswordWrap");
+
+    if (authMode === "login") {
+      authTitle.textContent = "Sign In";
+      authSubmitBtn.textContent = "Sign In";
+      if (displayNameGroup) displayNameGroup.classList.add("hidden");
+      if (passwordGroup) passwordGroup.classList.remove("hidden");
+      if (forgotPasswordWrap) forgotPasswordWrap.classList.remove("hidden");
+      if (passwordInput) passwordInput.required = true;
+      if (authSwitchText) authSwitchText.textContent = "Don't have an account?";
+      if (authSwitchBtn) authSwitchBtn.textContent = "Sign Up";
+    } else if (authMode === "signup") {
+      authTitle.textContent = "Sign Up";
+      authSubmitBtn.textContent = "Sign Up";
+      if (displayNameGroup) displayNameGroup.classList.remove("hidden");
+      if (passwordGroup) passwordGroup.classList.remove("hidden");
+      if (forgotPasswordWrap) forgotPasswordWrap.classList.add("hidden");
+      if (passwordInput) passwordInput.required = true;
+      if (authSwitchText) authSwitchText.textContent = "Already have an account?";
+      if (authSwitchBtn) authSwitchBtn.textContent = "Sign In";
+    } else if (authMode === "forgot") {
+      authTitle.textContent = "Reset Password";
+      authSubmitBtn.textContent = "Send reset email";
+      if (displayNameGroup) displayNameGroup.classList.add("hidden");
+      if (passwordGroup) passwordGroup.classList.add("hidden");
+      if (forgotPasswordWrap) forgotPasswordWrap.classList.add("hidden");
+      if (passwordInput) passwordInput.required = false;
+      if (authSwitchText) authSwitchText.textContent = "Remember your password?";
+      if (authSwitchBtn) authSwitchBtn.textContent = "Sign In";
     }
     if (authError) authError.classList.add("hidden");
   }
 
   if (authSwitchBtn) {
     authSwitchBtn.addEventListener("click", () => {
-      isLoginMode = !isLoginMode;
+      if (authMode === "login") {
+        authMode = "signup";
+      } else {
+        authMode = "login";
+      }
+      updateAuthModalMode();
+    });
+  }
+
+  const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+  if (forgotPasswordBtn) {
+    forgotPasswordBtn.addEventListener("click", () => {
+      authMode = "forgot";
       updateAuthModalMode();
     });
   }
@@ -70,13 +102,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const password = document.getElementById("authPassword").value;
 
       let error = null;
-      if (isLoginMode) {
+      if (authMode === "login") {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         error = signInError;
-      } else {
+      } else if (authMode === "signup") {
         const displayName =
           document.getElementById("authDisplayName")?.value || "";
         const { error: signUpError } = await supabase.auth.signUp({
@@ -87,17 +119,26 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         });
         error = signUpError;
+      } else if (authMode === "forgot") {
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/profile",
+        });
+        error = resetError;
+        if (!error) {
+          alert("Password reset email sent! Check your inbox.");
+          authModal.classList.add("hidden");
+        }
       }
 
       if (error) {
         console.error("Auth Error:", error);
         authError.textContent = error.message;
         authError.classList.remove("hidden");
-      } else {
+      } else if (authMode !== "forgot") {
         authModal.classList.add("hidden");
       }
       authSubmitBtn.disabled = false;
-      authSubmitBtn.textContent = isLoginMode ? "Sign In" : "Sign Up";
+      authSubmitBtn.textContent = authMode === "login" ? "Sign In" : (authMode === "signup" ? "Sign Up" : "Send reset email");
     });
   }
 
@@ -119,8 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
           <div id="userDropdown" class="user-dropdown hidden">
             <div style="padding:0.75rem 1rem;border-bottom:1px solid #30363d;font-size:0.8rem;color:#8b949e;">Signed in as<br><strong style="color:#c9d1d9;">${currentUser.email}</strong></div>
-            <a href="profile/" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-user" style="width:1rem;"></i> Your Profile</a>
-            <!-- <a href="profile.html#history" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-history" style="width:1rem;"></i> Download History</a> -->
+            <a href="profile" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-user" style="width:1rem;"></i> Your Profile</a>
             <div style="border-top:1px solid #30363d;">
               <button id="logoutBtn" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#f85149;background:none;border:none;cursor:pointer;width:100%;text-align:left;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-sign-out-alt" style="width:1rem;"></i> Sign out</button>
             </div>
@@ -260,6 +300,39 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "GET",
       mode: "no-cors",
     }).catch(() => {});
+
+    // Save to Supabase if user is logged in
+    if (currentUser) {
+      try {
+        let gameName = name;
+        let type = "Download";
+
+        if (name.includes(" - ")) {
+          const parts = name.split(" - ");
+          gameName = parts[0];
+          type = parts[1];
+        } else if (name.endsWith(" (ZIP)")) {
+          gameName = name.replace(" (ZIP)", "");
+          type = "ZIP Archive";
+        } else if (name.endsWith(" (Legacy)")) {
+          gameName = name.replace(" (Legacy)", "");
+          type = "Legacy Archive";
+        }
+
+        const { error } = await supabase.from("download_history").insert({
+          user_id: currentUser.id,
+          game_name: gameName,
+          type: type,
+          game_id: appId.toString()
+        });
+
+        if (error) {
+          console.error("Supabase insert error:", error);
+        }
+      } catch (err) {
+        console.error("Error saving download history:", err);
+      }
+    }
   }
 
   function escapeHtml(text) {
@@ -290,6 +363,8 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadDepotKeys() {
     updateStatus("Loading depot keys...");
     try {
+      // Source: fylsdy/ManifestHub
+      // Purpose: Downloads depot keys to locally generate the .lua files.
       const response = await fetch(
         "https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json",
       );
@@ -310,6 +385,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function fetchWithFallback(path) {
+      // Source: jsnli/steamappidlist
+      // Purpose: Main database to map game names to Steam AppIDs for lookup.
       const bases = [
         "https://raw.githubusercontent.com/jsnli/steamappidlist/refs/heads/main/data/",
         "https://raw.githubusercontent.com/jsnli/steamappidlist/refs/heads/master/data/",
@@ -553,6 +630,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function fetchLiveManifests(appId) {
     try {
+      // Source: api.steamcmd.net
+      // Purpose: Queries dynamically to find the latest live manifestId for the game's depots.
       const response = await fetch(`https://api.steamcmd.net/v1/info/${appId}`);
       const data = await response.json();
       if (data.status === "success" && data.data[appId]) {
@@ -570,6 +649,8 @@ document.addEventListener("DOMContentLoaded", function () {
               depotId,
               manifestId,
               depotName,
+              // Source: qwe213312/k25FCdfEOoEJ42S6
+              // Purpose: Direct download URL for the actual live .manifest file.
               downloadUrl: `https://raw.githubusercontent.com/qwe213312/k25FCdfEOoEJ42S6/main/${depotId}_${manifestId}.manifest`,
             });
           }
@@ -630,6 +711,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
+      // Source: SSMGAlt/ManifestHub2 (Legacy Archive)
+      // Purpose: Checks if a legacy branch named by AppID exists.
       const githubCheck = await fetch(
         `https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${appId}`,
       );
@@ -639,6 +722,8 @@ document.addEventListener("DOMContentLoaded", function () {
           type: "Legacy Zip",
           icon: "fas fa-database",
           iconColor: "text-purple-400",
+          // Source: SSMGAlt/ManifestHub2 (Legacy Archive)
+          // Purpose: Direct URL to download the branch as a ZIP file.
           url: `https://codeload.github.com/${REPO_OWNER}/ManifestHub2/zip/refs/heads/${appId}`,
           isExternal: true,
         });
@@ -766,12 +851,16 @@ document.addEventListener("DOMContentLoaded", function () {
     await typeLegacyText(`> Searching GitHub repository...\n`);
 
     try {
+      // Source: SSMGAlt/ManifestHub2 (Legacy Archive)
+      // Purpose: Checks if the branch exists for the requested Legacy AppID.
       const response = await fetch(
         `https://api.github.com/repos/${REPO_OWNER}/ManifestHub2/branches/${gameId}`,
       );
       if (response.status === 200) {
         await typeLegacyText(`> ✅ Manifest found in database!\n`);
         const gameName = appNames[parseInt(gameId)] || "Unknown Game";
+        // Source: SSMGAlt/ManifestHub2 (Legacy Archive)
+        // Purpose: URL to download the specific legacy archive zip.
         const githubUrl = `https://codeload.github.com/${REPO_OWNER}/ManifestHub2/zip/refs/heads/${gameId}`;
 
         const dl = document.getElementById("legacyDownloadLink");

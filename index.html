@@ -10,7 +10,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
@@ -68,6 +68,9 @@
               placeholder="Password"
               required
             />
+          </div>
+          <div id="forgotPasswordWrap" style="text-align: right; margin-top: -0.5rem; margin-bottom: 1rem; font-size: 0.8rem;">
+            <button type="button" id="forgotPasswordBtn" style="background: none; border: none; color: #58a6ff; cursor: pointer; padding: 0;">Forgot password?</button>
           </div>
           <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
             Sign In
@@ -244,8 +247,6 @@
           </div>
         </div>
 
-
-
         <!-- FAQ Section -->
         <div class="faq-wrapper">
           <h2 class="faq-heading">Frequently Asked Questions</h2>
@@ -276,7 +277,6 @@
             <!-- FAQ Items injected by JS -->
           </div>
         </div>
-
       </main>
     </div>
 
@@ -321,6 +321,6 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>
