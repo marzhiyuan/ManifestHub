@@ -9,20 +9,17 @@ Manifest Hub allows users to search through game manifests, view manifest detail
 ## Screenshots
 
 <details>
-<summary>Click to expand screenshot slider</summary>
-<br>
+<summary>Click to expand screenshots</summary>
 
-<table>
-  <tr>
-    <td valign="top"><p align="center"><strong>Homepage</strong></p><img src="assets/screenshots/Screenshot_20260623_153129.png" width="500" alt="Homepage"></td>
-    <td valign="top"><p align="center"><strong>Search Results</strong></p><img src="assets/screenshots/Screenshot_20260623_153230.png" width="500" alt="Search Results"></td>
-    <td valign="top"><p align="center"><strong>Legacy Archive</strong></p><img src="assets/screenshots/Screenshot_20260623_153309.png" width="500" alt="Legacy Archive"></td>
-    <td valign="top"><p align="center"><strong>Download History</strong></p><img src="assets/screenshots/Screenshot_20260623_202028.png" width="500" alt="Download History"></td>
-    <td valign="top"><p align="center"><strong>Account Settings</strong></p><img src="assets/screenshots/Screenshot_20260623_201936.png" width="500" alt="Account Settings"></td>
-  </tr>
-</table>
+![Homepage](assets/screenshots/Screenshot_20260623_153129.png)
 
-</details>
+![Search Results](assets/screenshots/Screenshot_20260623_153230.png)
+
+![Legacy Archive](assets/screenshots/Screenshot_20260623_153309.png)
+
+![User Download History](assets/screenshots/Screenshot_20260623_202028.png)
+
+![User Account Controls](assets/screenshots/Screenshot_20260623_201936.png)</details>
 
 ## Usage
 
