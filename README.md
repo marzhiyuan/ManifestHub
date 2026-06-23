@@ -17,6 +17,9 @@ Manifest Hub allows users to search through game manifests, view manifest detail
 
 ![Legacy Archive](assets/Screenshot_20260623_153309.png)
 
+![User Download History](assets/Screenshot_20260623_202028.png)
+
+![User Account Controls](assets/Screenshot_20260623_201936.png)
 </details>
 
 ## Usage
