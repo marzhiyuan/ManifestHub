@@ -14,9 +14,9 @@
 <body>
   <!-- Auth Gate (shown when not logged in) -->
   <div id="authGate" class="page-wrap" style="display: block; text-align: center; padding-top: 5rem">
-    <img src="assets/mhub.png" alt="Logo" style="width: 80px; margin-bottom: 2rem; border-radius: 12px" />
-    <h1 style="font-size: 2rem; margin-bottom: 0.5rem">
-      Sign in to ManifestHub
+    <img src="assets/manifesthub.png" alt="ManifestHub Logo" style="width: 200px; height: auto; margin-bottom: 1.25rem; border-radius: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));" />
+    <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #c9d1d9; font-weight: 700">
+      Sign in to your account
     </h1>
     <p style="color: #8b949e; margin-bottom: 2rem">
       Manage your download history and account settings.
@@ -63,8 +63,11 @@
           <i class="fas fa-lock"></i>
           <input type="password" id="authPassword" class="auth-input" placeholder="Password" required />
         </div>
-        <div id="forgotPasswordWrap" style="text-align: right; margin-top: -0.5rem; margin-bottom: 1rem; font-size: 0.8rem;">
-          <button type="button" id="forgotPasswordBtn" style="background: none; border: none; color: #58a6ff; cursor: pointer; padding: 0;">Forgot password?</button>
+        <div id="forgotPasswordWrap"
+          style="text-align: right; margin-top: -0.5rem; margin-bottom: 1rem; font-size: 0.8rem;">
+          <button type="button" id="forgotPasswordBtn"
+            style="background: none; border: none; color: #58a6ff; cursor: pointer; padding: 0;">Forgot
+            password?</button>
         </div>
         <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
           Sign In
@@ -221,6 +224,95 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- ===== CUSTOM MODALS (replaces browser prompt/alert/confirm) ===== -->
+
+  <!-- Update Display Name Modal -->
+  <div id="updateNameModal" class="profile-modal-overlay hidden">
+    <div class="profile-modal">
+      <div class="profile-modal-header">
+        <h3><i class="fas fa-user-edit"></i> Update Display Name</h3>
+        <button class="profile-modal-close" data-close="updateNameModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="profile-modal-body">
+        <div class="profile-input-group">
+          <label for="newDisplayNameInput">New display name</label>
+          <input type="text" id="newDisplayNameInput" class="profile-input" placeholder="Enter new display name" autocomplete="off" />
+        </div>
+      </div>
+      <div class="profile-modal-footer">
+        <button class="btn-secondary profile-modal-cancel" data-close="updateNameModal">Cancel</button>
+        <button id="confirmUpdateNameBtn" class="btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="profile-modal-overlay hidden">
+    <div class="profile-modal">
+      <div class="profile-modal-header">
+        <h3><i class="fas fa-lock"></i> Change Password</h3>
+        <button class="profile-modal-close" data-close="changePasswordModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="profile-modal-body">
+        <div class="profile-input-group">
+          <label for="newPasswordInput">New password</label>
+          <input type="password" id="newPasswordInput" class="profile-input" placeholder="Enter new password" autocomplete="new-password" />
+        </div>
+        <div class="profile-input-group">
+          <label for="confirmPasswordInput">Confirm password</label>
+          <input type="password" id="confirmPasswordInput" class="profile-input" placeholder="Confirm new password" autocomplete="new-password" />
+        </div>
+        <p id="passwordModalError" class="profile-modal-error hidden"></p>
+      </div>
+      <div class="profile-modal-footer">
+        <button class="btn-secondary profile-modal-cancel" data-close="changePasswordModal">Cancel</button>
+        <button id="confirmChangePasswordBtn" class="btn-primary">Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Recovery Modal (on redirect) -->
+  <div id="passwordRecoveryModal" class="profile-modal-overlay hidden">
+    <div class="profile-modal">
+      <div class="profile-modal-header">
+        <h3><i class="fas fa-key"></i> Reset Your Password</h3>
+      </div>
+      <div class="profile-modal-body">
+        <p style="color:#8b949e; font-size:0.875rem; margin-bottom:1rem;">Choose a strong new password for your account.</p>
+        <div class="profile-input-group">
+          <label for="recoveryPasswordInput">New password</label>
+          <input type="password" id="recoveryPasswordInput" class="profile-input" placeholder="Enter new password" autocomplete="new-password" />
+        </div>
+        <p id="recoveryModalError" class="profile-modal-error hidden"></p>
+      </div>
+      <div class="profile-modal-footer">
+        <button id="confirmRecoveryPasswordBtn" class="btn-primary" style="width:100%">Set New Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog Modal -->
+  <div id="confirmModal" class="profile-modal-overlay hidden">
+    <div class="profile-modal" style="max-width:380px;">
+      <div class="profile-modal-header">
+        <h3 id="confirmModalTitle"><i class="fas fa-exclamation-triangle" style="color:#f85149"></i> Confirm</h3>
+      </div>
+      <div class="profile-modal-body">
+        <p id="confirmModalMessage" style="color:#8b949e; font-size:0.9rem;"></p>
+      </div>
+      <div class="profile-modal-footer">
+        <button id="confirmModalCancel" class="btn-secondary">Cancel</button>
+        <button id="confirmModalOk" class="btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="profileToast" class="profile-toast hidden">
+    <i id="profileToastIcon" class="fas fa-check-circle"></i>
+    <span id="profileToastMsg"></span>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

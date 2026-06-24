@@ -380,11 +380,11 @@ body {
 }
 
 .auth-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
   margin: 0 auto 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   display: block;
 }
 
@@ -737,10 +737,10 @@ body {
 }
 
 .header-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
 .header-title {
@@ -1095,8 +1095,8 @@ footer p:last-child {
   }
 
   .header-logo {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
   }
 
   .header-title {

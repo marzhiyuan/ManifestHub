@@ -344,3 +344,193 @@ body {
     flex-basis: 100%;
   }
 }
+
+/* ===== CUSTOM PROFILE MODALS ===== */
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(1, 4, 9, 0.85);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.profile-modal {
+  background: linear-gradient(145deg, #161b22, #0d1117);
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+  animation: modalSlideIn 0.18s ease;
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.profile-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem 0.9rem;
+  border-bottom: 1px solid #21262d;
+}
+
+.profile-modal-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c9d1d9;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.profile-modal-close {
+  background: none;
+  border: none;
+  color: #8b949e;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.profile-modal-close:hover {
+  color: #c9d1d9;
+  background: rgba(255,255,255,0.06);
+}
+
+.profile-modal-body {
+  padding: 1.25rem;
+}
+
+.profile-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 0.9rem 1.25rem 1.1rem;
+  border-top: 1px solid #21262d;
+}
+
+.profile-modal-footer .btn-primary,
+.profile-modal-footer .btn-secondary,
+.profile-modal-footer .btn-danger {
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.profile-modal-footer .btn-primary {
+  background: #238636;
+  color: #fff;
+  border-color: rgba(240,246,252,0.1);
+}
+.profile-modal-footer .btn-primary:hover { background: #2ea043; }
+.profile-modal-footer .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.profile-modal-footer .btn-secondary {
+  background: #21262d;
+  color: #c9d1d9;
+  border-color: #30363d;
+}
+.profile-modal-footer .btn-secondary:hover { background: #30363d; }
+
+.profile-modal-footer .btn-danger {
+  background: #da3633;
+  color: #fff;
+}
+.profile-modal-footer .btn-danger:hover { background: #b91c1c; }
+
+/* Input inside profile modals */
+.profile-input-group {
+  margin-bottom: 1rem;
+}
+
+.profile-input-group:last-child {
+  margin-bottom: 0;
+}
+
+.profile-input-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #8b949e;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  font-family: inherit;
+}
+
+.profile-input:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.2);
+}
+
+.profile-input::placeholder {
+  color: #484f58;
+}
+
+.profile-modal-error {
+  color: #f85149;
+  font-size: 0.825rem;
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Toast notification */
+.profile-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  color: #c9d1d9;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  z-index: 3000;
+  white-space: nowrap;
+  animation: toastIn 0.25s ease;
+}
+
+.profile-toast.toast-success { border-color: rgba(63,185,80,0.4); }
+.profile-toast.toast-success i { color: #3fb950; }
+.profile-toast.toast-error   { border-color: rgba(248,81,73,0.4); }
+.profile-toast.toast-error i  { color: #f85149; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
