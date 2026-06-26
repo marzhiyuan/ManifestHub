@@ -74,6 +74,20 @@ export default {
         downloadType = "Legacy";
       }
 
+      // Dedup key: ip + appId + downloadType, expires after 30s
+      if (env.DEDUP_KV) {
+        try {
+          const dedupKey = `dedup:${userIp}:${downloadId}:${downloadType}`;
+          const existing = await env.DEDUP_KV.get(dedupKey);
+          if (existing) {
+            return new Response("Duplicate skipped", { status: 200, headers });
+          }
+          await env.DEDUP_KV.put(dedupKey, "1", { expirationTtl: 30 });
+        } catch (e) {
+          console.error("KV dedup error:", e); // fail open, still log
+        }
+      }
+
       const logTask = (async () => {
         // 1. Send cleanly formatted alert message to Discord
         if (env.DOWNLOAD_WEBHOOK_URL) {

@@ -294,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
- // ========== GLOBAL DATA & TRACKING ==========
+  // ========== GLOBAL DATA & TRACKING ==========
   const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/"; // Trimed query parameter string
   const REPO_OWNER = "SSMGAlt";
 
@@ -304,19 +304,21 @@ document.addEventListener("DOMContentLoaded", function () {
   let appDepots = {};
   let searchable = [];
 
-  const _debounceMap = {};
+  const _debounceMap = JSON.parse(sessionStorage.getItem("_dm") || "{}");
 
   async function trackEvent(appId, name) {
     const now = Date.now();
-    const last = _debounceMap[appId];
-    if (last && now - last < 3000) return;
-    _debounceMap[appId] = now;
+    const key = `${appId}:${name}`;
+    const last = _debounceMap[key];
+    if (last && now - last < 30000) return;
+    _debounceMap[key] = now;
+    sessionStorage.setItem("_dm", JSON.stringify(_debounceMap));
 
     const sessionUserId = currentUser?.id || "";
-    fetch(`${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}&uid=${sessionUserId}`, {
-      method: "GET",
-      mode: "no-cors",
-    }).catch((err) => console.error("Worker signal error:", err));
+    fetch(
+      `${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}&uid=${sessionUserId}`,
+      { method: "GET", mode: "no-cors" },
+    ).catch((err) => console.error("Worker signal error:", err));
   }
 
   function escapeHtml(text) {
