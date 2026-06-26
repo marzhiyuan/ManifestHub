@@ -1,33 +1,42 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const workerUrl = process.env.TRENDING_API_URL || 'https://manifesthub-bridge.trionine.workers.dev/';
+const gsheetUrl = process.env.GSHEET_TRENDING_URL;
+
+const trendingPath = path.join(__dirname, "..", "data", "trending-data.json");
+const TOP_N = 50;
 
 async function updateTrending() {
-  const url = workerUrl.endsWith('/') ? `${workerUrl}?top=true` : `${workerUrl}/?top=true`;
-  console.log(`Fetching trending downloads from: ${url}`);
+  if (!gsheetUrl) {
+    console.error("GSHEET_TRENDING_URL env var not set");
+    process.exit(1);
+  }
+
+  const url = gsheetUrl.includes("?") ? `${gsheetUrl}&action=top` : `${gsheetUrl}?action=top`;
+  console.log(`Fetching trending downloads from Google Sheets: ${url}`);
   try {
     const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
-    
-    // Ensure data is valid JSON array
+
     if (!Array.isArray(data)) {
       throw new Error("Invalid data format: Expected an array of downloads");
     }
 
-    const outputPath = path.join(__dirname, '..', 'data', 'trending-data.json');
-    
-    // Ensure parent directory exists
-    const dir = path.dirname(outputPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    const allGames = data
+      .map((entry) => ({
+        appId: String(entry.appId),
+        gameName: entry.gameName || "Unknown Game",
+        count: Number(entry.count) || 0,
+      }))
+      .sort((a, b) => b.count - a.count);
 
-    fs.writeFileSync(outputPath, JSON.stringify(data, null, 2), 'utf8');
-    console.log(`Successfully wrote ${data.length} trending items to ${outputPath}`);
+    const dir = path.dirname(trendingPath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+    const top = allGames.slice(0, TOP_N);
+    fs.writeFileSync(trendingPath, JSON.stringify(top, null, 2), "utf8");
+    console.log(`trending-data.json updated: top ${top.length} games`);
   } catch (err) {
     console.error("Error updating trending downloads:", err);
     process.exit(1);

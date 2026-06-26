@@ -48,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (passwordGroup) passwordGroup.classList.remove("hidden");
       if (forgotPasswordWrap) forgotPasswordWrap.classList.add("hidden");
       if (passwordInput) passwordInput.required = true;
-      if (authSwitchText) authSwitchText.textContent = "Already have an account?";
+      if (authSwitchText)
+        authSwitchText.textContent = "Already have an account?";
       if (authSwitchBtn) authSwitchBtn.textContent = "Sign In";
     } else if (authMode === "forgot") {
       authTitle.textContent = "Reset Password";
@@ -57,7 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (passwordGroup) passwordGroup.classList.add("hidden");
       if (forgotPasswordWrap) forgotPasswordWrap.classList.add("hidden");
       if (passwordInput) passwordInput.required = false;
-      if (authSwitchText) authSwitchText.textContent = "Remember your password?";
+      if (authSwitchText)
+        authSwitchText.textContent = "Remember your password?";
       if (authSwitchBtn) authSwitchBtn.textContent = "Sign In";
     }
     if (authError) authError.classList.add("hidden");
@@ -120,9 +122,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         error = signUpError;
       } else if (authMode === "forgot") {
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + "/profile",
-        });
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+          email,
+          {
+            redirectTo: window.location.origin + "/profile",
+          },
+        );
         error = resetError;
         if (!error) {
           alert("Password reset email sent! Check your inbox.");
@@ -138,7 +143,12 @@ document.addEventListener("DOMContentLoaded", function () {
         authModal.classList.add("hidden");
       }
       authSubmitBtn.disabled = false;
-      authSubmitBtn.textContent = authMode === "login" ? "Sign In" : (authMode === "signup" ? "Sign Up" : "Send reset email");
+      authSubmitBtn.textContent =
+        authMode === "login"
+          ? "Sign In"
+          : authMode === "signup"
+            ? "Sign Up"
+            : "Send reset email";
     });
   }
 
@@ -284,8 +294,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // ========== GLOBAL DATA & TRACKING ==========
-  const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/";
+ // ========== GLOBAL DATA & TRACKING ==========
+  const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/"; // Trimed query parameter string
   const REPO_OWNER = "SSMGAlt";
 
   let depotKeys = {};
@@ -294,45 +304,19 @@ document.addEventListener("DOMContentLoaded", function () {
   let appDepots = {};
   let searchable = [];
 
+  const _debounceMap = {};
+
   async function trackEvent(appId, name) {
-    // External tracking ping for Google Sheet / Discord logging
-    fetch(`${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}`, {
+    const now = Date.now();
+    const last = _debounceMap[appId];
+    if (last && now - last < 3000) return;
+    _debounceMap[appId] = now;
+
+    const sessionUserId = currentUser?.id || "";
+    fetch(`${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}&uid=${sessionUserId}`, {
       method: "GET",
       mode: "no-cors",
-    }).catch(() => { });
-
-    // Save to Supabase if user is logged in
-    if (currentUser) {
-      try {
-        let gameName = name;
-        let type = "Download";
-
-        if (name.includes(" - ")) {
-          const parts = name.split(" - ");
-          gameName = parts[0];
-          type = parts[1];
-        } else if (name.endsWith(" (ZIP)")) {
-          gameName = name.replace(" (ZIP)", "");
-          type = "ZIP Archive";
-        } else if (name.endsWith(" (Legacy)")) {
-          gameName = name.replace(" (Legacy)", "");
-          type = "Legacy Archive";
-        }
-
-        const { error } = await supabase.from("download_history").insert({
-          user_id: currentUser.id,
-          game_name: gameName,
-          type: type,
-          game_id: appId.toString()
-        });
-
-        if (error) {
-          console.error("Supabase insert error:", error);
-        }
-      } catch (err) {
-        console.error("Error saving download history:", err);
-      }
-    }
+    }).catch((err) => console.error("Worker signal error:", err));
   }
 
   function escapeHtml(text) {
@@ -657,7 +641,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return manifests;
       }
-    } catch (e) { }
+    } catch (e) {}
     return [];
   }
 
@@ -728,7 +712,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isExternal: true,
         });
       }
-    } catch (e) { }
+    } catch (e) {}
 
     if (files.length === 0) {
       filesList.innerHTML =
@@ -797,7 +781,7 @@ document.addEventListener("DOMContentLoaded", function () {
               const response = await fetch(file.url);
               const blob = await response.blob();
               zip.file(file.name, blob);
-            } catch (e) { }
+            } catch (e) {}
           }
         }
 
@@ -1033,7 +1017,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
 
       if (!data || data.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-github-muted text-center py-4">No trending data available.</div>';
+        grid.innerHTML =
+          '<div class="col-span-full text-github-muted text-center py-4">No trending data available.</div>';
         return;
       }
 
@@ -1047,7 +1032,10 @@ document.addEventListener("DOMContentLoaded", function () {
           name = name.replace(/\s*\(LUA\)/gi, "").trim();
         }
         // Fallback to local catalog if the sheet name is missing or "Unknown Game"
-        if ((!name || name.toLowerCase() === "unknown game") && appNames[item.appId]) {
+        if (
+          (!name || name.toLowerCase() === "unknown game") &&
+          appNames[item.appId]
+        ) {
           name = appNames[item.appId];
         }
 
@@ -1060,7 +1048,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const formattedCount = parseInt(item.count).toLocaleString();
 
         const card = document.createElement("div");
-        card.className = "flex items-center gap-3 bg-[#161b22] border border-[#30363d] rounded-md p-2 cursor-pointer hover:border-[#8b949e] transition-all hover:scale-[1.02] duration-200";
+        card.className =
+          "flex items-center gap-3 bg-[#161b22] border border-[#30363d] rounded-md p-2 cursor-pointer hover:border-[#8b949e] transition-all hover:scale-[1.02] duration-200";
         card.innerHTML = `
           <img class="w-[60px] h-[35px] object-cover rounded bg-[#0d1117] flex-shrink-0" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/header.jpg" alt="${name}">
           <div class="flex flex-col min-w-0 flex-grow">
@@ -1082,11 +1071,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } catch (err) {
       console.warn("Failed to load trending downloads:", err);
-      grid.innerHTML = '<div class="col-span-full text-github-muted text-center py-4">Could not load trending downloads.</div>';
+      grid.innerHTML =
+        '<div class="col-span-full text-github-muted text-center py-4">Could not load trending downloads.</div>';
     }
   }
 
   // ========== INIT ==========
   loadFAQ();
-  loadDepotKeys().then(() => loadAppLists().then(() => loadTrendingDownloads()));
+  loadDepotKeys().then(() =>
+    loadAppLists().then(() => loadTrendingDownloads()),
+  );
 });

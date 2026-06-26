@@ -4,9 +4,12 @@ function doPost(e) {
         var doc = SpreadsheetApp.getActiveSpreadsheet();
         var sheet = doc.getSheetByName("Downloads");
 
+        // Force Type column to plain text (old "Download #" was numeric)
+        sheet.getRange("D:D").setNumberFormat("@");
+
         // Add Headers if the sheet is empty
         if (sheet.getLastRow() === 0) {
-            sheet.appendRow(["Timestamp", "App ID", "Game Name", "Download #", "Real IP"]);
+            sheet.appendRow(["Timestamp", "App ID", "Game Name", "Type", "Real IP"]);
             sheet.getRange("A1:E1").setFontWeight("bold").setBackground("#d1e7dd");
         }
 
@@ -15,7 +18,7 @@ function doPost(e) {
             data.timestamp,
             data.appId,
             data.gameName,
-            data.totalCount,
+            data.downloadType,
             data.ipAddress
         ]);
 

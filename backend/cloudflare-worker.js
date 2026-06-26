@@ -12,91 +12,124 @@ export default {
 
     const url = new URL(request.url);
     const downloadId = url.searchParams.get("download");
-
-    // --- 📩 CONFIGURATION: REQUESTS ---
-    const requestWebhookUrl = env.REQUEST_WEBHOOK_URL;
-    const requestSheetUrl = env.REQUEST_SHEET_URL;
-
-    // --- 📥 CONFIGURATION: DOWNLOADS ---
-    const downloadWebhookUrl = env.DOWNLOAD_WEBHOOK_URL;
-    const downloadSheetUrl = env.DOWNLOAD_SHEET_URL;
-
     const userIp = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
 
+    const sbUrl = env.SUPABASE_URL;
+    const sbKey = env.SUPABASE_SERVICE_ROLE_KEY;
+
+    // --- JOB 1: FETCH DYNAMIC TRENDING DATA (Calls Production RPC) ---
     if (request.method === "GET" && url.searchParams.get("top") === "true") {
       try {
-        const response = await fetch(`${downloadSheetUrl}?action=top`);
+        const response = await fetch(
+          `${sbUrl}/rest/v1/rpc/get_popular_downloads`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${sbKey}`,
+              apikey: sbKey,
+              "Content-Type": "application/json",
+            },
+          },
+        );
         const data = await response.text();
         return new Response(data, {
           status: 200,
-          headers: {
-            ...headers,
-            "Content-Type": "application/json",
-          },
+          headers: { ...headers, "Content-Type": "application/json" },
         });
       } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
-          headers: {
-            ...headers,
-            "Content-Type": "application/json",
-          },
+          headers,
         });
       }
     }
 
-    if (request.method === "GET" && url.searchParams.get("history") === "true") {
-      try {
-        const response = await fetch(`${downloadSheetUrl}?ip=${encodeURIComponent(userIp)}`);
-        const data = await response.text();
-        return new Response(data, {
-          status: 200,
-          headers: {
-            ...headers,
-            "Content-Type": "application/json",
-          },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: {
-            ...headers,
-            "Content-Type": "application/json",
-          },
-        });
-      }
-    }
 
+    // --- JOB 2: LOGGING INCOMING DOWNLOADS ---
     if (request.method === "GET" && downloadId) {
-      const gameName = url.searchParams.get("name") || "Unknown Game";
+      const rawGameName = url.searchParams.get("name") || "Unknown Game";
+      const userId = url.searchParams.get("uid") || null;
       const isPing = request.headers.get("Sec-Fetch-Mode") === "cors";
 
+      let gameName = rawGameName;
+      let downloadType = "Legacy";
+
+      if (rawGameName.includes(" - ")) {
+        const parts = rawGameName.split(" - ");
+        gameName = parts[0];
+        const suffix = parts[1].toLowerCase();
+        if (suffix.includes("lua")) {
+          downloadType = ".lua";
+        } else if (suffix.includes("manifest")) {
+          downloadType = ".manifest";
+        }
+      } else if (rawGameName.toLowerCase().includes("zip")) {
+        gameName = rawGameName
+          .replace(/\s*\(zip\)/gi, "")
+          .replace(/\s*[-–]\s*zip/gi, "");
+        downloadType = "ZIP";
+      } else if (rawGameName.toLowerCase().includes("legacy")) {
+        gameName = rawGameName
+          .replace(/\s*\(legacy\)/gi, "")
+          .replace(/\s*[-–]\s*legacy/gi, "");
+        downloadType = "Legacy";
+      }
+
       const logTask = (async () => {
-        try {
-          await Promise.all([
-            // Discord: Clean notification, no IP
-            fetch(downloadWebhookUrl, {
+        // 1. Send cleanly formatted alert message to Discord
+        if (env.DOWNLOAD_WEBHOOK_URL) {
+          try {
+            await fetch(env.DOWNLOAD_WEBHOOK_URL, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                content: `✨ **Download**: \`${gameName}\` (AppID: ${downloadId})`,
+                content: `⬇️ **Download**: \`${gameName}\` (${downloadType})`,
               }),
-            }),
-            // Google Sheets: Hidden IP logging
-            fetch(downloadSheetUrl, {
+            });
+          } catch (e) {
+            console.error("Discord notice failed:", e);
+          }
+        }
+
+        // 2. Write real-time download signature row into public.download_history (logged-in users only)
+        if (userId) {
+          try {
+            await fetch(`${sbUrl}/rest/v1/download_history`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${sbKey}`,
+                apikey: sbKey,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                user_id: userId,
+                app_id: parseInt(downloadId),
+                download_type: downloadType,
+                game_name: gameName,
+              }),
+            });
+          } catch (e) {
+            console.error("History insert failed:", e);
+          }
+        }
+
+        // 3. Log to Google Sheets as backup (uses existing DOWNLOAD_SHEET_URL secret)
+        if (env.DOWNLOAD_SHEET_URL) {
+          try {
+            await fetch(env.DOWNLOAD_SHEET_URL, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                type: "download_log",
                 timestamp: new Date().toISOString(),
                 appId: downloadId,
                 gameName: gameName,
+                downloadType: downloadType,
                 ipAddress: userIp,
               }),
-            }),
-          ]);
-        } catch (err) {
-          console.error("Tracking failed:", err);
+            });
+          } catch (e) {
+            console.error("Google Sheet log failed:", e);
+          }
         }
       })();
 
@@ -112,60 +145,9 @@ export default {
       );
     }
 
-    // ==========================================
-    // JOB 2: GAME REQUEST FORM (POST)
-    // ==========================================
-    if (request.method === "POST") {
-      try {
-        const data = await request.json();
-
-        data.type = "request";
-        data.ipAddress = userIp;
-        data.timestamp = new Date().toISOString();
-
-        const processRequest = (async () => {
-          try {
-            await Promise.all([
-              // Discord: Clean notification, no IP
-              fetch(requestWebhookUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  content: `**📩 New Request!**\n**Name:** ${data.gameName}\n**AppID:** ${data.appId}`,
-                }),
-              }),
-              // Google Sheets: Hidden IP logging
-              fetch(requestSheetUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-              }),
-            ]);
-          } catch (err) {
-            console.error("Request logging failed:", err);
-          }
-        })();
-
-        ctx.waitUntil(processRequest);
-
-        return new Response(JSON.stringify({ status: "success" }), {
-          status: 200,
-          headers: { ...headers, "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        return new Response(
-          JSON.stringify({ status: "error", message: err.message }),
-          {
-            status: 500,
-            headers,
-          },
-        );
-      }
-    }
-
-    return new Response("ManifestHub Bridge is Active", {
+    return new Response("ManifestHub Bridge Active", {
       status: 200,
-      headers,
+      headers: { ...headers, "Content-Type": "text/plain" },
     });
   },
 };
