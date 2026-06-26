@@ -44,7 +44,6 @@ export default {
       }
     }
 
-
     // --- JOB 2: LOGGING INCOMING DOWNLOADS ---
     if (request.method === "GET" && downloadId) {
       const rawGameName = url.searchParams.get("name") || "Unknown Game";
@@ -116,7 +115,7 @@ export default {
         // 3. Log to Google Sheets as backup (uses existing DOWNLOAD_SHEET_URL secret)
         if (env.DOWNLOAD_SHEET_URL) {
           try {
-            await fetch(env.DOWNLOAD_SHEET_URL, {
+            const sheetRes = await fetch(env.DOWNLOAD_SHEET_URL, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -127,6 +126,27 @@ export default {
                 ipAddress: userIp,
               }),
             });
+            if (!sheetRes.ok) {
+              console.error(
+                "Google Sheet HTTP error:",
+                sheetRes.status,
+                sheetRes.statusText,
+              );
+            } else {
+              const body = await sheetRes.text();
+              let parsed;
+              try {
+                parsed = JSON.parse(body);
+              } catch (_) {
+                parsed = null;
+              }
+              if (parsed && parsed.status === "error") {
+                console.error(
+                  "Google Sheet app error:",
+                  parsed.message || body,
+                );
+              }
+            }
           } catch (e) {
             console.error("Google Sheet log failed:", e);
           }

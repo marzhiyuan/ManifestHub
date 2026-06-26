@@ -4,8 +4,6 @@ function doPost(e) {
         var doc = SpreadsheetApp.getActiveSpreadsheet();
         var sheet = doc.getSheetByName("Downloads");
 
-        // Force Type column to plain text (old "Download #" was numeric)
-        sheet.getRange("D:D").setNumberFormat("@");
 
         // Add Headers if the sheet is empty
         if (sheet.getLastRow() === 0) {
