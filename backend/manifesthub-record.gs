@@ -2,12 +2,7 @@ function doPost(e) {
     try {
         var data = JSON.parse(e.postData.contents);
         var doc = SpreadsheetApp.getActiveSpreadsheet();
-
-        // Debug log to Apps Script console (View > Logs)
-        console.log("GSheet raw payload: " + JSON.stringify(data));
-
         var sheet = doc.getSheetByName("Downloads");
-
 
         // Add Headers if the sheet is empty
         if (sheet.getLastRow() === 0) {
@@ -15,14 +10,15 @@ function doPost(e) {
             sheet.getRange("A1:E1").setFontWeight("bold").setBackground("#d1e7dd");
         }
 
-        // Log the data
-        sheet.appendRow([
+        // Insert at row 2 (prepend after header)
+        sheet.insertRowAfter(1);
+        sheet.getRange(2, 1, 1, 5).setValues([[
             data.timestamp,
             data.appId,
             data.gameName,
             data.downloadType,
             data.ipAddress
-        ]);
+        ]]);
 
         return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
             .setMimeType(ContentService.MimeType.JSON);
@@ -62,7 +58,6 @@ function doGet(e) {
         }
 
         var results = [];
-        // Stats columns are: A: App ID, B: min Game Name, C: count App ID
         for (var i = 1; i < data.length; i++) {
             var row = data[i];
             if (row[0]) {
@@ -98,19 +93,18 @@ function doGet(e) {
     }
 
     var results = [];
-    var limit = 50; // Max downloads to fetch from sheet
+    var limit = 50;
 
-    // Start from the bottom of the sheet (newest) and go upwards
-    for (var i = data.length - 1; i >= 1; i--) {
+    // Now reads top-down since newest is at the top
+    for (var i = 1; i < data.length; i++) {
         var row = data[i];
-        var rowIp = row[4]; // Real IP column
+        var rowIp = row[4];
 
         if (rowIp && rowIp.toString().trim() === ip.trim()) {
             var gameNameAndType = row[2] ? row[2].toString() : "Unknown Game";
             var gameName = gameNameAndType;
             var downloadType = "Download";
 
-            // Parse out specific download type details if present in the game name
             if (gameNameAndType.indexOf(" - ") !== -1) {
                 var parts = gameNameAndType.split(" - ");
                 gameName = parts[0];
@@ -131,7 +125,7 @@ function doGet(e) {
             });
 
             if (results.length >= limit) {
-                break; // Stop scanning once we reach the limit
+                break;
             }
         }
     }
