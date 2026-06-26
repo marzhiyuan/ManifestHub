@@ -2,6 +2,10 @@ function doPost(e) {
     try {
         var data = JSON.parse(e.postData.contents);
         var doc = SpreadsheetApp.getActiveSpreadsheet();
+
+        // Debug log to Apps Script console (View > Logs)
+        console.log("GSheet raw payload: " + JSON.stringify(data));
+
         var sheet = doc.getSheetByName("Downloads");
 
 
