@@ -1,1347 +1,252 @@
 [
   {
-    "appid": "2483190",
-    "gamename": "Forza Horizon 6",
-    "count": 25
+    "appId": "2483190",
+    "gameName": "Forza Horizon 6",
+    "count": 7985
   },
   {
-    "appid": "3240220",
-    "gamename": "Grand Theft Auto V Enhanced",
-    "count": 12
+    "appId": "1091500",
+    "gameName": "Unknown Game",
+    "count": 5404
   },
   {
-    "appid": "268910",
-    "gamename": "Cuphead",
-    "count": 12
+    "appId": "1551360",
+    "gameName": "Forza Horizon 5",
+    "count": 4590
   },
   {
-    "appid": "2327720",
-    "gamename": "City Car Driving 2.0",
-    "count": 11
+    "appId": "3240220",
+    "gameName": "Grand Theft Auto V Enhanced",
+    "count": 4455
   },
   {
-    "appid": "3768760",
-    "gamename": "007 First Light",
-    "count": 10
+    "appId": "431960",
+    "gameName": "Wallpaper Engine",
+    "count": 3971
   },
   {
-    "appid": "1245620",
-    "gamename": "ELDEN RING",
-    "count": 9
+    "appId": "1174180",
+    "gameName": "Red Dead Redemption 2",
+    "count": 3882
   },
   {
-    "appid": "3405690",
-    "gamename": "EA SPORTS FC™ 26",
-    "count": 9
+    "appId": "2651280",
+    "gameName": "Marvel's Spider-Man 2",
+    "count": 2963
   },
   {
-    "appid": "2651280",
-    "gamename": "Marvel's Spider-Man 2",
-    "count": 9
+    "appId": "284160",
+    "gameName": "BeamNG.drive",
+    "count": 2937
   },
   {
-    "appid": "270880",
-    "gamename": "American Truck Simulator",
-    "count": 8
+    "appId": "2050650",
+    "gameName": "Resident Evil 4",
+    "count": 2872
   },
   {
-    "appid": "993090",
-    "gamename": "Lossless Scaling",
-    "count": 8
+    "appId": "322170",
+    "gameName": "Geometry Dash",
+    "count": 2817
   },
   {
-    "appid": "284160",
-    "gamename": "BeamNG.drive",
-    "count": 8
+    "appId": "2358720",
+    "gameName": "Black Myth: Wukong",
+    "count": 2763
   },
   {
-    "appid": "3499520",
-    "gamename": "Piano Glow",
-    "count": 7
+    "appId": "1245620",
+    "gameName": "ELDEN RING",
+    "count": 2623
   },
   {
-    "appid": "3314340",
-    "gamename": "Burgie's Cozy Kitchen",
-    "count": 6
+    "appId": "3164500",
+    "gameName": "Schedule I",
+    "count": 2608
   },
   {
-    "appid": "1091500",
-    "gamename": "Cyberpunk",
-    "count": 6
+    "appId": "227300",
+    "gameName": "Euro Truck Simulator 2",
+    "count": 2429
   },
   {
-    "appid": "1551360",
-    "gamename": "Forza Horizon 5",
-    "count": 6
+    "appId": "1888930",
+    "gameName": "The Last of Us™ Part I",
+    "count": 2391
   },
   {
-    "appid": "2050650",
-    "gamename": "Resident Evil 4",
-    "count": 5
+    "appId": "1962700",
+    "gameName": "Subnautica 2",
+    "count": 2375
   },
   {
-    "appid": "1671210",
-    "gamename": "DELTARUNE",
-    "count": 5
+    "appId": "1593500",
+    "gameName": "God of War",
+    "count": 2239
   },
   {
-    "appid": "2358720",
-    "gamename": "Black Myth: Wukong",
-    "count": 5
+    "appId": "3768760",
+    "gameName": "007 First Light",
+    "count": 2215
   },
   {
-    "appid": "394360",
-    "gamename": "Hearts of Iron IV",
-    "count": 5
+    "appId": "271590",
+    "gameName": "Unknown Game",
+    "count": 2136
   },
   {
-    "appid": "2397300",
-    "gamename": "Half Sword",
-    "count": 5
+    "appId": "2322010",
+    "gameName": "God of War Ragnarök",
+    "count": 2058
   },
   {
-    "appid": "1511630",
-    "gamename": "TrackDayR",
-    "count": 4
+    "appId": "311210",
+    "gameName": "Call of Duty®: Black Ops III",
+    "count": 1914
   },
   {
-    "appid": "454650",
-    "gamename": "DRAGON BALL XENOVERSE 2",
-    "count": 4
+    "appId": "883710",
+    "gameName": "Resident Evil 2",
+    "count": 1913
   },
   {
-    "appid": "2322010",
-    "gamename": "God of War Ragnarök",
-    "count": 4
+    "appId": "1817070",
+    "gameName": "Marvel’s Spider-Man Remastered",
+    "count": 1888
   },
   {
-    "appid": "3468650",
-    "gamename": "Cricket 26",
-    "count": 4
+    "appId": "2531310",
+    "gameName": "The Last of Us™ Part II Remastered",
+    "count": 1794
   },
   {
-    "appid": "431960",
-    "gamename": "Wallpaper Engine",
-    "count": 4
+    "appId": "2215430",
+    "gameName": "Ghost of Tsushima DIRECTOR'S CUT",
+    "count": 1742
   },
   {
-    "appid": "322170",
-    "gamename": "Geometry Dash",
-    "count": 4
+    "appId": "3405690",
+    "gameName": "EA SPORTS FC™ 26",
+    "count": 1697
   },
   {
-    "appid": "311210",
-    "gamename": "Call of Duty®: Black Ops III",
-    "count": 4
+    "appId": "2215200",
+    "gameName": "LEGO® Batman™: Legacy of the Dark Knight",
+    "count": 1505
   },
   {
-    "appid": "202970",
-    "gamename": "Call of Duty®: Black Ops II",
-    "count": 4
+    "appId": "264710",
+    "gameName": "Subnautica",
+    "count": 1439
   },
   {
-    "appid": "1943950",
-    "gamename": "Escape the Backrooms",
-    "count": 4
+    "appId": "4000",
+    "gameName": "Garry's Mod",
+    "count": 1406
   },
   {
-    "appid": "227300",
-    "gamename": "Euro Truck Simulator 2",
-    "count": 4
+    "appId": "418370",
+    "gameName": "Resident Evil 7 Biohazard",
+    "count": 1401
   },
   {
-    "appid": "2622380",
-    "gamename": "ELDEN RING NIGHTREIGN",
-    "count": 3
+    "appId": "244210",
+    "gameName": "Assetto Corsa",
+    "count": 1378
   },
   {
-    "appid": "1659040",
-    "gamename": "HITMAN World of Assassination",
-    "count": 3
+    "appId": "1196590",
+    "gameName": "Resident Evil Village",
+    "count": 1335
   },
   {
-    "appid": "1493760",
-    "gamename": "Youtubers Life 2",
-    "count": 3
+    "appId": "3241660",
+    "gameName": "R.E.P.O.",
+    "count": 1317
   },
   {
-    "appid": "2215430",
-    "gamename": "Ghost of Tsushima DIRECTOR'S CUT",
-    "count": 3
+    "appId": "945360",
+    "gameName": "Among Us",
+    "count": 1305
   },
   {
-    "appid": "2784470",
-    "gamename": "9 Kings",
-    "count": 3
+    "appId": "1817190",
+    "gameName": "Marvel’s Spider-Man: Miles Morales",
+    "count": 1287
   },
   {
-    "appid": "447040",
-    "gamename": "Watch_Dogs® 2",
-    "count": 3
+    "appId": "1817490",
+    "gameName": "Poppy Playtime - Chapter 2",
+    "count": 1277
   },
   {
-    "appid": "319510",
-    "gamename": "Five Nights at Freddy's",
-    "count": 3
+    "appId": "1144200",
+    "gameName": "Ready or Not",
+    "count": 1263
   },
   {
-    "appid": "824270",
-    "gamename": "KovaaK's",
-    "count": 3
+    "appId": "1659420",
+    "gameName": "UNCHARTED™: Legacy of Thieves Collection",
+    "count": 1195
   },
   {
-    "appid": "814380",
-    "gamename": "Sekiro™: Shadows Die Twice",
-    "count": 3
+    "appId": "1659040",
+    "gameName": "HITMAN World of Assassination",
+    "count": 1164
   },
   {
-    "appid": "274190",
-    "gamename": "Broforce",
-    "count": 3
+    "appId": "739630",
+    "gameName": "Phasmophobia",
+    "count": 1158
   },
   {
-    "appid": "3125250",
-    "gamename": "STORROR Parkour Pro",
-    "count": 2
+    "appId": "814380",
+    "gameName": "Sekiro™: Shadows Die Twice - GOTY Edition",
+    "count": 1106
   },
   {
-    "appid": "3438040",
-    "gamename": "Gooning Aim Trainer",
-    "count": 2
+    "appId": "252490",
+    "gameName": "Rust",
+    "count": 1075
   },
   {
-    "appid": "4121170",
-    "gamename": "Fears to Fathom®",
-    "count": 2
+    "appId": "1943950",
+    "gameName": "Escape the Backrooms",
+    "count": 1067
   },
   {
-    "appid": "220200",
-    "gamename": "Kerbal Space Program",
-    "count": 2
+    "appId": "12210",
+    "gameName": "Grand Theft Auto IV: The Complete Edition",
+    "count": 1060
   },
   {
-    "appid": "3552140",
-    "gamename": "Retro Rewind",
-    "count": 2
+    "appId": "2555190",
+    "gameName": "Poppy Playtime - Chapter 3",
+    "count": 1030
   },
   {
-    "appid": "1144200",
-    "gamename": "Ready or Not",
-    "count": 2
+    "appId": "1808500",
+    "gameName": "ARC Raiders",
+    "count": 1009
   },
   {
-    "appid": "201870",
-    "gamename": "Assassin's Creed® Revelations",
-    "count": 2
+    "appId": "952060",
+    "gameName": "Resident Evil 3",
+    "count": 974
   },
   {
-    "appid": "275850",
-    "gamename": "No Man's Sky",
-    "count": 2
+    "appId": "2000950",
+    "gameName": "Call of Duty®: Modern Warfare®",
+    "count": 970
   },
   {
-    "appid": "2399830",
-    "gamename": "ARK: Survival Ascended",
-    "count": 2
+    "appId": "367520",
+    "gameName": "Hollow Knight",
+    "count": 960
   },
   {
-    "appid": "2968420",
-    "gamename": "PowerWash Simulator 2",
-    "count": 2
-  },
-  {
-    "appid": "1808500",
-    "gamename": "ARC Raiders",
-    "count": 2
-  },
-  {
-    "appid": "3654560",
-    "gamename": "Plants vs. Zombies™: Replanted",
-    "count": 2
-  },
-  {
-    "appid": "3321460",
-    "gamename": "Crimson Desert",
-    "count": 2
-  },
-  {
-    "appid": "242760",
-    "gamename": "The Forest",
-    "count": 2
-  },
-  {
-    "appid": "2503770",
-    "gamename": "House of Legacy",
-    "count": 2
-  },
-  {
-    "appid": "962400",
-    "gamename": "Granny",
-    "count": 2
-  },
-  {
-    "appid": "1222140",
-    "gamename": "Detroit: Become Human",
-    "count": 2
-  },
-  {
-    "appid": "1174180",
-    "gamename": "Red Dead Redemption 2",
-    "count": 2
-  },
-  {
-    "appid": "377160",
-    "gamename": "Fallout 4",
-    "count": 2
-  },
-  {
-    "appid": "25000",
-    "gamename": "Overgrowth",
-    "count": 2
-  },
-  {
-    "appid": "2300320",
-    "gamename": "Farming Simulator 25",
-    "count": 2
-  },
-  {
-    "appid": "960090",
-    "gamename": "Bloons TD 6",
-    "count": 2
-  },
-  {
-    "appid": "2416450",
-    "gamename": "MOUSE: P.I. For Hire",
-    "count": 2
-  },
-  {
-    "appid": "1737100",
-    "gamename": "Treasure of Nadia",
-    "count": 2
-  },
-  {
-    "appid": "739630",
-    "gamename": "Phasmophobia",
-    "count": 2
-  },
-  {
-    "appid": "271590",
-    "gamename": "Unknown Game",
-    "count": 2
-  },
-  {
-    "appid": "2850380",
-    "gamename": "Device Doctor Simulator 2024",
-    "count": 2
-  },
-  {
-    "appid": "4000",
-    "gamename": "Garry's Mod",
-    "count": 2
-  },
-  {
-    "appid": "329910",
-    "gamename": "Life is Strange",
-    "count": 2
-  },
-  {
-    "appid": "221100",
-    "gamename": "DayZ",
-    "count": 2
-  },
-  {
-    "appid": "105600",
-    "gamename": "Terraria",
-    "count": 2
-  },
-  {
-    "appid": "2057760",
-    "gamename": "Esoteric Ebb",
-    "count": 2
-  },
-  {
-    "appid": "2246880",
-    "gamename": "STANDBOX",
-    "count": 2
-  },
-  {
-    "appid": "2215200",
-    "gamename": "LEGO® Batman™: Legacy of the Dark Knight",
-    "count": 2
-  },
-  {
-    "appid": "2719750",
-    "gamename": "Star Birds",
-    "count": 2
-  },
-  {
-    "appid": "292030",
-    "gamename": "The Witcher 3: Wild Hunt",
-    "count": 2
-  },
-  {
-    "appid": "3404260",
-    "gamename": "Dead as Disco",
-    "count": 2
-  },
-  {
-    "appid": "3164500",
-    "gamename": "Schedule I",
-    "count": 2
-  },
-  {
-    "appid": "1475810",
-    "gamename": "Ghostwire: Tokyo",
-    "count": 1
-  },
-  {
-    "appid": "2054970",
-    "gamename": "Dragon's Dogma 2",
-    "count": 1
-  },
-  {
-    "appid": "205100",
-    "gamename": "Dishonored",
-    "count": 1
-  },
-  {
-    "appid": "3402630",
-    "gamename": "Empires of the Undergrowth",
-    "count": 1
-  },
-  {
-    "appid": "753640",
-    "gamename": "Outer Wilds",
-    "count": 1
-  },
-  {
-    "appid": "1583230",
-    "gamename": "High On Life",
-    "count": 1
-  },
-  {
-    "appid": "1145350",
-    "gamename": "Hades II",
-    "count": 1
-  },
-  {
-    "appid": "449800",
-    "gamename": "Attack on Titan / A.O.T. Wings of Freedom",
-    "count": 1
-  },
-  {
-    "appid": "2378900",
-    "gamename": "The Coffin of Andy and Leyley",
-    "count": 1
-  },
-  {
-    "appid": "2731850",
-    "gamename": "Call of Duty®: Modern Warfare® III",
-    "count": 1
-  },
-  {
-    "appid": "747660",
-    "gamename": "Five Nights at Freddy's: Security Breach",
-    "count": 1
-  },
-  {
-    "appid": "1546990",
-    "gamename": "Grand Theft Auto: Vice City – The Definitive Edition",
-    "count": 1
-  },
-  {
-    "appid": "2060160",
-    "gamename": "The Farmer Was Replaced",
-    "count": 1
-  },
-  {
-    "appid": "1369630",
-    "gamename": "ENDER LILIES: Quietus of the Knights",
-    "count": 1
-  },
-  {
-    "appid": "3634520",
-    "gamename": "Samson",
-    "count": 1
-  },
-  {
-    "appid": "2282030",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "4098660",
-    "gamename": "Call of Duty®: Black Ops 7",
-    "count": 1
-  },
-  {
-    "appid": "655500",
-    "gamename": "MX Bikes",
-    "count": 1
-  },
-  {
-    "appid": "418370",
-    "gamename": "Resident Evil 7 Biohazard",
-    "count": 1
-  },
-  {
-    "appid": "1389990",
-    "gamename": "Oblivity",
-    "count": 1
-  },
-  {
-    "appid": "3910610",
-    "gamename": "Growing Things Up",
-    "count": 1
-  },
-  {
-    "appid": "1981550",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2677020",
-    "gamename": "DAVE THE DIVER",
-    "count": 1
-  },
-  {
-    "appid": "1689620",
-    "gamename": "BLEACH Rebirth of Souls",
-    "count": 1
-  },
-  {
-    "appid": "332950",
-    "gamename": "Dark Deception",
-    "count": 1
-  },
-  {
-    "appid": "1369670",
-    "gamename": "Motor Town: Behind The Wheel",
-    "count": 1
-  },
-  {
-    "appid": "2254890",
-    "gamename": "致命解药 The Killing Antidote",
-    "count": 1
-  },
-  {
-    "appid": "2493660",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "1888930",
-    "gamename": "The Last of Us™ Part I",
-    "count": 1
-  },
-  {
-    "appid": "2278280",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "254700",
-    "gamename": "Resident Evil 4 (2005)",
-    "count": 1
-  },
-  {
-    "appid": "3472040",
-    "gamename": "NBA 2K26",
-    "count": 1
-  },
-  {
-    "appid": "3179350",
-    "gamename": "Long Drive North: Co-Op RV Simulator",
-    "count": 1
-  },
-  {
-    "appid": "346110",
-    "gamename": "ARK: Survival Evolved",
-    "count": 1
-  },
-  {
-    "appid": "402330",
-    "gamename": "Press X to Not Die",
-    "count": 1
-  },
-  {
-    "appid": "238320",
-    "gamename": "Outlast",
-    "count": 1
-  },
-  {
-    "appid": "1778820",
-    "gamename": "TEKKEN 8",
-    "count": 1
-  },
-  {
-    "appid": "1817070",
-    "gamename": "Marvel’s Spider-Man Remastered",
-    "count": 1
-  },
-  {
-    "appid": "2315690",
-    "gamename": "WWE 2K24",
-    "count": 1
-  },
-  {
-    "appid": "593600",
-    "gamename": "PixARK",
-    "count": 1
-  },
-  {
-    "appid": "1850160",
-    "gamename": "Poly Bridge 3",
-    "count": 1
-  },
-  {
-    "appid": "3595230",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "3062150",
-    "gamename": "Car Service Simulator",
-    "count": 1
-  },
-  {
-    "appid": "7940",
-    "gamename": "Call of Duty® 4: Modern Warfare® (2007)",
-    "count": 1
-  },
-  {
-    "appid": "570940",
-    "gamename": "DARK SOULS™: REMASTERED",
-    "count": 1
-  },
-  {
-    "appid": "264710",
-    "gamename": "Subnautica",
-    "count": 1
-  },
-  {
-    "appid": "1526260",
-    "gamename": "Days of Heroes: D-Day",
-    "count": 1
-  },
-  {
-    "appid": "1954200",
-    "gamename": "Kena: Bridge of Spirits",
-    "count": 1
-  },
-  {
-    "appid": "3717070",
-    "gamename": "WWE 2K26",
-    "count": 1
-  },
-  {
-    "appid": "1659420",
-    "gamename": "UNCHARTED™: Legacy of Thieves Collection",
-    "count": 1
-  },
-  {
-    "appid": "2601200",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "1748990",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "611790",
-    "gamename": "House Party",
-    "count": 1
-  },
-  {
-    "appid": "3180070",
-    "gamename": "No, I'm not a Human",
-    "count": 1
-  },
-  {
-    "appid": "2075720",
-    "gamename": "9 Days",
-    "count": 1
-  },
-  {
-    "appid": "1790600",
-    "gamename": "DRAGON BALL: Sparking! ZERO",
-    "count": 1
-  },
-  {
-    "appid": "1685720",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "1205970",
-    "gamename": "MX vs ATV Legends",
-    "count": 1
-  },
-  {
-    "appid": "1685721",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2720920",
-    "gamename": "ASTROBOTANICA",
-    "count": 1
-  },
-  {
-    "appid": "3197590",
-    "gamename": "Alder Forge 2",
-    "count": 1
-  },
-  {
-    "appid": "2085260",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "55230",
-    "gamename": "Saints Row: The Third",
-    "count": 1
-  },
-  {
-    "appid": "3949040",
-    "gamename": "RV There Yet?",
-    "count": 1
-  },
-  {
-    "appid": "1748991",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "304240",
-    "gamename": "Resident Evil",
-    "count": 1
-  },
-  {
-    "appid": "1672970",
-    "gamename": "Minecraft Dungeons",
-    "count": 1
-  },
-  {
-    "appid": "329880",
-    "gamename": "Life is Strange",
-    "count": 1
-  },
-  {
-    "appid": "376210",
-    "gamename": "The Isle",
-    "count": 1
-  },
-  {
-    "appid": "1928590",
-    "gamename": "Saimai Rd",
-    "count": 1
-  },
-  {
-    "appid": "1275890",
-    "gamename": "Baldi's Basics Plus",
-    "count": 1
-  },
-  {
-    "appid": "491540",
-    "gamename": "The Bus",
-    "count": 1
-  },
-  {
-    "appid": "1547000",
-    "gamename": "Grand Theft Auto: San Andreas – The Definitive Edition",
-    "count": 1
-  },
-  {
-    "appid": "3827370",
-    "gamename": "Totenkampf : Anime Waifus vs WW2 Zombies",
-    "count": 1
-  },
-  {
-    "appid": "1019930",
-    "gamename": "Dark Deception Chapter 3",
-    "count": 1
-  },
-  {
-    "appid": "3728120",
-    "gamename": "SpaceCorp: 2025-2300AD",
-    "count": 1
-  },
-  {
-    "appid": "489830",
-    "gamename": "The Elder Scrolls V: Skyrim Special Edition",
-    "count": 1
-  },
-  {
-    "appid": "2290180",
-    "gamename": "Riders Republic",
-    "count": 1
-  },
-  {
-    "appid": "1773800",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2878960",
-    "gamename": "WWE 2K25",
-    "count": 1
-  },
-  {
-    "appid": "1451190",
-    "gamename": "Undisputed",
-    "count": 1
-  },
-  {
-    "appid": "1650010",
-    "gamename": "RIDE 5",
-    "count": 1
-  },
-  {
-    "appid": "497970",
-    "gamename": "Press X to Not Die",
-    "count": 1
-  },
-  {
-    "appid": "3336240",
-    "gamename": "Walk The Frog",
-    "count": 1
-  },
-  {
-    "appid": "244210",
-    "gamename": "Assetto Corsa",
-    "count": 1
-  },
-  {
-    "appid": "2194840",
-    "gamename": "Smells Like Burnt Rubber",
-    "count": 1
-  },
-  {
-    "appid": "1426210",
-    "gamename": "It Takes Two",
-    "count": 1
-  },
-  {
-    "appid": "2790670",
-    "gamename": "Call of Duty®: Modern Warfare® III",
-    "count": 1
-  },
-  {
-    "appid": "2387940",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "1269690",
-    "gamename": "Attack on Toys",
-    "count": 1
-  },
-  {
-    "appid": "611670",
-    "gamename": "The Elder Scrolls V: Skyrim VR",
-    "count": 1
-  },
-  {
-    "appid": "567640",
-    "gamename": "Danganronpa V3: Killing Harmony",
-    "count": 1
-  },
-  {
-    "appid": "2172010",
-    "gamename": "Until Dawn™",
-    "count": 1
-  },
-  {
-    "appid": "1190000",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "252490",
-    "gamename": "Rust",
-    "count": 1
-  },
-  {
-    "appid": "2103470",
-    "gamename": "Republic of Pirates",
-    "count": 1
-  },
-  {
-    "appid": "2426800",
-    "gamename": "Pressure Washer",
-    "count": 1
-  },
-  {
-    "appid": "2546830",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2790710",
-    "gamename": "Call of Duty®: Modern Warfare® III",
-    "count": 1
-  },
-  {
-    "appid": "1150690",
-    "gamename": "OMORI",
-    "count": 1
-  },
-  {
-    "appid": "3132990",
-    "gamename": "Black Myth: Wukong Benchmark Tool",
-    "count": 1
-  },
-  {
-    "appid": "550",
-    "gamename": "Left 4 Dead 2",
-    "count": 1
-  },
-  {
-    "appid": "2561580",
-    "gamename": "Horizon Zero Dawn™ Remastered",
-    "count": 1
-  },
-  {
-    "appid": "389730",
-    "gamename": "TEKKEN 7",
-    "count": 1
-  },
-  {
-    "appid": "1510",
-    "gamename": "Uplink",
-    "count": 1
-  },
-  {
-    "appid": "3675400",
-    "gamename": "捣蛋蛙（Croak Squad）",
-    "count": 1
-  },
-  {
-    "appid": "3172660",
-    "gamename": "Marvel's Spider-Man 2",
-    "count": 1
-  },
-  {
-    "appid": "732690",
-    "gamename": "FIVE NIGHTS AT FREDDY'S: HELP WANTED",
-    "count": 1
-  },
-  {
-    "appid": "3169360",
-    "gamename": "Sea Walker Saga",
-    "count": 1
-  },
-  {
-    "appid": "2815070",
-    "gamename": "RIDE 6",
-    "count": 1
-  },
-  {
-    "appid": "332800",
-    "gamename": "Five Nights at Freddy's 2",
-    "count": 1
-  },
-  {
-    "appid": "2698940",
-    "gamename": "The Crew Motorfest",
-    "count": 1
-  },
-  {
-    "appid": "2889700",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "1898500",
-    "gamename": "Worldless",
-    "count": 1
-  },
-  {
-    "appid": "354140",
-    "gamename": "Five Nights at Freddy's 3",
-    "count": 1
-  },
-  {
-    "appid": "362960",
-    "gamename": "Tyranny",
-    "count": 1
-  },
-  {
-    "appid": "750920",
-    "gamename": "Shadow of the Tomb Raider: Definitive Edition",
-    "count": 1
-  },
-  {
-    "appid": "115300",
-    "gamename": "Call of Duty®: Modern Warfare® 3 (2011)",
-    "count": 1
-  },
-  {
-    "appid": "1902850",
-    "gamename": "Dreams in the Witch House",
-    "count": 1
-  },
-  {
-    "appid": "208575",
-    "gamename": "Dishonored",
-    "count": 1
-  },
-  {
-    "appid": "521890",
-    "gamename": "Hello Neighbor",
-    "count": 1
-  },
-  {
-    "appid": "1931780",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2127790",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "2246340",
-    "gamename": "Monster Hunter Wilds",
-    "count": 1
-  },
-  {
-    "appid": "2940490",
-    "gamename": "Furry Aim Trainer",
-    "count": 1
-  },
-  {
-    "appid": "388090",
-    "gamename": "Five Nights at Freddy's 4",
-    "count": 1
-  },
-  {
-    "appid": "4016670",
-    "gamename": "That Summer",
-    "count": 1
-  },
-  {
-    "appid": "329930",
-    "gamename": "Life is Strange",
-    "count": 1
-  },
-  {
-    "appid": "12130",
-    "gamename": "Manhunt",
-    "count": 1
-  },
-  {
-    "appid": "2854620",
-    "gamename": "SCAD",
-    "count": 1
-  },
-  {
-    "appid": "1942280",
-    "gamename": "Brotato",
-    "count": 1
-  },
-  {
-    "appid": "2669320",
-    "gamename": "EA SPORTS FC 25",
-    "count": 1
-  },
-  {
-    "appid": "3059520",
-    "gamename": "F1® 25",
-    "count": 1
-  },
-  {
-    "appid": "582010",
-    "gamename": "Monster Hunter: World",
-    "count": 1
-  },
-  {
-    "appid": "2868840",
-    "gamename": "Slay the Spire 2",
-    "count": 1
-  },
-  {
-    "appid": "1047770",
-    "gamename": "隐形守护者 The Invisible Guardian",
-    "count": 1
-  },
-  {
-    "appid": "2276980",
-    "gamename": "FACEMINER",
-    "count": 1
-  },
-  {
-    "appid": "427100",
-    "gamename": "Fernbus Simulator",
-    "count": 1
-  },
-  {
-    "appid": "2531310",
-    "gamename": "The Last of Us™ Part II Remastered",
-    "count": 1
-  },
-  {
-    "appid": "471550",
-    "gamename": "Nine Parchments",
-    "count": 1
-  },
-  {
-    "appid": "1861610",
-    "gamename": "Endorphin Vice",
-    "count": 1
-  },
-  {
-    "appid": "2103140",
-    "gamename": "Magicraft",
-    "count": 1
-  },
-  {
-    "appid": "920210",
-    "gamename": "LEGO® Star Wars™: The Skywalker Saga",
-    "count": 1
-  },
-  {
-    "appid": "289650",
-    "gamename": "Assassin's Creed® Unity",
-    "count": 1
-  },
-  {
-    "appid": "3105440",
-    "gamename": "Heroes of Might and Magic: Olden Era",
-    "count": 1
-  },
-  {
-    "appid": "2112231",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2538170",
-    "gamename": "The Clubies",
-    "count": 1
-  },
-  {
-    "appid": "209000",
-    "gamename": "Batman™: Arkham Origins",
-    "count": 1
-  },
-  {
-    "appid": "35140",
-    "gamename": "Batman: Arkham Asylum Game of the Year Edition",
-    "count": 1
-  },
-  {
-    "appid": "261550",
-    "gamename": "Mount & Blade II: Bannerlord",
-    "count": 1
-  },
-  {
-    "appid": "319630",
-    "gamename": "Life is Strange",
-    "count": 1
-  },
-  {
-    "appid": "349040",
-    "gamename": "NARUTO SHIPPUDEN: Ultimate Ninja STORM 4",
-    "count": 1
-  },
-  {
-    "appid": "2316850",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "413410",
-    "gamename": "Danganronpa: Trigger Happy Havoc",
-    "count": 1
-  },
-  {
-    "appid": "1149620",
-    "gamename": "Gas Station Simulator",
-    "count": 1
-  },
-  {
-    "appid": "2178100",
-    "gamename": "Two Beasts Or Not To Beast!",
-    "count": 1
-  },
-  {
-    "appid": "374320",
-    "gamename": "DARK SOULS™ III",
-    "count": 1
-  },
-  {
-    "appid": "233860",
-    "gamename": "Kenshi",
-    "count": 1
-  },
-  {
-    "appid": "1773801",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "3335470",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2915770",
-    "gamename": "Rescue Ops: Wildfire",
-    "count": 1
-  },
-  {
-    "appid": "2688950",
-    "gamename": "Planet Coaster 2",
-    "count": 1
-  },
-  {
-    "appid": "413420",
-    "gamename": "Danganronpa 2: Goodbye Despair",
-    "count": 1
-  },
-  {
-    "appid": "648800",
-    "gamename": "Raft",
-    "count": 1
-  },
-  {
-    "appid": "2112230",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2433000",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
-  },
-  {
-    "appid": "3751950",
-    "gamename": "Assassin's Creed Black Flag Resynced",
-    "count": 1
-  },
-  {
-    "appid": "3606480",
-    "gamename": "Call of Duty®: Black Ops 7",
-    "count": 1
-  },
-  {
-    "appid": "646910",
-    "gamename": "The Crew™ 2",
-    "count": 1
-  },
-  {
-    "appid": "2721070",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "3595270",
-    "gamename": "Call of Duty®: Modern Warfare® III",
-    "count": 1
-  },
-  {
-    "appid": "10180",
-    "gamename": "Call of Duty®: Modern Warfare® 2 (2009)",
-    "count": 1
-  },
-  {
-    "appid": "382110",
-    "gamename": "Virtual Desktop Classic",
-    "count": 1
-  },
-  {
-    "appid": "506610",
-    "gamename": "Five Nights at Freddy's: Sister Location",
-    "count": 1
-  },
-  {
-    "appid": "3353470",
-    "gamename": "The Binding of Isaac: Repentance+",
-    "count": 1
-  },
-  {
-    "appid": "1817190",
-    "gamename": "Marvel’s Spider-Man: Miles Morales",
-    "count": 1
-  },
-  {
-    "appid": "945360",
-    "gamename": "Among Us",
-    "count": 1
-  },
-  {
-    "appid": "619680",
-    "gamename": "Assetto Corsa",
-    "count": 1
-  },
-  {
-    "appid": "2112232",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "414700",
-    "gamename": "Outlast 2",
-    "count": 1
-  },
-  {
-    "appid": "2783770",
-    "gamename": "Call of Duty®: Modern Warfare® III",
-    "count": 1
-  },
-  {
-    "appid": "3218570",
-    "gamename": "TANUKI: Pon's Summer",
-    "count": 1
-  },
-  {
-    "appid": "1209110",
-    "gamename": "Total War: THREE KINGDOMS",
-    "count": 1
-  },
-  {
-    "appid": "2464230",
-    "gamename": "Car Mechanic Simulator 2021",
-    "count": 1
-  },
-  {
-    "appid": "2958130",
-    "gamename": "Jurassic World Evolution 3",
-    "count": 1
-  },
-  {
-    "appid": "2649560",
-    "gamename": "Persona 6",
-    "count": 1
-  },
-  {
-    "appid": "2480100",
-    "gamename": "世界岛 · 宅急送",
-    "count": 1
-  },
-  {
-    "appid": "1332010",
-    "gamename": "Stray",
-    "count": 1
-  },
-  {
-    "appid": "42696",
-    "gamename": "Call of Duty®: Modern Warfare® 3 (2011) Collection 2",
-    "count": 1
-  },
-  {
-    "appid": "1172380",
-    "gamename": "STAR WARS Jedi: Fallen Order™",
-    "count": 1
-  },
-  {
-    "appid": "2127791",
-    "gamename": "Call of Duty®: Modern Warfare® II",
-    "count": 1
+    "appId": "292030",
+    "gameName": "The Witcher 3: Wild Hunt",
+    "count": 955
   }
 ]
