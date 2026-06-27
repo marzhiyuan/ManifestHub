@@ -339,22 +339,142 @@
 }
 
 /* ===== FOOTER ===== */
-footer {
-  margin-top: 3rem;
-  padding: 1.5rem;
+.site-footer {
+  background: #0e0e0e;
   border-top: 1px solid #30363d;
-  text-align: center;
+  padding: 40px 20px 28px;
+  margin-top: 48px;
+  position: relative;
+  font-size: 0.8rem;
   color: #8b949e;
-  font-size: 0.75rem;
+  border-radius: 6px;
 }
 
-footer a {
-  color: #58a6ff;
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #238636, transparent);
+  opacity: 0.8;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 3fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Brand column */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: baseline;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.footer-logo .logo-tn {
+  color: #238636;
+}
+
+.footer-logo .logo-tv {
+  color: #c9d1d9;
+}
+
+.footer-tagline {
+  font-size: 0.8rem;
+  color: #8b949e;
+  line-height: 1.6;
+}
+
+.footer-dev {
+  font-size: 0.75rem;
+  color: #8b949e;
+}
+
+.footer-dev a {
+  color: #c9d1d9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.footer-dev a:hover {
+  color: #238636;
+}
+
+/* Link columns */
+.footer-links,
+.footer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-col-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #c9d1d9;
+  margin-bottom: 4px;
+}
+
+.footer-links a {
+  font-size: 0.82rem;
+  color: #8b949e;
+  text-decoration: none;
+  transition: color 0.15s;
+  width: fit-content;
+}
+
+.footer-links a:hover {
+  color: #c9d1d9;
   text-decoration: none;
 }
 
-footer p:last-child {
-  margin-top: 0.25rem;
+.footer-note {
+  font-size: 0.78rem;
+  color: #8b949e;
+  line-height: 1.6;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: #8b949e;
+  font-family: monospace;
+  margin-top: 4px;
+}
+
+/* Footer mobile */
+@media (max-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -562,7 +682,7 @@ footer p:last-child {
   .search-container,
   #selectedGamePanel,
   .faq-wrapper,
-  footer {
+  .site-footer {
     margin-left: 0.25rem;
     margin-right: 0.25rem;
   }
@@ -573,7 +693,7 @@ footer p:last-child {
     padding: 1rem;
   }
 
-  footer {
+  .site-footer {
     padding: 1.25rem 0.75rem;
     font-size: 0.7rem;
     padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
