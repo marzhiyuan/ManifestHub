@@ -197,8 +197,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (error) {
       console.error("Auth Error:", error);
-      errEl.textContent = error.message;
-      errEl.classList.remove("hidden");
+      // Friendlier message for unconfirmed email
+      if (error.message === "Email not confirmed") {
+        window.handleUnconfirmedEmail(errEl, "authEmail", supabase);
+      } else {
+        errEl.textContent = error.message;
+        errEl.classList.remove("hidden");
+      }
     } else if (authMode !== "forgot") {
       document.getElementById("authModal").classList.add("hidden");
     }

@@ -6,6 +6,39 @@ document.addEventListener("DOMContentLoaded", function () {
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
   let currentUser = null;
 
+  // ========== LIVE VIEWER COUNT ==========
+  // Replace the channel config key with a stable per-session ID
+  let sessionId = sessionStorage.getItem("mhub_sid");
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    sessionStorage.setItem("mhub_sid", sessionId);
+  }
+
+  const presenceChannel = supabase.channel("site-presence", {
+    config: { presence: { key: sessionId } },
+  });
+
+  let rafId = null;
+  presenceChannel
+    .on("presence", { event: "sync" }, () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        const count = Object.keys(presenceChannel.presenceState()).length;
+        const el = document.getElementById("viewerCountNum");
+        if (el) el.textContent = count;
+        rafId = null;
+      });
+    })
+    .subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await presenceChannel.track({ joined_at: Date.now() });
+      }
+    });
+
+  window.addEventListener("beforeunload", () => {
+    presenceChannel.untrack();
+  });
+
   // ========== AUTH MODAL & LOGIC ==========
   const authModal = document.getElementById("authModal");
   const loginBtn = document.getElementById("loginBtn");
@@ -137,8 +170,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (error) {
         console.error("Auth Error:", error);
-        authError.textContent = error.message;
-        authError.classList.remove("hidden");
+        // Friendlier message for unconfirmed email
+        if (error.message === "Email not confirmed") {
+          window.handleUnconfirmedEmail(authError, "authEmail", supabase);
+        } else {
+          authError.textContent = error.message;
+          authError.classList.remove("hidden");
+        }
       } else if (authMode !== "forgot") {
         authModal.classList.add("hidden");
       }
@@ -1014,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const grid = document.getElementById("trendingGrid");
     if (!grid) return;
     try {
-      const response = await fetch("data/trending-data.json");
+      const response = await fetch(`data/trending-data.json?v=${Date.now()}`);
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
 

@@ -63,6 +63,55 @@ body {
   box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
   outline: none;
 }
+/* view count */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Auth bar */
+.auth-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Viewer count */
+.viewer-count {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #8b949e;
+}
+
+.viewer-dot {
+  width: 8px;
+  height: 8px;
+  background: #3fb950;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+.viewer-icon {
+  font-size: 0.75rem;
+}
+
+/* Resend confirmation button */
+.resend-confirm-btn {
+  background: none;
+  border: none;
+  color: #58a6ff;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.resend-confirm-btn:hover {
+  color: #79c0ff;
+}
 
 /* Modals */
 .modal-overlay {
