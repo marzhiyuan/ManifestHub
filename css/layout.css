@@ -1,0 +1,582 @@
+/* ===== LAYOUT UTILITIES ===== */
+.page-wrapper {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  position: relative;
+}
+
+.header-center {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.header-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.header-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.header-subtitle {
+  color: #8b949e;
+}
+
+/* ===== STATUS BOX ===== */
+#infoBox {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  color: #8b949e;
+}
+
+#infoBox i {
+  margin-right: 0.5rem;
+}
+
+/* ===== SEARCH CONTAINER ===== */
+.search-container {
+  margin-bottom: 2rem;
+}
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: stretch;
+  height: 42px;
+}
+
+#searchEngineSelect {
+  font-size: 0.875rem;
+}
+
+#legacyCheckBtn {
+  padding: 0 1rem;
+  border-radius: 0 6px 6px 0;
+  display: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* ===== LEGACY RESULTS SECTION ===== */
+#legacyResultsSection {
+  margin-top: 1rem;
+}
+
+#legacyTerminalOutput {
+  color: #3fb950;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+#legacyDownloadSection {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#legacyDownloadLink {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#legacyDownloadLink i {
+  margin-right: 0.5rem;
+}
+
+#legacyLuaSection {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.lua-suggestion-box {
+  border: 1px solid rgba(63, 185, 80, 0.3);
+  background: rgba(63, 185, 80, 0.1);
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.lua-suggestion-text {
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  color: #3fb950;
+}
+
+#legacyGenerateLuaBtn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 6px;
+}
+
+#legacyNotFoundSection {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.error-text {
+  color: #f85149;
+  font-size: 0.875rem;
+}
+
+.error-text i {
+  margin-right: 0.5rem;
+}
+
+/* ===== SELECTED GAME PANEL ===== */
+#selectedGamePanel {
+  margin-bottom: 2rem;
+  border: 1px solid #30363d;
+  background-color: #161b22;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.game-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #30363d;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.game-info-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#selectedGameIcon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 4px;
+  border: 1px solid #30363d;
+  background-color: #0d1117;
+}
+
+#selectedGameName {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+#selectedGameId {
+  color: #8b949e;
+  font-size: 0.875rem;
+}
+
+#downloadAllZipBtn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.files-section-header {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #8b949e;
+  margin-bottom: 0.75rem;
+}
+
+#availableFilesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ===== FAQ SECTION ===== */
+.faq-wrapper {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.faq-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.faq-heading .fa-question-circle {
+  color: #58a6ff;
+}
+
+#faqContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ===== MODAL STYLES ===== */
+.modal-disclaimer {
+  border: 1px solid rgba(210, 153, 34, 0.3);
+  max-width: 450px;
+}
+
+.modal-disclaimer-content {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-disclaimer-icon-wrapper {
+  background: rgba(210, 153, 34, 0.1);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.modal-disclaimer-icon {
+  color: #d29922;
+}
+
+.modal-disclaimer-heading {
+  color: #c9d1d9;
+}
+
+.modal-disclaimer-text {
+  color: #8b949e;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.modal-disclaimer-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: #8b949e;
+  font-size: 0.85rem;
+}
+
+#dontShowAgain {
+  cursor: pointer;
+  accent-color: #238636;
+}
+
+#dontShowAgain+label {
+  cursor: pointer;
+  user-select: none;
+}
+
+#acceptDisclaimer {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+}
+
+.modal-unsupported {
+  border: 1px solid #f85149;
+}
+
+.modal-requested {
+  border: 1px solid #58a6ff;
+}
+
+/* ===== AUTH FORM STYLES ===== */
+#authError {
+  color: #f85149;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-form-divider {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #8b949e;
+}
+
+#authSwitchBtn {
+  background: none;
+  border: none;
+  color: #58a6ff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border-top: 1px solid #30363d;
+  text-align: center;
+  color: #8b949e;
+  font-size: 0.75rem;
+}
+
+footer a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+footer p:last-child {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+    padding-bottom: 6rem;
+  }
+
+  .page-wrapper {
+    margin: 1rem auto 2rem;
+    padding: 0 0.75rem;
+  }
+
+  .header-center {
+    margin-bottom: 1.25rem;
+  }
+
+  .header-logo-wrapper {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .header-logo {
+    width: 72px;
+    height: 72px;
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .user-auth-fixed {
+    position: static;
+    margin: 0.75rem 0.75rem 0;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  #authSection {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  #authSection .btn-primary,
+  #authSection .btn-secondary {
+    flex: 1 1 8rem;
+    min-width: 7rem;
+    justify-content: center;
+  }
+
+  #infoBox {
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .search-bar-wrapper {
+    flex-direction: column;
+    height: auto;
+    gap: 0.75rem;
+  }
+
+  .search-dropdown {
+    width: 100%;
+    min-height: 42px;
+    border-right: 1px solid #30363d;
+    border-radius: 6px;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+  }
+
+  .search-input-combo {
+    border-radius: 6px;
+  }
+
+  #legacyCheckBtn {
+    width: 100%;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+  }
+
+  .search-results {
+    max-height: 320px;
+  }
+
+  .result-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .result-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .result-sub {
+    gap: 0.35rem;
+  }
+
+  #selectedGamePanel {
+    padding: 0.85rem;
+  }
+
+  .game-panel-header {
+    align-items: stretch;
+  }
+
+  .game-info-wrapper {
+    width: 100%;
+  }
+
+  #downloadAllZipBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .file-info {
+    width: 100%;
+  }
+
+  .download-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .warning-list {
+    grid-template-columns: 1fr;
+  }
+
+  .warning-list li {
+    padding: 0.75rem;
+  }
+
+  .auth-modal-wrapper,
+  .modal-content {
+    width: calc(100vw - 1.5rem);
+    max-width: 100%;
+    padding: 1.25rem;
+  }
+
+  .auth-modal-wrapper {
+    border-radius: 10px;
+  }
+
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .floating-sidebar {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: calc(0.9rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(13, 17, 23, 0.95);
+    border: 1px solid #30363d;
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  .floating-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .floating-btn:hover {
+    width: 42px;
+    padding-left: 0;
+    justify-content: center;
+  }
+
+  .floating-btn i {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 0 0.5rem;
+  }
+
+  .header-title {
+    font-size: 1.55rem;
+  }
+
+  #infoBox,
+  .search-container,
+  #selectedGamePanel,
+  .faq-wrapper,
+  footer {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+
+  .auth-modal-wrapper,
+  .modal-content {
+    width: calc(100vw - 1rem);
+    padding: 1rem;
+  }
+
+  footer {
+    padding: 1.25rem 0.75rem;
+    font-size: 0.7rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+}
+

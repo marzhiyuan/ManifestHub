@@ -46,14 +46,17 @@ ManifestHub/
 │   ├── cloudflare-worker.js   # Cloudflare Worker bridge source code
 │   └── manifesthub-record.gs  # Google Apps Script database trigger backup
 ├── css/
-│   ├── profile-styles.css     # User profile page styling
-│   └── styles.css             # Main stylesheet (Tailwind & GitHub design components)
+│   ├── base.css               # Global reset, typography, colors, buttons & inputs
+│   ├── components.css         # Modals, search results, file items, FAQ, auth modal, sidebar
+│   ├── layout.css             # Layout utilities, footer, media queries, profile/auth forms
+│   └── profile-styles.css     # User profile page specific styling
 ├── data/
 │   ├── faq.json               # Frequently Asked Questions catalog
 │   └── trending-data.json     # Cached daily trending downloads statistics
 ├── js/
 │   ├── profile.js             # User account settings, caching & Supabase history logic
-│   └── script.js              # Core search client, Steam API & generated config logic
+│   ├── script.js              # Core search client, Steam API & generated config logic
+│   └── utils.js               # Shared auth helpers (e.g. email confirmation resend)
 ├── scripts/
 │   └── update-trending.js     # Lightweight Node script that queries Worker and outputs JSON
 ├── index.html                 # Main portal page

@@ -1,12 +1,27 @@
+// ========== SCRIPT MAP ==========
+// [00]  SUPABASE SETUP + LIVE VIEWER COUNT
+// [01]  AUTH MODAL & LOGIC
+// [02]  MODALS (Disclaimer, Unsupported, Requested)
+// [03]  LOAD FAQ
+// [04]  GLOBAL DATA & TRACKING
+// [05]  LOAD DATA (Apps, Names, Trending)
+// [06]  SEARCH ENGINE SWITCHER
+// [07]  DISPLAY GAME FILES + DOWNLOAD BUTTONS
+// [08]  ZIP DOWNLOAD
+// [09]  LEGACY ARCHIVE CHECK LOGIC
+// [10]  REQUEST FORM HANDLING
+// [11]  INIT
+// =========================================
+
 document.addEventListener("DOMContentLoaded", function () {
-  // ========== SUPABASE SETUP ==========
+  // [00] SUPABASE SETUP ==========
   const supabaseUrl = "https://fbmlbukvzyrzevjmaujp.supabase.co";
   const supabaseKey =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibWxidWt2enlyemV2am1hdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDM3NDMsImV4cCI6MjA5MzkxOTc0M30.HXnKhqT8Gq8WFUxqOsofjE-dSC9Oo4Yem8FTANUnX30";
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
   let currentUser = null;
 
-  // ========== LIVE VIEWER COUNT ==========
+  // [00] LIVE VIEWER COUNT ==========
   // Replace the channel config key with a stable per-session ID
   let sessionId = sessionStorage.getItem("mhub_sid");
   if (!sessionId) {
@@ -39,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     presenceChannel.untrack();
   });
 
-  // ========== AUTH MODAL & LOGIC ==========
+  // [01] AUTH MODAL & LOGIC ==========
   const authModal = document.getElementById("authModal");
   const loginBtn = document.getElementById("loginBtn");
   const signupBtn = document.getElementById("signupBtn");
@@ -252,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateAuthUI();
   });
 
-  // ========== MODALS ==========
+  // [02] MODALS ==========
   const disclaimerModal = document.getElementById("disclaimerModal");
   const unsupportedModal = document.getElementById("unsupportedModal");
   const requestedModal = document.getElementById("requestedModal");
@@ -284,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
       requestedModal.classList.add("hidden");
     });
 
-  // ========== LOAD FAQ ==========
+  // [03] LOAD FAQ ==========
   async function loadFAQ() {
     try {
       const response = await fetch("data/faq.json");
@@ -332,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // ========== GLOBAL DATA & TRACKING ==========
+  // [04] GLOBAL DATA & TRACKING ==========
   const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/"; // Trimed query parameter string
   const REPO_OWNER = "SSMGAlt";
 
@@ -383,7 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // ========== LOAD DATA ==========
+  // [05] LOAD DATA ==========
   async function loadDepotKeys() {
     updateStatus("Loading depot keys...");
     try {
@@ -538,7 +553,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateStatus(`Ready! ${supported.toLocaleString()} supported apps.`);
   }
 
-  // ========== SEARCH ENGINE SWITCHER ==========
+  // [06] SEARCH ENGINE SWITCHER ==========
   const searchEngineSelect = document.getElementById("searchEngineSelect");
   const mainSearchInput = document.getElementById("mainSearchInput");
   const legacyCheckBtn = document.getElementById("legacyCheckBtn");
@@ -635,7 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // ========== DISPLAY GAME FILES ==========
+  // [07] DISPLAY GAME FILES ==========
   let currentSelectedGame = null;
   let currentFiles = [];
 
@@ -793,7 +808,7 @@ document.addEventListener("DOMContentLoaded", function () {
     currentFiles = files;
   }
 
-  // ========== ZIP DOWNLOAD ==========
+  // [08] ZIP DOWNLOAD ==========
   document
     .getElementById("downloadAllZipBtn")
     .addEventListener("click", async () => {
@@ -844,7 +859,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // ========== LEGACY ARCHIVE CHECK LOGIC ==========
+  // [09] LEGACY ARCHIVE CHECK LOGIC ==========
   const legacyTerminalOutput = document.getElementById("legacyTerminalOutput");
 
   async function typeLegacyText(text) {
@@ -916,7 +931,7 @@ document.addEventListener("DOMContentLoaded", function () {
   legacyCheckBtn.addEventListener("click", legacyCheckManifest);
 
   /*
-  // ========== REQUEST FORM HANDLING ==========
+  // [10] REQUEST FORM HANDLING ==========
   const requestAccordionBtn = document.getElementById("requestAccordionBtn");
   const requestFormContainer = document.getElementById("requestFormContainer");
   const accordionIcon = document.getElementById("accordionIcon");
@@ -1116,7 +1131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // ========== INIT ==========
+  // [11] INIT ==========
   loadFAQ();
   loadDepotKeys().then(() =>
     loadAppLists().then(() => loadTrendingDownloads()),
