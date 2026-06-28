@@ -5,6 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Profile | ManifestHub</title>
+  <meta name="description" content="Manage your download history and account settings on ManifestHub." />
+  <meta name="keywords" content="steam manifest, steam manifest download, steam depot keys, steam lua generator, manifest downloader, steam db, steam legacy archive, manifesthub" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://manifesthub.trionine.xyz/profile.html" />
   <link rel="icon" type="image/png" href="assets/mhub.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/base.css?v=1.0" />
@@ -17,9 +21,9 @@
   <!-- Auth Gate (shown when not logged in) -->
   <div id="authGate" class="page-wrap" style="display: block; text-align: center; padding-top: 5rem">
     <img src="assets/manifesthub.png" alt="ManifestHub Logo" style="width: 200px; height: auto; margin-bottom: 1.25rem; border-radius: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));" />
-    <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #c9d1d9; font-weight: 700">
+    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #c9d1d9; font-weight: 700">
       Sign in to your account
-    </h1>
+    </h2>
     <p style="color: #8b949e; margin-bottom: 2rem">
       Manage your download history and account settings.
     </p>
@@ -104,7 +108,7 @@
   </div>
 
   <!-- Main Profile (hidden until auth confirmed) -->
-  <div id="profileContent" class="page-wrap" style="display: none">
+  <main id="profileContent" class="page-wrap" style="display: none">
     <div style="margin-bottom: 2rem">
       <a href="index.html" style="color: #8b949e; text-decoration: none; font-size: 0.9rem"><i
           class="fas fa-arrow-left"></i> Back to Home</a>
@@ -162,7 +166,7 @@
 
     <!-- Tab: Settings -->
     <div id="tab-settings" class="tab-panel">
-      <h3 class="section-heading"><i class="fas fa-user-cog"></i> Account</h3>
+      <h2 class="section-heading"><i class="fas fa-user-cog"></i> Account</h2>
       <div style="
             background: #161b22;
             border: 1px solid #30363d;
@@ -213,9 +217,9 @@
         </div>
       </div>
 
-      <h3 class="section-heading" style="color: #f85149">
+      <h2 class="section-heading" style="color: #f85149">
         <i class="fas fa-exclamation-triangle"></i> Danger Zone
-      </h3>
+      </h2>
       <div class="danger-card">
         <div>
           <strong style="font-size: 0.9rem">Sign out everywhere</strong>
@@ -226,7 +230,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- ===== CUSTOM MODALS (replaces browser prompt/alert/confirm) ===== -->
 
@@ -234,7 +238,7 @@
   <div id="updateNameModal" class="profile-modal-overlay hidden">
     <div class="profile-modal">
       <div class="profile-modal-header">
-        <h3><i class="fas fa-user-edit"></i> Update Display Name</h3>
+        <h2><i class="fas fa-user-edit"></i> Update Display Name</h2>
         <button class="profile-modal-close" data-close="updateNameModal"><i class="fas fa-times"></i></button>
       </div>
       <div class="profile-modal-body">
@@ -254,7 +258,7 @@
   <div id="changePasswordModal" class="profile-modal-overlay hidden">
     <div class="profile-modal">
       <div class="profile-modal-header">
-        <h3><i class="fas fa-lock"></i> Change Password</h3>
+        <h2><i class="fas fa-lock"></i> Change Password</h2>
         <button class="profile-modal-close" data-close="changePasswordModal"><i class="fas fa-times"></i></button>
       </div>
       <div class="profile-modal-body">
@@ -279,7 +283,7 @@
   <div id="passwordRecoveryModal" class="profile-modal-overlay hidden">
     <div class="profile-modal">
       <div class="profile-modal-header">
-        <h3><i class="fas fa-key"></i> Reset Your Password</h3>
+        <h2><i class="fas fa-key"></i> Reset Your Password</h2>
       </div>
       <div class="profile-modal-body">
         <p style="color:#8b949e; font-size:0.875rem; margin-bottom:1rem;">Choose a strong new password for your account.</p>
@@ -299,7 +303,7 @@
   <div id="confirmModal" class="profile-modal-overlay hidden">
     <div class="profile-modal" style="max-width:380px;">
       <div class="profile-modal-header">
-        <h3 id="confirmModalTitle"><i class="fas fa-exclamation-triangle" style="color:#f85149"></i> Confirm</h3>
+        <h2 id="confirmModalTitle"><i class="fas fa-exclamation-triangle" style="color:#f85149"></i> Confirm</h2>
       </div>
       <div class="profile-modal-body">
         <p id="confirmModalMessage" style="color:#8b949e; font-size:0.9rem;"></p>

@@ -5,6 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ManifestHub - Steam Manifest &amp; Lua Generator</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files for legacy archives and current databases." />
+    <meta name="keywords" content="steam manifest, steam manifest download, steam depot keys, steam lua generator, manifest downloader, steam db, steam legacy archive, manifesthub" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://manifesthub.trionine.xyz/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://manifesthub.trionine.xyz/" />
+    <meta property="og:title" content="ManifestHub - Steam Manifest &amp; Lua Generator" />
+    <meta property="og:description" content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files for legacy archives and current databases." />
+    <meta property="og:image" content="https://manifesthub.trionine.xyz/assets/manifesthub.png" />
+    <meta property="og:site_name" content="ManifestHub" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://manifesthub.trionine.xyz/" />
+    <meta property="twitter:title" content="ManifestHub - Steam Manifest &amp; Lua Generator" />
+    <meta property="twitter:description" content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files." />
+    <meta property="twitter:image" content="https://manifesthub.trionine.xyz/assets/manifesthub.png" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "ManifestHub",
+      "url": "https://manifesthub.trionine.xyz/",
+      "description": "Search, view, and download Steam manifests and Lua depot keys.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://manifesthub.trionine.xyz/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -267,7 +304,7 @@
                 <div class="game-info-wrapper">
                   <img id="selectedGameIcon" src="" alt="" />
                   <div>
-                    <h3 id="selectedGameName"></h3>
+                    <h2 id="selectedGameName"></h2>
                     <p id="selectedGameId"></p>
                   </div>
                 </div>
@@ -276,7 +313,7 @@
                 </button>
               </div>
               <div>
-                <h4 class="files-section-header">Files</h4>
+                <h3 class="files-section-header">Files</h3>
                 <div id="availableFilesList"></div>
               </div>
             </div>

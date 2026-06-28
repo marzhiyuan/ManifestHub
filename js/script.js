@@ -551,6 +551,38 @@ document.addEventListener("DOMContentLoaded", function () {
       icon.style.color = "#3fb950";
     }
     updateStatus(`Ready! ${supported.toLocaleString()} supported apps.`);
+
+    // Handle URL query parameters for search routing
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get("q") || urlParams.get("search");
+      const appIdParam = urlParams.get("appid") || urlParams.get("appId");
+
+      if (appIdParam) {
+        const appIdNum = parseInt(appIdParam);
+        if (appIdNum && appNames[appIdNum]) {
+          searchInput.value = appNames[appIdNum];
+          displayGameFiles(appIdNum, appNames[appIdNum]);
+        } else if (appIdNum) {
+          // Switch to legacy check and trigger search
+          const searchSelect = document.getElementById("searchEngineSelect");
+          if (searchSelect) {
+            searchSelect.value = "legacy";
+            searchSelect.dispatchEvent(new Event("change"));
+          }
+          searchInput.value = appIdParam;
+          const checkBtn = document.getElementById("legacyCheckBtn");
+          if (checkBtn) {
+            checkBtn.click();
+          }
+        }
+      } else if (query) {
+        searchInput.value = query;
+        searchInput.dispatchEvent(new Event("input"));
+      }
+    } catch (e) {
+      console.warn("Failed to parse URL query parameters:", e);
+    }
   }
 
   // [06] SEARCH ENGINE SWITCHER ==========
@@ -706,6 +738,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const gameIcon = document.getElementById("selectedGameIcon");
     gameIcon.style.display = "";
     gameIcon.src = `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
+    gameIcon.alt = gameName;
     gameIcon.onerror = () => {
       gameIcon.style.display = "none";
     };
