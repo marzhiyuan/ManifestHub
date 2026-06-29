@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // [03] LOAD FAQ ==========
   async function loadFAQ() {
     try {
-      const response = await fetch("data/faq.json");
+      const response = await fetch("/data/faq.json");
       if (response.ok) {
         const faqs = await response.json();
         const container = document.getElementById("faqContainer");
@@ -1100,7 +1100,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const grid = document.getElementById("trendingGrid");
     if (!grid) return;
     try {
-      const response = await fetch(`data/trending-data.json?v=${Date.now()}`);
+      const response = await fetch(`/data/trending-data.json?v=${Date.now()}`);
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
 
