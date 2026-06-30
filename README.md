@@ -50,6 +50,7 @@ ManifestHub/
 ├── css/
 │   ├── base.css               # Global reset, typography, colors, buttons & inputs
 │   ├── components.css         # Modals, search results, file items, FAQ, auth modal, sidebar
+│   ├── error.css              # Custom styling for the 404 page
 │   ├── layout.css             # Layout utilities, footer, media queries, profile/auth forms
 │   └── profile-styles.css     # User profile page specific styling
 ├── data/
@@ -60,6 +61,7 @@ ManifestHub/
 │   ├── oglegacy.html          # Original legacy app design fallback
 │   └── split_bloated_data.py  # Python utility for splitting large databases
 ├── js/
+│   ├── config.js              # Supabase API URL and anonymous key configuration
 │   ├── profile.js             # User account settings, caching & Supabase history logic
 │   ├── script.js              # Core search client, Steam API & Cache API logic
 │   └── utils.js               # Shared auth helpers (e.g. email confirmation resend)
@@ -67,6 +69,7 @@ ManifestHub/
 │   └── update-trending.js     # Fetches trending data from Google Sheets API
 ├── _headers                   # Netlify custom HTTP headers (Cache-Control)
 ├── _redirects                 # Netlify clean URLs redirect mapping
+├── 404.html                   # 404 error page (Lost Like Zoro)
 ├── index.html                 # Main Search Engine & FAQ UI
 └── profile.html               # User Profile & Download History UI
 ```
