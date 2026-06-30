@@ -448,9 +448,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const joinDate = user.created_at
       ? new Date(user.created_at).toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "long",
-        })
+        year: "numeric",
+        month: "long",
+      })
       : "";
     document.getElementById("profileMeta").textContent = joinDate
       ? `Member since ${joinDate}`
@@ -459,6 +459,26 @@ document.addEventListener("DOMContentLoaded", function () {
     setupUpdateNameModal(displayName);
     setupChangePasswordModal();
     loadHistory(user);
+
+    // Check if user is an admin dynamically to avoid leaking emails in the public repository
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("admins")
+          .select("email")
+          .eq("email", user.email)
+          .maybeSingle();
+
+        if (!error && data) {
+          document.getElementById("adminTabBtn")?.classList.remove("hidden");
+          setupAdminPanel(user);
+        } else {
+          document.getElementById("adminTabBtn")?.classList.add("hidden");
+        }
+      } catch (e) {
+        document.getElementById("adminTabBtn")?.classList.add("hidden");
+      }
+    })();
   }
   function showAuthGate() {
     currentUser = null;
@@ -540,4 +560,194 @@ document.addEventListener("DOMContentLoaded", function () {
       showAuthGate();
     }
   });
+
+  // ===== ADMIN PANEL ANNOUNCEMENTS =====
+  async function setupAdminPanel(user) {
+    const form = document.getElementById("adminAnnouncementForm");
+    if (!form) return;
+
+    // Reset listener to prevent duplicates if user signs in/out
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    const announceDays = newForm.querySelector("#announceDays");
+    const announceHours = newForm.querySelector("#announceHours");
+    const announceMins = newForm.querySelector("#announceMins");
+    const announcePermanent = newForm.querySelector("#announcePermanent");
+    const durationInputs = newForm.querySelector("#durationInputs");
+
+    // Populate dropdowns
+    if (announceDays && announceDays.options.length === 0) {
+      for (let i = 0; i <= 7; i++) {
+        announceDays.add(new Option(i, i));
+      }
+      for (let i = 0; i <= 23; i++) {
+        announceHours.add(new Option(i, i));
+      }
+      for (let i = 0; i <= 59; i++) {
+        announceMins.add(new Option(i, i));
+      }
+      announceDays.value = "1";
+    }
+
+    // Toggle inputs when Infinite is checked
+    announcePermanent.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        durationInputs.style.opacity = "0.5";
+        announceDays.disabled = true;
+        announceHours.disabled = true;
+        announceMins.disabled = true;
+      } else {
+        durationInputs.style.opacity = "1";
+        announceDays.disabled = false;
+        announceHours.disabled = false;
+        announceMins.disabled = false;
+      }
+    });
+
+    newForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = newForm.querySelector("#announceSubmitBtn");
+      const msgInput = newForm.querySelector("#announceMessage");
+
+      const message = msgInput.value.trim();
+      if (!message) return;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      let expiresAt = null;
+      if (!announcePermanent.checked) {
+        const d = parseInt(announceDays.value, 10) || 0;
+        const h = parseInt(announceHours.value, 10) || 0;
+        const m = parseInt(announceMins.value, 10) || 0;
+        
+        const totalMs = (d * 24 * 60 * 60 * 1000) +
+                        (h * 60 * 60 * 1000) +
+                        (m * 60 * 1000);
+        
+        if (totalMs > 0) {
+          expiresAt = new Date(Date.now() + totalMs).toISOString();
+        } else {
+          showToast("Duration must be greater than 0 if not Infinite.", "error");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-plus"></i>';
+          return;
+        }
+      }
+
+      const { error } = await supabase
+        .from("announcements")
+        .insert([{ message, expires_at: expiresAt, created_by: user.id }]);
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-plus"></i>';
+
+      if (error) {
+        showToast("Failed to create announcement: " + error.message, "error");
+      } else {
+        showToast("Announcement added successfully!");
+        msgInput.value = "";
+        announceDays.value = "1";
+        announceHours.value = "0";
+        announceMins.value = "0";
+        announcePermanent.checked = false;
+        durationInputs.style.opacity = "1";
+        announceDays.disabled = false;
+        announceHours.disabled = false;
+        announceMins.disabled = false;
+        loadAnnouncements();
+      }
+    });
+
+    loadAnnouncements();
+  }
+
+  async function loadAnnouncements() {
+    const listEl = document.getElementById("announcementList");
+    if (!listEl) return;
+
+    const { data, error } = await supabase
+      .from("announcements")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      listEl.innerHTML = `<div style="color: #f85149; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Failed to load announcements: ${error.message}</div>`;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      listEl.innerHTML = `<div style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">No announcements configured.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = "";
+    data.forEach((ann) => {
+      const isExpired = ann.expires_at && new Date(ann.expires_at) < new Date();
+      const div = document.createElement("div");
+      div.className = "announcement-item";
+      div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:0.75rem 1rem; font-size:0.875rem; margin-top: 0.5rem;";
+
+      let expiryLabel = "Permanent";
+      if (ann.expires_at) {
+        const dateStr = new Date(ann.expires_at).toLocaleString();
+        expiryLabel = isExpired ? `<span style="color:#f85149">Expired at ${dateStr}</span>` : `Expires at ${dateStr}`;
+      }
+
+      div.innerHTML = `
+        <div style="flex:1; padding-right:1rem; text-align: left;">
+          <div style="font-weight:500; color:${isExpired ? '#8b949e' : '#c9d1d9'}; margin-bottom:0.25rem;">${escHtml(ann.message)}</div>
+          <div style="font-size:0.75rem; color:#8b949e;">${expiryLabel}</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <button class="toggle-active-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}" data-active="${ann.is_active}">
+            ${ann.is_active ? '<i class="fas fa-eye"></i> Active' : '<i class="fas fa-eye-slash"></i> Inactive'}
+          </button>
+          <button class="delete-ann-btn btn-danger" style="padding:0.25rem 0.5rem; font-size:0.75rem; color:#fff;" data-id="${ann.id}">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      `;
+
+      // Toggle active status
+      div.querySelector(".toggle-active-btn").addEventListener("click", async (e) => {
+        const id = e.currentTarget.dataset.id;
+        const currentActive = e.currentTarget.dataset.active === "true";
+        e.currentTarget.disabled = true;
+
+        const { error } = await supabase
+          .from("announcements")
+          .update({ is_active: !currentActive })
+          .eq("id", id);
+
+        if (error) {
+          showToast("Failed to toggle status: " + error.message, "error");
+          e.currentTarget.disabled = false;
+        } else {
+          loadAnnouncements();
+        }
+      });
+
+      // Delete announcement
+      div.querySelector(".delete-ann-btn").addEventListener("click", (e) => {
+        const id = e.currentTarget.dataset.id;
+        openCustomConfirm("Delete this announcement?", async () => {
+          const { error } = await supabase
+            .from("announcements")
+            .delete()
+            .eq("id", id);
+
+          if (error) {
+            showToast("Failed to delete: " + error.message, "error");
+          } else {
+            showToast("Announcement deleted!");
+            loadAnnouncements();
+          }
+        });
+      });
+
+      listEl.appendChild(div);
+    });
+  }
 });

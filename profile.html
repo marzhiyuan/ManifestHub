@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Profile | ManifestHub</title>
   <meta name="description" content="Manage your download history and account settings on ManifestHub." />
-  <meta name="keywords" content="steam manifest, steam manifest download, steam depot keys, steam lua generator, manifest downloader, steam db, steam legacy archive, manifesthub" />
+  <meta name="keywords"
+    content="steam manifest, steam manifest download, steam depot keys, steam lua generator, manifest downloader, steam db, steam legacy archive, manifesthub" />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="canonical" href="https://manifesthub.trionine.xyz/profile.html" />
   <link rel="icon" type="image/png" href="assets/mhub.png?v=2" />
@@ -20,7 +21,8 @@
 <body>
   <!-- Auth Gate (shown when not logged in) -->
   <div id="authGate" class="page-wrap" style="display: block; text-align: center; padding-top: 5rem">
-    <img src="assets/manifesthub.png" alt="ManifestHub Logo" style="width: 200px; height: auto; margin-bottom: 1.25rem; border-radius: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));" />
+    <img src="assets/manifesthub.png" alt="ManifestHub Logo"
+      style="width: 200px; height: auto; margin-bottom: 1.25rem; border-radius: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));" />
     <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #c9d1d9; font-weight: 700">
       Sign in to your account
     </h2>
@@ -139,6 +141,9 @@
       <button class="tab-btn" data-tab="settings">
         <i class="fas fa-cog"></i> Settings
       </button>
+      <button class="tab-btn hidden" id="adminTabBtn" data-tab="admin">
+        <i class="fas fa-shield-alt"></i> Admin Panel
+      </button>
     </div>
 
     <!-- Tab: History -->
@@ -230,6 +235,57 @@
         </button>
       </div>
     </div>
+
+    <!-- Tab: Admin Panel -->
+    <div id="tab-admin" class="tab-panel">
+      <h2 class="section-heading"><i class="fas fa-shield-alt"></i> Announcement Manager</h2>
+      <div class="admin-form-card">
+        <form id="adminAnnouncementForm">
+          <div class="admin-form-row">
+            <div class="admin-input-group">
+              <label>Announcement</label>
+              <input type="text" id="announceMessage" placeholder="e.g., SteamTools has been updated to v4.2!" class="admin-text-input" required />
+            </div>
+            <div>
+              <label class="admin-expiration-label">Expiration</label>
+              <div class="admin-expiration-wrapper">
+                <div class="admin-expiration-capsule">
+                  <label class="admin-checkbox-label">
+                    <input type="checkbox" id="announcePermanent" class="admin-checkbox" />
+                    Infinite
+                  </label>
+
+                  <div class="admin-capsule-divider"></div>
+
+                  <div id="durationInputs" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <label class="admin-select-label">
+                      <select id="announceDays" class="admin-capsule-select"></select>d
+                    </label>
+                    <label class="admin-select-label">
+                      <select id="announceHours" class="admin-capsule-select"></select>h
+                    </label>
+                    <label class="admin-select-label">
+                      <select id="announceMins" class="admin-capsule-select"></select>m
+                    </label>
+                  </div>
+                </div>
+                <button type="submit" id="announceSubmitBtn" class="btn-primary admin-submit-btn-circle">
+                  <i class="fas fa-plus" style="font-size: 0.8rem;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem;"><i class="fas fa-list-ul"></i> Active
+        Announcements</h3>
+      <div id="announcementList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div
+          style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">
+          Loading announcements...</div>
+      </div>
+    </div>
   </main>
 
   <!-- ===== CUSTOM MODALS (replaces browser prompt/alert/confirm) ===== -->
@@ -244,7 +300,8 @@
       <div class="profile-modal-body">
         <div class="profile-input-group">
           <label for="newDisplayNameInput">New display name</label>
-          <input type="text" id="newDisplayNameInput" class="profile-input" placeholder="Enter new display name" autocomplete="off" />
+          <input type="text" id="newDisplayNameInput" class="profile-input" placeholder="Enter new display name"
+            autocomplete="off" />
         </div>
       </div>
       <div class="profile-modal-footer">
@@ -264,11 +321,13 @@
       <div class="profile-modal-body">
         <div class="profile-input-group">
           <label for="newPasswordInput">New password</label>
-          <input type="password" id="newPasswordInput" class="profile-input" placeholder="Enter new password" autocomplete="new-password" />
+          <input type="password" id="newPasswordInput" class="profile-input" placeholder="Enter new password"
+            autocomplete="new-password" />
         </div>
         <div class="profile-input-group">
           <label for="confirmPasswordInput">Confirm password</label>
-          <input type="password" id="confirmPasswordInput" class="profile-input" placeholder="Confirm new password" autocomplete="new-password" />
+          <input type="password" id="confirmPasswordInput" class="profile-input" placeholder="Confirm new password"
+            autocomplete="new-password" />
         </div>
         <p id="passwordModalError" class="profile-modal-error hidden"></p>
       </div>
@@ -286,10 +345,12 @@
         <h2><i class="fas fa-key"></i> Reset Your Password</h2>
       </div>
       <div class="profile-modal-body">
-        <p style="color:#8b949e; font-size:0.875rem; margin-bottom:1rem;">Choose a strong new password for your account.</p>
+        <p style="color:#8b949e; font-size:0.875rem; margin-bottom:1rem;">Choose a strong new password for your account.
+        </p>
         <div class="profile-input-group">
           <label for="recoveryPasswordInput">New password</label>
-          <input type="password" id="recoveryPasswordInput" class="profile-input" placeholder="Enter new password" autocomplete="new-password" />
+          <input type="password" id="recoveryPasswordInput" class="profile-input" placeholder="Enter new password"
+            autocomplete="new-password" />
         </div>
         <p id="recoveryModalError" class="profile-modal-error hidden"></p>
       </div>

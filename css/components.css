@@ -649,3 +649,41 @@
   background-color: #30363d !important;
 }
 
+/* Auth Modal Styles */
+.forgot-password-wrap {
+  text-align: right;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #58a6ff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.forgot-password-btn:hover {
+  text-decoration: underline;
+}
+
+/* Sidebar Trending / Popular Downloads */
+.trending-title {
+  color: #c9d1d9;
+  font-size: 1rem;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.trending-loading {
+  color: #8b949e;
+}
+
+/* Footer Tagline */
+.donate-tagline {
+  margin-bottom: 8px;
+}
+

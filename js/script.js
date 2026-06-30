@@ -554,6 +554,7 @@ document.addEventListener("DOMContentLoaded", function () {
       icon.style.color = "#3fb950";
     }
     updateStatus(`Ready! ${supported.toLocaleString()} supported apps.`);
+    startStatusAnnouncementCarousel(supported);
 
     // Handle URL query parameters for search routing
     try {
@@ -1165,6 +1166,55 @@ document.addEventListener("DOMContentLoaded", function () {
       grid.innerHTML =
         '<div class="col-span-full text-github-muted text-center py-4">Could not load trending downloads.</div>';
     }
+  }
+
+  // ===== ANNOUNCEMENT ROTATOR =====
+  async function startStatusAnnouncementCarousel(supportedCount) {
+    const statusText = document.getElementById("statusText");
+    if (!statusText) return;
+
+    let activeAnnouncements = [];
+    try {
+      const { data, error } = await supabase
+        .from("announcements")
+        .select("message")
+        .eq("is_active", true)
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        activeAnnouncements = data.map(ann => ann.message);
+      }
+    } catch (e) {
+      console.warn("Failed to fetch announcements:", e);
+    }
+
+    if (activeAnnouncements.length === 0) return;
+
+    const defaultMsg = `Ready! ${supportedCount.toLocaleString()} supported apps.`;
+    const messages = [defaultMsg, ...activeAnnouncements];
+    let currentIndex = 0;
+
+    setInterval(() => {
+      // Don't cycle if the status box is showing an error (red text)
+      if (statusText.style.color) return;
+
+      // Fade out
+      statusText.style.opacity = 0;
+
+      setTimeout(() => {
+        if (statusText.style.color) {
+          statusText.style.opacity = 1;
+          return;
+        }
+
+        currentIndex = (currentIndex + 1) % messages.length;
+        statusText.innerHTML = messages[currentIndex];
+        
+        // Fade in
+        statusText.style.opacity = 1;
+      }, 500); // 500ms matches the CSS transition time
+    }, 6000); // Cycle every 6 seconds
   }
 
   // [11] INIT ==========
