@@ -44,7 +44,9 @@ ManifestHub/
 │   └── screenshots/           # Reorganized documentation screenshots
 ├── backend/
 │   ├── cloudflare-worker.js   # Cloudflare Worker bridge source code
-│   └── manifesthub-record.gs  # Google Apps Script database trigger backup
+│   ├── manifesthub-record.gs  # Google Apps Script database trigger backup
+│   ├── supabase.sql           # Database schema & policies for Supabase
+│   └── backend.md             # Backend architecture documentation
 ├── css/
 │   ├── base.css               # Global reset, typography, colors, buttons & inputs
 │   ├── components.css         # Modals, search results, file items, FAQ, auth modal, sidebar
@@ -53,16 +55,20 @@ ManifestHub/
 ├── data/
 │   ├── faq.json               # Frequently Asked Questions catalog
 │   └── trending-data.json     # Cached daily trending downloads statistics
+├── extras/
+│   ├── maindatabase.html      # Legacy database search view
+│   ├── oglegacy.html          # Original legacy app design fallback
+│   └── split_bloated_data.py  # Python utility for splitting large databases
 ├── js/
 │   ├── profile.js             # User account settings, caching & Supabase history logic
-│   ├── script.js              # Core search client, Steam API & generated config logic
+│   ├── script.js              # Core search client, Steam API & Cache API logic
 │   └── utils.js               # Shared auth helpers (e.g. email confirmation resend)
 ├── scripts/
-│   └── update-trending.js     # Lightweight Node script that queries Worker and outputs JSON
-├── index.html                 # Main portal page
-├── profile.html               # User profile dashboard
+│   └── update-trending.js     # Fetches trending data from Google Sheets API
+├── _headers                   # Netlify custom HTTP headers (Cache-Control)
 ├── _redirects                 # Netlify clean URLs redirect mapping
-└── README.md
+├── index.html                 # Main Search Engine & FAQ UI
+└── profile.html               # User Profile & Download History UI
 ```
 
 ## Data Sources

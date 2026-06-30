@@ -399,27 +399,36 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // [05] LOAD DATA ==========
-  async function loadDepotKeys() {
-    updateStatus("Loading depot keys...");
-    try {
-      // Source: fylsdy/ManifestHub
-      // Purpose: Downloads depot keys to locally generate the .lua files.
-      const response = await fetch(
-        "https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json",
-      );
-      depotKeys = await response.json();
-      updateStatus(`Loaded ${Object.keys(depotKeys).length} depot keys`);
-    } catch (e) {
-      updateStatus("Failed to load depot keys", true);
-    }
-  }
+  async function initializeDatabase() {
+    updateStatus("Initializing database...");
 
-  async function loadAppLists() {
-    updateStatus("Loading game catalogues...");
+    const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
-    async function fetchJson(url) {
+    async function fetchCachedJson(url, maxAgeMs = CACHE_DURATION) {
+      if (!('caches' in window)) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      }
+      try {
+        const cache = await caches.open('manifesthub-db-cache');
+        const cachedResponse = await cache.match(url);
+        const lastFetch = localStorage.getItem('cache-time-' + url);
+        if (cachedResponse && lastFetch && (Date.now() - parseInt(lastFetch) < maxAgeMs)) {
+          return await cachedResponse.json();
+        }
+      } catch (e) {
+        console.warn("Cache read failed, fetching fresh...", e);
+      }
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      try {
+        const cache = await caches.open('manifesthub-db-cache');
+        await cache.put(url, res.clone());
+        localStorage.setItem('cache-time-' + url, Date.now().toString());
+      } catch (e) {
+        console.warn("Cache write failed...", e);
+      }
       return res.json();
     }
 
@@ -432,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ];
       for (const base of bases) {
         try {
-          return await fetchJson(base + path);
+          return await fetchCachedJson(base + path);
         } catch (e) {
           /* try next */
         }
@@ -440,49 +449,43 @@ document.addEventListener("DOMContentLoaded", function () {
       throw new Error("All mirrors failed for " + path);
     }
 
-    let loaded = 0;
-    const tasks = [
-      fetchWithFallback("games_appid.json")
-        .then((games) => {
-          games.forEach((app) => {
-            appNames[app.appid] = app.name;
-            appTypes[app.appid] = "game";
-          });
-          loaded++;
-          updateStatus(`Loading... (${loaded}/3 catalogues)`);
-        })
-        .catch(() => console.warn("games list failed")),
+    try {
+      const [depotKeysData, games, dlcs, sw] = await Promise.all([
+        // Source: fylsdy/ManifestHub
+        // Purpose: Downloads depot keys to locally generate the .lua files.
+        fetchCachedJson("https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json"),
+        fetchWithFallback("games_appid.json"),
+        fetchWithFallback("dlc_appid.json"),
+        fetchWithFallback("software_appid.json")
+      ]);
 
-      fetchWithFallback("dlc_appid.json")
-        .then((dlcs) => {
-          dlcs.forEach((app) => {
-            appNames[app.appid] = app.name;
-            appTypes[app.appid] = "dlc";
-          });
-          loaded++;
-          updateStatus(`Loading... (${loaded}/3 catalogues)`);
-        })
-        .catch(() => console.warn("dlc list failed")),
+      depotKeys = depotKeysData;
+      updateStatus(`Loaded ${Object.keys(depotKeys).length} depot keys`);
 
-      fetchWithFallback("software_appid.json")
-        .then((sw) => {
-          sw.forEach((app) => {
-            appNames[app.appid] = app.name;
-            appTypes[app.appid] = "software";
-          });
-          loaded++;
-          updateStatus(`Loading... (${loaded}/3 catalogues)`);
-        })
-        .catch(() => console.warn("software list failed")),
-    ];
+      games.forEach((app) => {
+        appNames[app.appid] = app.name;
+        appTypes[app.appid] = "game";
+      });
+      dlcs.forEach((app) => {
+        appNames[app.appid] = app.name;
+        appTypes[app.appid] = "dlc";
+      });
+      sw.forEach((app) => {
+        appNames[app.appid] = app.name;
+        appTypes[app.appid] = "software";
+      });
 
-    await Promise.all(tasks);
+      if (Object.keys(appNames).length === 0) {
+        updateStatus("Failed to load app lists. Check connection.", true);
+        return;
+      }
 
-    if (Object.keys(appNames).length === 0) {
-      updateStatus("Failed to load app lists. Check connection.", true);
-      return;
+      buildMapping();
+      await loadTrendingDownloads();
+    } catch (err) {
+      console.error("Database initialization failed:", err);
+      updateStatus("Failed to initialize database. Check connection.", true);
     }
-    buildMapping();
   }
 
   function buildMapping() {
@@ -728,7 +731,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return manifests;
       }
-    } catch (e) {}
+    } catch (e) { }
     return [];
   }
 
@@ -800,7 +803,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isExternal: true,
         });
       }
-    } catch (e) {}
+    } catch (e) { }
 
     if (files.length === 0) {
       filesList.innerHTML =
@@ -869,7 +872,7 @@ document.addEventListener("DOMContentLoaded", function () {
               const response = await fetch(file.url);
               const blob = await response.blob();
               zip.file(file.name, blob);
-            } catch (e) {}
+            } catch (e) { }
           }
         }
 
@@ -1111,8 +1114,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       grid.innerHTML = "";
-      // Show only top 10 items
-      const topItems = data.slice(0, 10);
+      // Show only top 12 items
+      const topItems = data.slice(0, 12);
 
       topItems.forEach((item) => {
         let name = item.gameName;
@@ -1166,7 +1169,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // [11] INIT ==========
   loadFAQ();
-  loadDepotKeys().then(() =>
-    loadAppLists().then(() => loadTrendingDownloads()),
-  );
+  initializeDatabase();
 });

@@ -1,34 +1,39 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ManifestHub - Steam Manifest &amp; Lua Generator</title>
-    <link rel="icon" type="image/png" href="assets/favicon.png" />
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files for legacy archives and current databases." />
-    <meta name="keywords" content="steam manifest, steam manifest download, steam depot keys, steam lua generator, manifest downloader, steam db, steam legacy archive, manifesthub" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://manifesthub.trionine.xyz/" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManifestHub - Steam Manifest &amp; Lua Generator</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=1" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://manifesthub.trionine.xyz/" />
-    <meta property="og:title" content="ManifestHub - Steam Manifest &amp; Lua Generator" />
-    <meta property="og:description" content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files for legacy archives and current databases." />
-    <meta property="og:image" content="https://manifesthub.trionine.xyz/assets/manifesthub.png" />
-    <meta property="og:site_name" content="ManifestHub" />
+  <!-- SEO Meta Tags -->
+  <meta name="description"
+    content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files for legacy archives and current databases." />
+  <meta name="keywords"
+    content="steam manifest, steam manifest download, steam depot keys, steam lua generator, manifest downloader, steam db, steam legacy archive, manifesthub" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://manifesthub.trionine.xyz/" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://manifesthub.trionine.xyz/" />
-    <meta property="twitter:title" content="ManifestHub - Steam Manifest &amp; Lua Generator" />
-    <meta property="twitter:description" content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files." />
-    <meta property="twitter:image" content="https://manifesthub.trionine.xyz/assets/manifesthub.png" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://manifesthub.trionine.xyz/" />
+  <meta property="og:title" content="ManifestHub - Steam Manifest &amp; Lua Generator" />
+  <meta property="og:description"
+    content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files for legacy archives and current databases." />
+  <meta property="og:image" content="https://manifesthub.trionine.xyz/assets/manifesthub.png" />
+  <meta property="og:site_name" content="ManifestHub" />
 
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://manifesthub.trionine.xyz/" />
+  <meta property="twitter:title" content="ManifestHub - Steam Manifest &amp; Lua Generator" />
+  <meta property="twitter:description"
+    content="Search, view, and download Steam manifests and Lua depot keys. Quick and easy access to game manifest files." />
+  <meta property="twitter:image" content="https://manifesthub.trionine.xyz/assets/manifesthub.png" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -42,469 +47,383 @@
       }
     }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="css/base.css?v=1.0" />
-    <link rel="stylesheet" href="css/components.css?v=1.0" />
-    <link rel="stylesheet" href="css/layout.css?v=1.0" />
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/base.css?v=1.0" />
+  <link rel="stylesheet" href="css/components.css?v=1.0" />
+  <link rel="stylesheet" href="css/layout.css?v=1.0" />
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 
-  <body class="bg-github-canvas text-github-fg">
-    <!-- User Authentication Section (Fixed Top-Right) -->
-    <div class="user-auth-fixed auth-bar">
-      <div id="viewerCount" class="viewer-count" aria-label="Live viewers">
-        <span class="viewer-dot" aria-hidden="true"></span>
-        <span id="viewerCountNum">-</span>
-        <i class="fa-solid fa-eye viewer-icon" aria-hidden="true"></i>
-      </div>
-      <div id="authSection">
-        <button id="loginBtn" class="btn-secondary">Sign in</button>
-        <button id="signupBtn" class="btn-primary">Sign up</button>
-      </div>
+<body class="bg-github-canvas text-github-fg">
+  <!-- User Authentication Section (Fixed Top-Right) -->
+  <div class="user-auth-fixed auth-bar">
+    <div id="viewerCount" class="viewer-count" aria-label="Live viewers">
+      <span class="viewer-dot" aria-hidden="true"></span>
+      <span id="viewerCountNum">-</span>
+      <i class="fa-solid fa-eye viewer-icon" aria-hidden="true"></i>
     </div>
+    <div id="authSection">
+      <button id="loginBtn" class="btn-secondary">Sign in</button>
+      <button id="signupBtn" class="btn-primary">Sign up</button>
+    </div>
+  </div>
 
-    <!-- ===== MODALS ===== -->
+  <!-- ===== MODALS ===== -->
 
-    <!-- Auth Modal -->
-    <div id="authModal" class="modal-overlay hidden">
-      <div class="auth-modal-wrapper">
-        <button id="closeAuthModal" class="auth-close-btn">
-          <i class="fas fa-times"></i>
-        </button>
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal-overlay hidden">
+    <div class="auth-modal-wrapper">
+      <button id="closeAuthModal" class="auth-close-btn">
+        <i class="fas fa-times"></i>
+      </button>
 
-        <div class="auth-header">
-          <img src="assets/mhub.png" alt="Logo" class="auth-logo" />
-          <h2 id="authTitle" class="auth-title">Sign In</h2>
-          <p class="auth-subtitle">Access your Manifest Hub account</p>
+      <div class="auth-header">
+        <img src="assets/mhub.png" alt="Logo" class="auth-logo" />
+        <h2 id="authTitle" class="auth-title">Sign In</h2>
+        <p class="auth-subtitle">Access your Manifest Hub account</p>
+      </div>
+
+      <form id="authForm">
+        <div class="auth-input-group hidden" id="displayNameGroup">
+          <i class="fas fa-user"></i>
+          <input type="text" id="authDisplayName" class="auth-input" placeholder="Display name" />
         </div>
-
-        <form id="authForm">
-          <div class="auth-input-group hidden" id="displayNameGroup">
-            <i class="fas fa-user"></i>
-            <input
-              type="text"
-              id="authDisplayName"
-              class="auth-input"
-              placeholder="Display name"
-            />
-          </div>
-          <div class="auth-input-group">
-            <i class="fas fa-envelope"></i>
-            <input
-              type="email"
-              id="authEmail"
-              class="auth-input"
-              placeholder="Email address"
-              required
-            />
-          </div>
-          <div class="auth-input-group">
-            <i class="fas fa-lock"></i>
-            <input
-              type="password"
-              id="authPassword"
-              class="auth-input"
-              placeholder="Password"
-              required
-            />
-          </div>
-          <div
-            id="forgotPasswordWrap"
-            style="
+        <div class="auth-input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="authEmail" class="auth-input" placeholder="Email address" required />
+        </div>
+        <div class="auth-input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="authPassword" class="auth-input" placeholder="Password" required />
+        </div>
+        <div id="forgotPasswordWrap" style="
               text-align: right;
               margin-top: -0.5rem;
               margin-bottom: 1rem;
               font-size: 0.8rem;
-            "
-          >
-            <button
-              type="button"
-              id="forgotPasswordBtn"
-              style="
+            ">
+          <button type="button" id="forgotPasswordBtn" style="
                 background: none;
                 border: none;
                 color: #58a6ff;
                 cursor: pointer;
                 padding: 0;
-              "
-            >
-              Forgot password?
-            </button>
-          </div>
-          <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
-            Sign In
+              ">
+            Forgot password?
           </button>
-          <div id="authError" class="hidden"></div>
-
-          <div class="auth-form-divider">
-            <span id="authSwitchText">Don't have an account?</span>
-            <button type="button" id="authSwitchBtn">Sign Up</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Disclaimer Modal -->
-    <div id="disclaimerModal" class="modal-overlay hidden">
-      <div class="modal-content modal-disclaimer">
-        <div class="modal-disclaimer-content">
-          <div class="modal-disclaimer-icon-wrapper">
-            <i class="fas fa-balance-scale text-3xl modal-disclaimer-icon"></i>
-          </div>
-          <h2 class="text-2xl font-bold modal-disclaimer-heading">
-            Disclaimer
-          </h2>
         </div>
-        <div class="text-left mb-8">
-          <p class="modal-disclaimer-text">
-            This website is for informational purposes only. We are not
-            responsible for any consequences that may arise from using the
-            provided data.
-          </p>
-        </div>
-        <div class="modal-disclaimer-checkbox-wrapper">
-          <input type="checkbox" id="dontShowAgain" />
-          <label for="dontShowAgain">Don't show this again</label>
-        </div>
-        <button id="acceptDisclaimer" class="btn-primary">I Understand</button>
-      </div>
-    </div>
-
-    <!-- Unsupported Game Modal -->
-    <div id="unsupportedModal" class="modal-overlay hidden">
-      <div class="modal-content modal-unsupported">
-        <div class="mb-4 flex items-center gap-2 unsupported-icon">
-          <i class="fas fa-exclamation-circle text-2xl"></i>
-          <h2 class="text-xl font-bold text-github-fg">Unsupported Game</h2>
-        </div>
-        <div class="text-left mb-6">
-          <p class="text-github-muted text-sm" id="unsupportedGameMessage"></p>
-        </div>
-        <button
-          id="closeUnsupportedModal"
-          class="btn-secondary w-full py-2 rounded font-semibold"
-        >
-          Dismiss
+        <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
+          Sign In
         </button>
-      </div>
-    </div>
+        <div id="authError" class="hidden"></div>
 
-    <!-- Requested Game Modal -->
-    <div id="requestedModal" class="modal-overlay hidden">
-      <div class="modal-content modal-requested">
-        <div class="mb-4 flex items-center gap-2 info-icon">
-          <i class="fas fa-info-circle text-2xl"></i>
-          <h2 class="text-xl font-bold text-github-fg">Already Requested</h2>
+        <div class="auth-form-divider">
+          <span id="authSwitchText">Don't have an account?</span>
+          <button type="button" id="authSwitchBtn">Sign Up</button>
         </div>
-        <div class="text-left mb-6">
-          <p class="text-github-muted text-sm" id="requestedGameMessage"></p>
-        </div>
-        <button
-          id="closeRequestedModal"
-          class="btn-secondary w-full py-2 rounded font-semibold"
-        >
-          Dismiss
-        </button>
-      </div>
+      </form>
     </div>
+  </div>
 
-    <!-- ===== PAGE LAYOUT: CENTERED ===== -->
-    <div class="page-wrapper">
-      <!-- ===== CENTER: Main Content ===== -->
-      <main>
-        <header class="header-center">
-          <div class="header-logo-wrapper">
-            <img
-              src="assets/mhub.png"
-              alt="Manifest Hub Logo"
-              class="header-logo"
-            />
-            <h1 class="header-title">Manifest Hub</h1>
+  <!-- Disclaimer Modal -->
+  <div id="disclaimerModal" class="modal-overlay hidden">
+    <div class="modal-content modal-disclaimer">
+      <div class="modal-disclaimer-content">
+        <div class="modal-disclaimer-icon-wrapper">
+          <i class="fas fa-balance-scale text-3xl modal-disclaimer-icon"></i>
+        </div>
+        <h2 class="text-2xl font-bold modal-disclaimer-heading">
+          Disclaimer
+        </h2>
+      </div>
+      <div class="text-left mb-8">
+        <p class="modal-disclaimer-text">
+          This website is for informational purposes only. We are not
+          responsible for any consequences that may arise from using the
+          provided data.
+        </p>
+      </div>
+      <div class="modal-disclaimer-checkbox-wrapper">
+        <input type="checkbox" id="dontShowAgain" />
+        <label for="dontShowAgain">Don't show this again</label>
+      </div>
+      <button id="acceptDisclaimer" class="btn-primary">I Understand</button>
+    </div>
+  </div>
+
+  <!-- Unsupported Game Modal -->
+  <div id="unsupportedModal" class="modal-overlay hidden">
+    <div class="modal-content modal-unsupported">
+      <div class="mb-4 flex items-center gap-2 unsupported-icon">
+        <i class="fas fa-exclamation-circle text-2xl"></i>
+        <h2 class="text-xl font-bold text-github-fg">Unsupported Game</h2>
+      </div>
+      <div class="text-left mb-6">
+        <p class="text-github-muted text-sm" id="unsupportedGameMessage"></p>
+      </div>
+      <button id="closeUnsupportedModal" class="btn-secondary w-full py-2 rounded font-semibold">
+        Dismiss
+      </button>
+    </div>
+  </div>
+
+  <!-- Requested Game Modal -->
+  <div id="requestedModal" class="modal-overlay hidden">
+    <div class="modal-content modal-requested">
+      <div class="mb-4 flex items-center gap-2 info-icon">
+        <i class="fas fa-info-circle text-2xl"></i>
+        <h2 class="text-xl font-bold text-github-fg">Already Requested</h2>
+      </div>
+      <div class="text-left mb-6">
+        <p class="text-github-muted text-sm" id="requestedGameMessage"></p>
+      </div>
+      <button id="closeRequestedModal" class="btn-secondary w-full py-2 rounded font-semibold">
+        Dismiss
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== PAGE LAYOUT: CENTERED ===== -->
+  <div class="page-wrapper">
+    <!-- ===== CENTER: Main Content ===== -->
+    <main>
+      <header class="header-center">
+        <div class="header-logo-wrapper">
+          <img src="assets/mhub.png" alt="Manifest Hub Logo" class="header-logo" />
+          <h1 class="header-title">Manifest Hub</h1>
+        </div>
+        <p class="header-subtitle">
+          Find Steam manifests and Lua depot keys.
+        </p>
+      </header>
+
+      <!-- Main Layout Wrapper -->
+      <div class="w-full mt-6">
+        <!-- Centered Main Content Area -->
+        <div
+          class="relative order-1 xl:order-none w-full max-w-[860px] xl:max-w-[750px] 2xl:max-w-[860px] mx-auto min-w-0">
+          <!-- Status Box -->
+          <div id="infoBox">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span id="statusText">Loading database...</span>
           </div>
-          <p class="header-subtitle">
-            Find Steam manifests and Lua depot keys.
-          </p>
-        </header>
 
-        <!-- Main Layout Wrapper -->
-        <div class="w-full mt-6">
-          <!-- Centered Main Content Area -->
-          <div
-            class="relative order-1 xl:order-none w-full max-w-[860px] xl:max-w-[750px] 2xl:max-w-[860px] mx-auto min-w-0"
-          >
-            <!-- Status Box -->
-            <div id="infoBox">
-              <i class="fas fa-circle-notch fa-spin"></i>
-              <span id="statusText">Loading database...</span>
+          <!-- Combined Search Bar -->
+          <div class="search-container">
+            <div class="search-bar-wrapper">
+              <select id="searchEngineSelect" class="search-dropdown">
+                <option value="database">Main Database</option>
+                <option value="legacy">Legacy Archive</option>
+              </select>
+              <div class="search-input-wrapper">
+                <div class="search-icon-wrapper">
+                  <i class="fas fa-search" id="searchIcon"></i>
+                </div>
+                <input type="text" id="mainSearchInput" placeholder="Loading... Please wait." disabled
+                  class="input-github search-input-combo" />
+              </div>
+              <button id="legacyCheckBtn" class="btn-primary">Check</button>
             </div>
 
-            <!-- Combined Search Bar -->
-            <div class="search-container">
-              <div class="search-bar-wrapper">
-                <select id="searchEngineSelect" class="search-dropdown">
-                  <option value="database">Main Database</option>
-                  <option value="legacy">Legacy Archive</option>
-                </select>
-                <div class="search-input-wrapper">
-                  <div class="search-icon-wrapper">
-                    <i class="fas fa-search" id="searchIcon"></i>
-                  </div>
-                  <input
-                    type="text"
-                    id="mainSearchInput"
-                    placeholder="Loading... Please wait."
-                    disabled
-                    class="input-github search-input-combo"
-                  />
-                </div>
-                <button id="legacyCheckBtn" class="btn-primary">Check</button>
+            <!-- Database Search Results -->
+            <div id="searchResults" class="search-results hidden"></div>
+
+            <!-- Legacy Terminal Output -->
+            <div id="legacyResultsSection" class="hidden">
+              <div class="terminal-text">
+                <pre id="legacyTerminalOutput"></pre>
               </div>
-
-              <!-- Database Search Results -->
-              <div id="searchResults" class="search-results hidden"></div>
-
-              <!-- Legacy Terminal Output -->
-              <div id="legacyResultsSection" class="hidden">
-                <div class="terminal-text">
-                  <pre id="legacyTerminalOutput"></pre>
-                </div>
-                <div id="legacyDownloadSection" class="hidden">
-                  <a id="legacyDownloadLink" class="btn-primary" download>
-                    <i class="fas fa-download"></i>
-                    Download Manifest
-                  </a>
-                </div>
-                <div id="legacyLuaSection" class="hidden">
-                  <div class="lua-suggestion-box">
-                    <p class="lua-suggestion-text">
-                      Lua keys are available in our database for this app.
-                    </p>
-                    <button id="legacyGenerateLuaBtn" class="btn-secondary">
-                      Generate Lua Instead
-                    </button>
-                  </div>
-                </div>
-                <div id="legacyNotFoundSection" class="hidden">
-                  <p class="error-text">
-                    <i class="fas fa-exclamation-triangle"></i>Manifest not
-                    found.
+              <div id="legacyDownloadSection" class="hidden">
+                <a id="legacyDownloadLink" class="btn-primary" download>
+                  <i class="fas fa-download"></i>
+                  Download Manifest
+                </a>
+              </div>
+              <div id="legacyLuaSection" class="hidden">
+                <div class="lua-suggestion-box">
+                  <p class="lua-suggestion-text">
+                    Lua keys are available in our database for this app.
                   </p>
+                  <button id="legacyGenerateLuaBtn" class="btn-secondary">
+                    Generate Lua Instead
+                  </button>
                 </div>
               </div>
+              <div id="legacyNotFoundSection" class="hidden">
+                <p class="error-text">
+                  <i class="fas fa-exclamation-triangle"></i>Manifest not
+                  found.
+                </p>
+              </div>
             </div>
+          </div>
 
-            <!-- Selected Game Panel -->
-            <div id="selectedGamePanel" class="hidden">
-              <div class="game-panel-header">
-                <div class="game-info-wrapper">
-                  <img id="selectedGameIcon" src="" alt="" />
-                  <div>
-                    <h2 id="selectedGameName"></h2>
-                    <p id="selectedGameId"></p>
-                  </div>
+          <!-- Selected Game Panel -->
+          <div id="selectedGamePanel" class="hidden">
+            <div class="game-panel-header">
+              <div class="game-info-wrapper">
+                <img id="selectedGameIcon" src="" alt="" />
+                <div>
+                  <h2 id="selectedGameName"></h2>
+                  <p id="selectedGameId"></p>
                 </div>
-                <button id="downloadAllZipBtn" class="btn-primary">
-                  <i class="fas fa-file-archive"></i> Download All
-                </button>
               </div>
-              <div>
-                <h3 class="files-section-header">Files</h3>
-                <div id="availableFilesList"></div>
+              <button id="downloadAllZipBtn" class="btn-primary">
+                <i class="fas fa-file-archive"></i> Download All
+              </button>
+            </div>
+            <div>
+              <h3 class="files-section-header">Files</h3>
+              <div id="availableFilesList"></div>
+            </div>
+          </div>
+
+          <!-- FAQ Section -->
+          <div class="faq-wrapper">
+            <h2 class="faq-heading">Frequently Asked Questions</h2>
+
+            <!-- Games that won't work notice -->
+            <div class="warning-box">
+              <div class="warning-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Games that won't work</span>
               </div>
+              <ul class="warning-list">
+                <li>
+                  <i class="fas fa-globe"></i>
+                  <span>Online co-op / always-online</span>
+                </li>
+                <li>
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Denuvo or advanced DRM</span>
+                </li>
+                <li>
+                  <i class="fas fa-window-restore"></i>
+                  <span>3rd party launchers (EA App, Ubisoft, Rockstar)</span>
+                </li>
+              </ul>
             </div>
 
-            <!-- FAQ Section -->
-            <div class="faq-wrapper">
-              <h2 class="faq-heading">Frequently Asked Questions</h2>
-
-              <!-- Games that won't work notice -->
-              <div class="warning-box">
-                <div class="warning-title">
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <span>Games that won't work</span>
-                </div>
-                <ul class="warning-list">
-                  <li>
-                    <i class="fas fa-globe"></i>
-                    <span>Online co-op / always-online</span>
-                  </li>
-                  <li>
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Denuvo or advanced DRM</span>
-                  </li>
-                  <li>
-                    <i class="fas fa-window-restore"></i>
-                    <span>3rd party launchers (EA App, Ubisoft, Rockstar)</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div id="faqContainer">
-                <!-- FAQ Items injected by JS -->
-              </div>
+            <div id="faqContainer">
+              <!-- FAQ Items injected by JS -->
             </div>
+          </div>
 
-            <!-- Left Column: Popular Downloads (Sidebar) -->
-            <aside
-              id="trendingPanel"
-              class="xl:absolute xl:right-[calc(100%+24px)] xl:top-0 w-full xl:w-[240px] shrink-0 bg-[#161b22] border border-[#30363d] rounded-lg p-4 mt-6 xl:mt-0"
-            >
-              <h2
-                class="text-xl font-bold mb-4 flex items-center gap-2"
-                style="
+          <!-- Left Column: Popular Downloads (Sidebar) -->
+          <aside id="trendingPanel"
+            class="xl:absolute xl:right-[calc(100%+24px)] xl:top-0 w-full xl:w-[240px] shrink-0 bg-[#161b22] border border-[#30363d] rounded-lg p-4 mt-6 xl:mt-0">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2" style="
                   color: #c9d1d9;
                   font-size: 1rem;
                   border-bottom: 1px solid #30363d;
                   padding-bottom: 0.5rem;
                   margin-top: 0;
-                "
-              >
-                <i class="fas fa-fire text-orange-500"></i> Popular Downloads
-              </h2>
-              <div id="trendingGrid" class="flex flex-col gap-3">
-                <div class="text-center py-8" style="color: #8b949e">
-                  <i class="fas fa-spinner fa-spin mr-2"></i> Loading...
-                </div>
+                ">
+              <i class="fas fa-fire text-orange-500"></i> Popular Downloads
+            </h2>
+            <div id="trendingGrid" class="flex flex-col gap-3">
+              <div class="text-center py-8" style="color: #8b949e">
+                <i class="fas fa-spinner fa-spin mr-2"></i> Loading...
               </div>
-            </aside>
-          </div>
-          <!-- End of Centered Main Content Area -->
+            </div>
+          </aside>
         </div>
-        <!-- End of Main Layout Wrapper -->
-      </main>
-    </div>
+        <!-- End of Centered Main Content Area -->
+      </div>
+      <!-- End of Main Layout Wrapper -->
+    </main>
+  </div>
 
-    <!-- ===== FLOATING SIDEBAR LINKS ===== -->
-    <div class="floating-sidebar">
-      <a
-        href="https://steamdb.info/"
-        target="_blank"
-        class="floating-btn"
-        title="SteamDB"
-      >
-        <i class="fas fa-database"></i>
-        <span class="btn-label">SteamDB</span>
-      </a>
-      <a
-        href="https://www.steamtools.net/"
-        target="_blank"
-        class="floating-btn"
-        title="SteamTools"
-      >
-        <i class="fas fa-download"></i>
-        <span class="btn-label">SteamTools</span>
-      </a>
-      <a
-        href="https://discord.com/invite/x6AjUMngpF"
-        target="_blank"
-        class="floating-btn"
-        title="Discord"
-      >
-        <i class="fab fa-discord"></i>
-        <span class="btn-label">Discord</span>
-      </a>
-    </div>
+  <!-- ===== FLOATING SIDEBAR LINKS ===== -->
+  <div class="floating-sidebar">
+    <a href="https://steamdb.info/" target="_blank" class="floating-btn" title="SteamDB">
+      <i class="fas fa-database"></i>
+      <span class="btn-label">SteamDB</span>
+    </a>
+    <a href="https://www.steamtools.net/" target="_blank" class="floating-btn" title="SteamTools">
+      <i class="fas fa-download"></i>
+      <span class="btn-label">SteamTools</span>
+    </a>
+    <a href="https://discord.com/invite/x6AjUMngpF" target="_blank" class="floating-btn" title="Discord">
+      <i class="fab fa-discord"></i>
+      <span class="btn-label">Discord</span>
+    </a>
+  </div>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <span class="logo-tn">Manifest</span
-            ><span class="logo-tv">Hub</span>
-          </div>
-          <p class="footer-tagline">
-            Search, view, and download Steam manifests and Lua depot keys.
-          </p>
-          <div class="footer-dev">
-            Developed by
-            <a
-              href="https://trionine.xyz"
-              target="_blank"
-              rel="noopener noreferrer"
-              >trionine</a
-            >
-          </div>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-tn">Manifest</span><span class="logo-tv">Hub</span>
         </div>
-        <div class="footer-links">
-          <div class="footer-col-label">Quick Links</div>
-          <a href="profile.html">Profile</a>
-          <!-- <a href="#faq">FAQ</a> -->
-          <a
-            href="https://discord.com/invite/x6AjUMngpF"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Discord ↗</a
-          >
-          <a
-            href="https://github.com/sadabx/ManifestHub"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Contribute on GitHub ↗</a
-          >
+        <p class="footer-tagline">
+          Search, view, and download Steam manifests and Lua depot keys.
+        </p>
+        <div class="footer-dev">
+          Developed by
+          <a href="https://trionine.xyz" target="_blank" rel="noopener noreferrer">trionine</a>
         </div>
-        <div class="footer-donate">
-          <div class="footer-col-label">Support Us</div>
-          <div class="donate-flex-container">
-            <div class="donate-text-side">
-              <p class="footer-tagline" style="margin-bottom: 8px">
-                If ManifestHub helped, consider supporting.
-              </p>
-              <div class="donate-address">
-                <span class="donate-network">USDT · TRC20</span>
-                <div class="donate-row">
-                  <code class="donate-code">TFErny...6B</code>
-                  <button
-                    class="donate-copy"
-                    onclick="
+      </div>
+      <div class="footer-links">
+        <div class="footer-col-label">Quick Links</div>
+        <a href="profile.html">Profile</a>
+        <!-- <a href="#faq">FAQ</a> -->
+        <a href="https://discord.com/invite/x6AjUMngpF" target="_blank" rel="noopener noreferrer">Discord ↗</a>
+        <a href="https://github.com/sadabx/ManifestHub" target="_blank" rel="noopener noreferrer">Contribute on GitHub
+          ↗</a>
+      </div>
+      <div class="footer-donate">
+        <div class="footer-col-label">Support Us</div>
+        <div class="donate-flex-container">
+          <div class="donate-text-side">
+            <p class="footer-tagline" style="margin-bottom: 8px">
+              If ManifestHub helped, consider supporting.
+            </p>
+            <div class="donate-address">
+              <span class="donate-network">USDT · TRC20</span>
+              <div class="donate-row">
+                <code class="donate-code">TFErny...6B</code>
+                <button class="donate-copy" onclick="
                       navigator.clipboard
                         .writeText('TFErnymvTdBtw9g79QHfuRojjwwA6HEc6B')
                         .then(() => {
                           this.textContent = 'Copied!';
                           setTimeout(() => (this.textContent = 'Copy'), 2000);
                         })
-                    "
-                  >
-                    Copy
-                  </button>
-                </div>
+                    ">
+                  Copy
+                </button>
               </div>
             </div>
-            <div class="donate-qr">
-              <!-- PASTE YOUR SVG HERE -->
-              <svg height="80" width="80" viewBox="0 0 33 33">
-                <path
-                  fill="#FFFFFF"
-                  d="M0,0 h33v33H0z"
-                  shape-rendering="crispEdges"
-                ></path>
-                <path
-                  fill="#000000"
-                  d="M0 0h7v1H0zM11 0h1v1H11zM13 0h1v1H13zM15 0h1v1H15zM23 0h1v1H23zM26,0 h7v1H26zM0 1h1v1H0zM6 1h1v1H6zM8 1h1v1H8zM10 1h2v1H10zM13 1h2v1H13zM19 1h4v1H19zM26 1h1v1H26zM32,1 h1v1H32zM0 2h1v1H0zM2 2h3v1H2zM6 2h1v1H6zM9 2h1v1H9zM11 2h1v1H11zM13 2h1v1H13zM15 2h1v1H15zM19 2h1v1H19zM21 2h1v1H21zM23 2h1v1H23zM26 2h1v1H26zM28 2h3v1H28zM32,2 h1v1H32zM0 3h1v1H0zM2 3h3v1H2zM6 3h1v1H6zM9 3h3v1H9zM13 3h1v1H13zM16 3h1v1H16zM18 3h1v1H18zM20 3h1v1H20zM22 3h1v1H22zM24 3h1v1H24zM26 3h1v1H26zM28 3h3v1H28zM32,3 h1v1H32zM0 4h1v1H0zM2 4h3v1H2zM6 4h1v1H6zM10 4h6v1H10zM17 4h1v1H17zM19 4h1v1H19zM21 4h4v1H21zM26 4h1v1H26zM28 4h3v1H28zM32,4 h1v1H32zM0 5h1v1H0zM6 5h1v1H6zM8 5h1v1H8zM11 5h4v1H11zM18 5h4v1H18zM26 5h1v1H26zM32,5 h1v1H32zM0 6h7v1H0zM8 6h1v1H8zM10 6h1v1H10zM12 6h1v1H12zM14 6h1v1H14zM16 6h1v1H16zM18 6h1v1H18zM20 6h1v1H20zM22 6h1v1H22zM24 6h1v1H24zM26,6 h7v1H26zM8 7h1v1H8zM15 7h1v1H15zM17 7h2v1H17zM21 7h2v1H21zM4 8h4v1H4zM11 8h2v1H11zM14 8h1v1H14zM20 8h3v1H20zM24 8h1v1H24zM26 8h2v1H26zM31 8h1v1H31zM1 9h2v1H1zM4 9h2v1H4zM8 9h1v1H8zM10 9h1v1H10zM12 9h2v1H12zM15 9h1v1H15zM17 9h4v1H17zM23 9h1v1H23zM27 9h1v1H27zM30 9h2v1H30zM0 10h1v1H0zM2 10h3v1H2zM6 10h4v1H6zM11 10h2v1H11zM16 10h4v1H16zM23 10h3v1H23zM28 10h1v1H28zM31 10h1v1H31zM0 11h3v1H0zM5 11h1v1H5zM17 11h1v1H17zM19 11h1v1H19zM21 11h2v1H21zM24 11h1v1H24zM28 11h1v1H28zM1 12h1v1H1zM3 12h1v1H3zM6 12h1v1H6zM8 12h1v1H8zM11 12h4v1H11zM17 12h2v1H17zM20 12h1v1H20zM22 12h3v1H22zM26 12h1v1H26zM30 12h1v1H30zM32,12 h1v1H32zM1 13h1v1H1zM4 13h1v1H4zM9 13h4v1H9zM14 13h3v1H14zM18 13h4v1H18zM23 13h1v1H23zM27 13h1v1H27zM29 13h2v1H29zM32,13 h1v1H32zM0 14h2v1H0zM3 14h1v1H3zM5 14h5v1H5zM12 14h1v1H12zM14 14h4v1H14zM21 14h1v1H21zM23 14h3v1H23zM27 14h1v1H27zM30 14h2v1H30zM0 15h2v1H0zM3 15h1v1H3zM8 15h2v1H8zM12 15h1v1H12zM19 15h3v1H19zM23 15h1v1H23zM25 15h1v1H25zM28 15h1v1H28zM32,15 h1v1H32zM2 16h2v1H2zM5 16h3v1H5zM10 16h3v1H10zM16 16h2v1H16zM19 16h1v1H19zM21 16h3v1H21zM26 16h3v1H26zM30,16 h3v1H30zM0 17h2v1H0zM4 17h1v1H4zM7 17h4v1H7zM12 17h1v1H12zM14 17h1v1H14zM16 17h4v1H16zM22 17h2v1H22zM26 17h2v1H26zM29 17h2v1H29zM0 18h1v1H0zM2 18h1v1H2zM4 18h1v1H4zM6 18h3v1H6zM10 18h1v1H10zM12 18h1v1H12zM14 18h2v1H14zM17 18h2v1H17zM23 18h1v1H23zM26 18h2v1H26zM29 18h1v1H29zM31 18h1v1H31zM0 19h1v1H0zM2 19h1v1H2zM4 19h1v1H4zM8 19h2v1H8zM13 19h2v1H13zM17 19h1v1H17zM20 19h2v1H20zM24 19h1v1H24zM28 19h1v1H28zM31,19 h2v1H31zM0 20h1v1H0zM4 20h4v1H4zM11 20h4v1H11zM16 20h6v1H16zM23 20h2v1H23zM26 20h3v1H26zM30 20h1v1H30zM32,20 h1v1H32zM0 21h1v1H0zM2 21h4v1H2zM7 21h4v1H7zM12 21h1v1H12zM15 21h3v1H15zM19 21h5v1H19zM25 21h3v1H25zM29 21h2v1H29zM32,21 h1v1H32zM2 22h1v1H2zM6 22h1v1H6zM9 22h1v1H9zM11 22h1v1H11zM13 22h3v1H13zM19 22h1v1H19zM22 22h3v1H22zM27 22h1v1H27zM29 22h1v1H29zM31 22h1v1H31zM2 23h1v1H2zM4 23h1v1H4zM7 23h5v1H7zM13 23h3v1H13zM17 23h2v1H17zM20 23h5v1H20zM26 23h3v1H26zM31 23h1v1H31zM0 24h8v1H0zM11 24h3v1H11zM15 24h2v1H15zM19 24h4v1H19zM24 24h5v1H24zM30 24h2v1H30zM8 25h1v1H8zM10 25h1v1H10zM12 25h3v1H12zM16 25h4v1H16zM22 25h1v1H22zM24 25h1v1H24zM28 25h1v1H28zM32,25 h1v1H32zM0 26h7v1H0zM8 26h1v1H8zM12 26h1v1H12zM15 26h1v1H15zM18 26h3v1H18zM22 26h1v1H22zM24 26h1v1H24zM26 26h1v1H26zM28 26h2v1H28zM31 26h1v1H31zM0 27h1v1H0zM6 27h1v1H6zM8 27h1v1H8zM10 27h3v1H10zM14 27h4v1H14zM19 27h1v1H19zM21 27h2v1H21zM24 27h1v1H24zM28 27h1v1H28zM32,27 h1v1H32zM0 28h1v1H0zM2 28h3v1H2zM6 28h1v1H6zM8 28h2v1H8zM12 28h4v1H12zM20 28h1v1H20zM24 28h5v1H24zM32,28 h1v1H32zM0 29h1v1H0zM2 29h3v1H2zM6 29h1v1H6zM10 29h1v1H10zM12 29h1v1H12zM16 29h1v1H16zM20 29h2v1H20zM26 29h1v1H26zM30 29h2v1H30zM0 30h1v1H0zM2 30h3v1H2zM6 30h1v1H6zM10 30h3v1H10zM14 30h3v1H14zM19 30h2v1H19zM22 30h2v1H22zM26 30h1v1H26zM28 30h1v1H28zM0 31h1v1H0zM6 31h1v1H6zM9 31h1v1H9zM14 31h2v1H14zM17 31h1v1H17zM19 31h1v1H19zM24 31h2v1H24zM27 31h1v1H27zM29 31h1v1H29zM0 32h7v1H0zM9 32h2v1H9zM13 32h1v1H13zM15 32h7v1H15zM24 32h1v1H24zM27 32h1v1H27zM29 32h1v1H29zM32,32 h1v1H32z"
-                  shape-rendering="crispEdges"
-                ></path>
-              </svg>
-            </div>
+          </div>
+          <div class="donate-qr">
+            <!-- PASTE YOUR SVG HERE -->
+            <svg height="80" width="80" viewBox="0 0 33 33">
+              <path fill="#FFFFFF" d="M0,0 h33v33H0z" shape-rendering="crispEdges"></path>
+              <path fill="#000000"
+                d="M0 0h7v1H0zM11 0h1v1H11zM13 0h1v1H13zM15 0h1v1H15zM23 0h1v1H23zM26,0 h7v1H26zM0 1h1v1H0zM6 1h1v1H6zM8 1h1v1H8zM10 1h2v1H10zM13 1h2v1H13zM19 1h4v1H19zM26 1h1v1H26zM32,1 h1v1H32zM0 2h1v1H0zM2 2h3v1H2zM6 2h1v1H6zM9 2h1v1H9zM11 2h1v1H11zM13 2h1v1H13zM15 2h1v1H15zM19 2h1v1H19zM21 2h1v1H21zM23 2h1v1H23zM26 2h1v1H26zM28 2h3v1H28zM32,2 h1v1H32zM0 3h1v1H0zM2 3h3v1H2zM6 3h1v1H6zM9 3h3v1H9zM13 3h1v1H13zM16 3h1v1H16zM18 3h1v1H18zM20 3h1v1H20zM22 3h1v1H22zM24 3h1v1H24zM26 3h1v1H26zM28 3h3v1H28zM32,3 h1v1H32zM0 4h1v1H0zM2 4h3v1H2zM6 4h1v1H6zM10 4h6v1H10zM17 4h1v1H17zM19 4h1v1H19zM21 4h4v1H21zM26 4h1v1H26zM28 4h3v1H28zM32,4 h1v1H32zM0 5h1v1H0zM6 5h1v1H6zM8 5h1v1H8zM11 5h4v1H11zM18 5h4v1H18zM26 5h1v1H26zM32,5 h1v1H32zM0 6h7v1H0zM8 6h1v1H8zM10 6h1v1H10zM12 6h1v1H12zM14 6h1v1H14zM16 6h1v1H16zM18 6h1v1H18zM20 6h1v1H20zM22 6h1v1H22zM24 6h1v1H24zM26,6 h7v1H26zM8 7h1v1H8zM15 7h1v1H15zM17 7h2v1H17zM21 7h2v1H21zM4 8h4v1H4zM11 8h2v1H11zM14 8h1v1H14zM20 8h3v1H20zM24 8h1v1H24zM26 8h2v1H26zM31 8h1v1H31zM1 9h2v1H1zM4 9h2v1H4zM8 9h1v1H8zM10 9h1v1H10zM12 9h2v1H12zM15 9h1v1H15zM17 9h4v1H17zM23 9h1v1H23zM27 9h1v1H27zM30 9h2v1H30zM0 10h1v1H0zM2 10h3v1H2zM6 10h4v1H6zM11 10h2v1H11zM16 10h4v1H16zM23 10h3v1H23zM28 10h1v1H28zM31 10h1v1H31zM0 11h3v1H0zM5 11h1v1H5zM17 11h1v1H17zM19 11h1v1H19zM21 11h2v1H21zM24 11h1v1H24zM28 11h1v1H28zM1 12h1v1H1zM3 12h1v1H3zM6 12h1v1H6zM8 12h1v1H8zM11 12h4v1H11zM17 12h2v1H17zM20 12h1v1H20zM22 12h3v1H22zM26 12h1v1H26zM30 12h1v1H30zM32,12 h1v1H32zM1 13h1v1H1zM4 13h1v1H4zM9 13h4v1H9zM14 13h3v1H14zM18 13h4v1H18zM23 13h1v1H23zM27 13h1v1H27zM29 13h2v1H29zM32,13 h1v1H32zM0 14h2v1H0zM3 14h1v1H3zM5 14h5v1H5zM12 14h1v1H12zM14 14h4v1H14zM21 14h1v1H21zM23 14h3v1H23zM27 14h1v1H27zM30 14h2v1H30zM0 15h2v1H0zM3 15h1v1H3zM8 15h2v1H8zM12 15h1v1H12zM19 15h3v1H19zM23 15h1v1H23zM25 15h1v1H25zM28 15h1v1H28zM32,15 h1v1H32zM2 16h2v1H2zM5 16h3v1H5zM10 16h3v1H10zM16 16h2v1H16zM19 16h1v1H19zM21 16h3v1H21zM26 16h3v1H26zM30,16 h3v1H30zM0 17h2v1H0zM4 17h1v1H4zM7 17h4v1H7zM12 17h1v1H12zM14 17h1v1H14zM16 17h4v1H16zM22 17h2v1H22zM26 17h2v1H26zM29 17h2v1H29zM0 18h1v1H0zM2 18h1v1H2zM4 18h1v1H4zM6 18h3v1H6zM10 18h1v1H10zM12 18h1v1H12zM14 18h2v1H14zM17 18h2v1H17zM23 18h1v1H23zM26 18h2v1H26zM29 18h1v1H29zM31 18h1v1H31zM0 19h1v1H0zM2 19h1v1H2zM4 19h1v1H4zM8 19h2v1H8zM13 19h2v1H13zM17 19h1v1H17zM20 19h2v1H20zM24 19h1v1H24zM28 19h1v1H28zM31,19 h2v1H31zM0 20h1v1H0zM4 20h4v1H4zM11 20h4v1H11zM16 20h6v1H16zM23 20h2v1H23zM26 20h3v1H26zM30 20h1v1H30zM32,20 h1v1H32zM0 21h1v1H0zM2 21h4v1H2zM7 21h4v1H7zM12 21h1v1H12zM15 21h3v1H15zM19 21h5v1H19zM25 21h3v1H25zM29 21h2v1H29zM32,21 h1v1H32zM2 22h1v1H2zM6 22h1v1H6zM9 22h1v1H9zM11 22h1v1H11zM13 22h3v1H13zM19 22h1v1H19zM22 22h3v1H22zM27 22h1v1H27zM29 22h1v1H29zM31 22h1v1H31zM2 23h1v1H2zM4 23h1v1H4zM7 23h5v1H7zM13 23h3v1H13zM17 23h2v1H17zM20 23h5v1H20zM26 23h3v1H26zM31 23h1v1H31zM0 24h8v1H0zM11 24h3v1H11zM15 24h2v1H15zM19 24h4v1H19zM24 24h5v1H24zM30 24h2v1H30zM8 25h1v1H8zM10 25h1v1H10zM12 25h3v1H12zM16 25h4v1H16zM22 25h1v1H22zM24 25h1v1H24zM28 25h1v1H28zM32,25 h1v1H32zM0 26h7v1H0zM8 26h1v1H8zM12 26h1v1H12zM15 26h1v1H15zM18 26h3v1H18zM22 26h1v1H22zM24 26h1v1H24zM26 26h1v1H26zM28 26h2v1H28zM31 26h1v1H31zM0 27h1v1H0zM6 27h1v1H6zM8 27h1v1H8zM10 27h3v1H10zM14 27h4v1H14zM19 27h1v1H19zM21 27h2v1H21zM24 27h1v1H24zM28 27h1v1H28zM32,27 h1v1H32zM0 28h1v1H0zM2 28h3v1H2zM6 28h1v1H6zM8 28h2v1H8zM12 28h4v1H12zM20 28h1v1H20zM24 28h5v1H24zM32,28 h1v1H32zM0 29h1v1H0zM2 29h3v1H2zM6 29h1v1H6zM10 29h1v1H10zM12 29h1v1H12zM16 29h1v1H16zM20 29h2v1H20zM26 29h1v1H26zM30 29h2v1H30zM0 30h1v1H0zM2 30h3v1H2zM6 30h1v1H6zM10 30h3v1H10zM14 30h3v1H14zM19 30h2v1H19zM22 30h2v1H22zM26 30h1v1H26zM28 30h1v1H28zM0 31h1v1H0zM6 31h1v1H6zM9 31h1v1H9zM14 31h2v1H14zM17 31h1v1H17zM19 31h1v1H19zM24 31h2v1H24zM27 31h1v1H27zM29 31h1v1H29zM0 32h7v1H0zM9 32h2v1H9zM13 32h1v1H13zM15 32h7v1H15zM24 32h1v1H24zM27 32h1v1H27zM29 32h1v1H29zM32,32 h1v1H32z"
+                shape-rendering="crispEdges"></path>
+            </svg>
           </div>
         </div>
-        <div class="footer-meta">
-          <div class="footer-col-label">Disclaimer</div>
-          <p class="footer-note">
-            Not affiliated with Valve, Steam or any other Valve products. Steam
-            and the Steam logo are trademarks of Valve Corporation.
-          </p>
-          <div class="footer-copy">© 2026 TRIONINE</div>
-        </div>
       </div>
-    </footer>
+      <div class="footer-meta">
+        <div class="footer-col-label">Disclaimer</div>
+        <p class="footer-note">
+          Not affiliated with Valve, Steam or any other Valve products. Steam
+          and the Steam logo are trademarks of Valve Corporation.
+        </p>
+        <div class="footer-copy">© 2026 TRIONINE</div>
+      </div>
+    </div>
+  </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="js/utils.js?v=1.0"></script>
-    <script src="js/script.js?v=1.0"></script>
-  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="js/utils.js?v=1.0"></script>
+  <script src="js/script.js?v=1.0"></script>
+</body>
+
 </html>
