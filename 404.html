@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Lost Like Zoro | ManifestHub</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/base.css?v=1.0" />
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0d1117;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding: 1.5rem;
+        }
+
+        .error-container {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 12px 32px rgba(1, 4, 9, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .error-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(1, 4, 9, 0.8);
+        }
+
+        .zoro-img-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .zoro-img-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+        }
+
+        .zoro-img {
+            max-width: 280px;
+            width: 100%;
+            border-radius: 12px;
+            border: 3px solid #238636;
+            /* Site's green */
+            box-shadow: 0 8px 24px rgba(35, 134, 54, 0.2);
+            display: block;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .error-container:hover .zoro-img {
+            border-color: #2ea043;
+            box-shadow: 0 8px 32px rgba(46, 160, 67, 0.35);
+        }
+
+        .error-code {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #f85149;
+            /* Red error accent */
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #c9d1d9;
+            margin-bottom: 0.75rem;
+        }
+
+        .error-desc {
+            font-size: 0.95rem;
+            color: #8b949e;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            padding: 0.75rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: background-color 0.2s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-container">
+        <div class="zoro-img-wrap">
+            <img src="assets/404.png" alt="Lost Zoro" class="zoro-img">
+        </div>
+        <div class="error-code">404</div>
+        <h1 class="error-title">Zoro Got Lost Again...</h1>
+        <p class="error-desc">
+            And so did you! The page you are looking for doesn't exist or has been moved in a different direction.
+        </p>
+        <a href="/" class="btn-home btn-primary">
+            <i class="fas fa-compass"></i> Take me Home, Captain!
+        </a>
+    </div>
+</body>
+
+</html>

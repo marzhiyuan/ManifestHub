@@ -590,9 +590,10 @@ document.addEventListener("DOMContentLoaded", function () {
       announceDays.value = "1";
     }
 
-    // Toggle inputs when Infinite is checked
-    announcePermanent.addEventListener("change", (e) => {
-      if (e.target.checked) {
+    // Toggle inputs when Infinite is clicked
+    announcePermanent.addEventListener("click", () => {
+      const isCurrentlyActive = announcePermanent.classList.toggle("active");
+      if (isCurrentlyActive) {
         durationInputs.style.opacity = "0.5";
         announceDays.disabled = true;
         announceHours.disabled = true;
@@ -617,7 +618,7 @@ document.addEventListener("DOMContentLoaded", function () {
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
       let expiresAt = null;
-      if (!announcePermanent.checked) {
+      if (!announcePermanent.classList.contains("active")) {
         const d = parseInt(announceDays.value, 10) || 0;
         const h = parseInt(announceHours.value, 10) || 0;
         const m = parseInt(announceMins.value, 10) || 0;
@@ -651,7 +652,7 @@ document.addEventListener("DOMContentLoaded", function () {
         announceDays.value = "1";
         announceHours.value = "0";
         announceMins.value = "0";
-        announcePermanent.checked = false;
+        announcePermanent.classList.remove("active");
         durationInputs.style.opacity = "1";
         announceDays.disabled = false;
         announceHours.disabled = false;

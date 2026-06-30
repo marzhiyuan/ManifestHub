@@ -647,3 +647,28 @@
 .admin-submit-btn-circle:hover {
   background: #2ea043;
 }
+
+.admin-permanent-btn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  transition: color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  outline: none;
+}
+
+.admin-permanent-btn:hover {
+  color: #c9d1d9;
+}
+
+.admin-permanent-btn.active {
+  color: #3fb950;
+  transform: scale(1.2);
+}
