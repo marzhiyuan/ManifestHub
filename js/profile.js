@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const SUPABASE_URL = "https://fbmlbukvzyrzevjmaujp.supabase.co";
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibWxidWt2enlyemV2am1hdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDM3NDMsImV4cCI6MjA5MzkxOTc0M30.HXnKhqT8Gq8WFUxqOsofjE-dSC9Oo4Yem8FTANUnX30";
+  const SUPABASE_URL = window.SUPABASE_URL;
+  const SUPABASE_KEY = window.SUPABASE_ANON_KEY;
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let currentUser = null;
@@ -622,11 +621,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const d = parseInt(announceDays.value, 10) || 0;
         const h = parseInt(announceHours.value, 10) || 0;
         const m = parseInt(announceMins.value, 10) || 0;
-        
+
         const totalMs = (d * 24 * 60 * 60 * 1000) +
-                        (h * 60 * 60 * 1000) +
-                        (m * 60 * 1000);
-        
+          (h * 60 * 60 * 1000) +
+          (m * 60 * 1000);
+
         if (totalMs > 0) {
           expiresAt = new Date(Date.now() + totalMs).toISOString();
         } else {

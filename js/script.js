@@ -15,9 +15,8 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   // [00] SUPABASE SETUP ==========
-  const supabaseUrl = "https://fbmlbukvzyrzevjmaujp.supabase.co";
-  const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibWxidWt2enlyemV2am1hdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDM3NDMsImV4cCI6MjA5MzkxOTc0M30.HXnKhqT8Gq8WFUxqOsofjE-dSC9Oo4Yem8FTANUnX30";
+  const supabaseUrl = window.SUPABASE_URL;
+  const supabaseKey = window.SUPABASE_ANON_KEY;
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
   let currentUser = null;
 
@@ -1210,7 +1209,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         currentIndex = (currentIndex + 1) % messages.length;
         statusText.innerHTML = messages[currentIndex];
-        
+
         // Fade in
         statusText.style.opacity = 1;
       }, 500); // 500ms matches the CSS transition time
