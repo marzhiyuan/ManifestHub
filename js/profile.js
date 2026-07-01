@@ -700,7 +700,10 @@ document.addEventListener("DOMContentLoaded", function () {
           <div style="font-weight:500; color:${isExpired ? '#8b949e' : '#c9d1d9'}; margin-bottom:0.25rem;">${escHtml(ann.message)}</div>
           <div style="font-size:0.75rem; color:#8b949e;">${expiryLabel}</div>
         </div>
-        <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <button class="edit-ann-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}" title="Edit announcement">
+            <i class="fas fa-edit"></i>
+          </button>
           <button class="toggle-active-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}" data-active="${ann.is_active}">
             ${ann.is_active ? '<i class="fas fa-eye"></i> Active' : '<i class="fas fa-eye-slash"></i> Inactive'}
           </button>
@@ -709,6 +712,128 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
         </div>
       `;
+
+      // Edit announcement inline
+      div.querySelector(".edit-ann-btn").addEventListener("click", () => {
+        let isPerm = !ann.expires_at;
+        let dVal = 1, hVal = 0, mVal = 0;
+        if (ann.expires_at) {
+          const diffMs = new Date(ann.expires_at) - Date.now();
+          if (diffMs > 0) {
+            const totalMins = Math.ceil(diffMs / 60000);
+            dVal = Math.floor(totalMins / (24 * 60));
+            hVal = Math.floor((totalMins % (24 * 60)) / 60);
+            mVal = totalMins % 60;
+          }
+        }
+
+        div.innerHTML = `
+          <div style="flex:1; padding-right:1rem; text-align: left; display:flex; flex-direction:column; gap:0.5rem;">
+            <input type="text" class="edit-ann-input" value="${escHtml(ann.message)}" style="background:#0d1117; border:1px solid #30363d; border-radius:4px; color:#c9d1d9; padding:0.35rem 0.5rem; font-size:0.875rem; width:100%;" required />
+            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap: wrap;">
+              <div class="admin-expiration-capsule" style="height: 32px; padding: 0.15rem 0.5rem; gap: 0.5rem;">
+                <button type="button" class="admin-permanent-btn edit-ann-perm-btn ${isPerm ? 'active' : ''}" title="Infinite Expiration" style="font-size: 1rem;">∞</button>
+                <div class="admin-capsule-divider" style="height: 1rem;"></div>
+                <div class="edit-ann-dur-wrap" style="display:${isPerm ? 'none' : 'flex'}; gap:0.25rem; align-items:center; opacity:${isPerm ? '0.5' : '1'};">
+                  <label class="admin-select-label" style="font-size: 0.75rem;">
+                    <select class="edit-ann-days admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? 'disabled' : ''}></select>d
+                  </label>
+                  <label class="admin-select-label" style="font-size: 0.75rem;">
+                    <select class="edit-ann-hours admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? 'disabled' : ''}></select>h
+                  </label>
+                  <label class="admin-select-label" style="font-size: 0.75rem;">
+                    <select class="edit-ann-mins admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? 'disabled' : ''}></select>m
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <button class="save-ann-btn btn-primary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}">
+              <i class="fas fa-check"></i> Save
+            </button>
+            <button class="cancel-ann-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        `;
+
+        const editDays = div.querySelector(".edit-ann-days");
+        const editHours = div.querySelector(".edit-ann-hours");
+        const editMins = div.querySelector(".edit-ann-mins");
+        const editPermBtn = div.querySelector(".edit-ann-perm-btn");
+        const editDurWrap = div.querySelector(".edit-ann-dur-wrap");
+
+        for (let i = 0; i <= 7; i++) editDays.add(new Option(i, i));
+        for (let i = 0; i <= 23; i++) editHours.add(new Option(i, i));
+        for (let i = 0; i <= 59; i++) editMins.add(new Option(i, i));
+
+        editDays.value = String(dVal);
+        editHours.value = String(hVal);
+        editMins.value = String(mVal);
+
+        editPermBtn.addEventListener("click", () => {
+          const isCurrentlyActive = editPermBtn.classList.toggle("active");
+          if (isCurrentlyActive) {
+            editDurWrap.style.display = "none";
+            editDays.disabled = true;
+            editHours.disabled = true;
+            editMins.disabled = true;
+          } else {
+            editDurWrap.style.display = "flex";
+            editDays.disabled = false;
+            editHours.disabled = false;
+            editMins.disabled = false;
+          }
+        });
+
+        div.querySelector(".cancel-ann-btn").addEventListener("click", () => {
+          loadAnnouncements();
+        });
+
+        div.querySelector(".save-ann-btn").addEventListener("click", async (e) => {
+          const inputVal = div.querySelector(".edit-ann-input").value.trim();
+          if (!inputVal) {
+            showToast("Message cannot be empty.", "error");
+            return;
+          }
+
+          e.currentTarget.disabled = true;
+          e.currentTarget.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+          let expiresAt = null;
+          const isPermanent = editPermBtn.classList.contains("active");
+          if (!isPermanent) {
+            const d = parseInt(editDays.value, 10) || 0;
+            const h = parseInt(editHours.value, 10) || 0;
+            const m = parseInt(editMins.value, 10) || 0;
+            const totalMs = (d * 24 * 60 * 60 * 1000) + (h * 60 * 60 * 1000) + (m * 60 * 1000);
+
+            if (totalMs > 0) {
+              expiresAt = new Date(Date.now() + totalMs).toISOString();
+            } else {
+              showToast("Duration must be greater than 0 if not Permanent.", "error");
+              e.currentTarget.disabled = false;
+              e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Save';
+              return;
+            }
+          }
+
+          const { error } = await supabase
+            .from("announcements")
+            .update({ message: inputVal, expires_at: expiresAt })
+            .eq("id", ann.id);
+
+          if (error) {
+            showToast("Failed to update announcement: " + error.message, "error");
+            e.currentTarget.disabled = false;
+            e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Save';
+          } else {
+            showToast("Announcement updated successfully!");
+            loadAnnouncements();
+          }
+        });
+      });
 
       // Toggle active status
       div.querySelector(".toggle-active-btn").addEventListener("click", async (e) => {
