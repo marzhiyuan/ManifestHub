@@ -306,14 +306,6 @@
   box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
 }
 
-.modal-unsupported {
-  border: 1px solid #f85149;
-}
-
-.modal-requested {
-  border: 1px solid #58a6ff;
-}
-
 /* ===== AUTH FORM STYLES ===== */
 #authError {
   color: #f85149;
@@ -390,7 +382,7 @@
   max-width: 170px;
 }
 
-.donate-qr svg {
+.donate-qr img {
   width: 80px;
   height: 80px;
   border-radius: 4px;

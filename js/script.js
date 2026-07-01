@@ -268,8 +268,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // [02] MODALS ==========
   const disclaimerModal = document.getElementById("disclaimerModal");
-  const unsupportedModal = document.getElementById("unsupportedModal");
-  const requestedModal = document.getElementById("requestedModal");
 
   // Check LocalStorage for disclaimer
   if (!localStorage.getItem("disclaimerAccepted")) {
@@ -284,18 +282,6 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("disclaimerAccepted", "true");
       }
       disclaimerModal.classList.add("hidden");
-    });
-
-  document
-    .getElementById("closeUnsupportedModal")
-    .addEventListener("click", function () {
-      unsupportedModal.classList.add("hidden");
-    });
-
-  document
-    .getElementById("closeRequestedModal")
-    .addEventListener("click", function () {
-      requestedModal.classList.add("hidden");
     });
 
   // [03] LOAD FAQ ==========
@@ -355,6 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let appTypes = {};
   let appDepots = {};
   let searchable = [];
+  let denuvoAppIds = new Set();
 
   const _debounceMap = JSON.parse(sessionStorage.getItem("_dm") || "{}");
 
@@ -449,16 +436,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
-      const [depotKeysData, games, dlcs, sw] = await Promise.all([
+      const [depotKeysData, games, dlcs, sw, denuvoData] = await Promise.all([
         // Source: fylsdy/ManifestHub
         // Purpose: Downloads depot keys to locally generate the .lua files.
         fetchCachedJson("https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json"),
         fetchWithFallback("games_appid.json"),
         fetchWithFallback("dlc_appid.json"),
-        fetchWithFallback("software_appid.json")
+        fetchWithFallback("software_appid.json"),
+        fetch("data/denuvo-games.json").then(r => r.json()).catch(() => [])
       ]);
 
       depotKeys = depotKeysData;
+      denuvoAppIds = new Set(denuvoData);
       updateStatus(`Loaded ${Object.keys(depotKeys).length} depot keys`);
 
       games.forEach((app) => {
@@ -735,8 +724,26 @@ document.addEventListener("DOMContentLoaded", function () {
     return [];
   }
 
+  async function checkDenuvoStatus(appId) {
+    return denuvoAppIds.has(Number(appId));
+  }
+
   async function displayGameFiles(appId, gameName) {
     currentSelectedGame = { appId, gameName };
+
+    // Reset Denuvo warning and badge
+    const denuvoBadge = document.getElementById("denuvoBadge");
+    const denuvoWarning = document.getElementById("denuvoWarning");
+    if (denuvoBadge) denuvoBadge.classList.add("hidden");
+    if (denuvoWarning) denuvoWarning.classList.add("hidden");
+
+    // Check Denuvo status asynchronously
+    checkDenuvoStatus(appId).then((hasDenuvo) => {
+      if (currentSelectedGame && currentSelectedGame.appId === appId && hasDenuvo) {
+        if (denuvoBadge) denuvoBadge.classList.remove("hidden");
+        if (denuvoWarning) denuvoWarning.classList.remove("hidden");
+      }
+    });
 
     const gameIcon = document.getElementById("selectedGameIcon");
     gameIcon.style.display = "";
@@ -966,138 +973,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   legacyCheckBtn.addEventListener("click", legacyCheckManifest);
 
-  /*
-  // [10] REQUEST FORM HANDLING ==========
-  const requestAccordionBtn = document.getElementById("requestAccordionBtn");
-  const requestFormContainer = document.getElementById("requestFormContainer");
-  const accordionIcon = document.getElementById("accordionIcon");
-  const requestForm = document.getElementById("requestForm");
-  const submitRequestBtn = document.getElementById("submitRequestBtn");
-  const formFeedback = document.getElementById("formFeedback");
-  const cooldownContainer = document.getElementById("cooldownContainer");
-  const cooldownSeconds = document.getElementById("cooldownSeconds");
-  const appIdField = document.getElementById("appid");
-  let cooldownUntil = 0;
-  const COOLDOWN_SECONDS = 60;
 
-  if (requestAccordionBtn) {
-    requestAccordionBtn.addEventListener("click", function () {
-      requestFormContainer.classList.toggle("hidden");
-      if (requestFormContainer.classList.contains("hidden")) {
-        accordionIcon.style.transform = "rotate(0deg)";
-      } else {
-        accordionIcon.style.transform = "rotate(180deg)";
-        setTimeout(() => appIdField.focus(), 100);
-      }
-    });
-  }
-
-  function isGameBlacklisted(appId) {
-    return blacklistedGames.some(game => game.appId === appId.toString().trim());
-  }
-  function getBlacklistedGameInfo(appId) {
-    return blacklistedGames.find(game => game.appId === appId.toString().trim());
-  }
-  function isGameAlreadyRequested(appId) {
-    return requestedGames.some(game => game.appId === appId.toString().trim());
-  }
-  function getRequestedGameInfo(appId) {
-    return requestedGames.find(game => game.appId === appId.toString().trim());
-  }
-
-  function updateCooldown() {
-    const now = Date.now();
-    if (cooldownUntil > now) {
-      const remaining = Math.ceil((cooldownUntil - now) / 1000);
-      if (cooldownSeconds) cooldownSeconds.textContent = remaining;
-      if (cooldownContainer) cooldownContainer.classList.remove("hidden");
-      if (submitRequestBtn) {
-        submitRequestBtn.disabled = true;
-        submitRequestBtn.style.opacity = "0.5";
-      }
-      setTimeout(updateCooldown, 1000);
-    } else {
-      if (cooldownContainer) cooldownContainer.classList.add("hidden");
-      if (submitRequestBtn) {
-        submitRequestBtn.disabled = false;
-        submitRequestBtn.style.opacity = "1";
-      }
-    }
-  }
-
-  function startCooldown() {
-    cooldownUntil = Date.now() + COOLDOWN_SECONDS * 1000;
-    updateCooldown();
-  }
-
-  if (requestForm) {
-    requestForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      formFeedback.textContent = "";
-      formFeedback.style.color = "#8b949e";
-
-      const appId = appIdField.value.trim();
-      const gameName = document.getElementById("gamename").value.trim();
-
-      if (!appId || !gameName) {
-        formFeedback.textContent = "❌ Both fields are required.";
-        formFeedback.style.color = "#f85149";
-        return;
-      }
-
-      if (isGameBlacklisted(appId)) {
-        const blacklistedInfo = getBlacklistedGameInfo(appId);
-        const blacklistedName = blacklistedInfo ? blacklistedInfo.name : gameName;
-        document.getElementById("unsupportedGameMessage").innerHTML = `The game <span style="font-weight:700;color:#d29922;">"${blacklistedName}" (AppID: ${appId})</span> is not supported.`;
-        unsupportedModal.classList.remove("hidden");
-        formFeedback.textContent = "❌ This game is blacklisted.";
-        formFeedback.style.color = "#f85149";
-        return;
-      }
-
-      if (isGameAlreadyRequested(appId)) {
-        const requestedInfo = getRequestedGameInfo(appId);
-        const requestedName = requestedInfo ? requestedInfo.name : gameName;
-        document.getElementById("requestedGameMessage").innerHTML = `The game <span style="font-weight:700;color:#58a6ff;">"${requestedName}" (AppID: ${appId})</span> has already been requested.`;
-        requestedModal.classList.remove("hidden");
-        formFeedback.textContent = "ℹ️ This game has already been requested.";
-        formFeedback.style.color = "#58a6ff";
-        return;
-      }
-
-      const originalText = submitRequestBtn.innerHTML;
-      submitRequestBtn.disabled = true;
-      submitRequestBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
-
-      try {
-        const response = await fetch(requestForm.action, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ appId, gameName }),
-        });
-
-        const result = await response.json();
-        if (response.ok && result.status === "success") {
-          formFeedback.textContent = "✅ Request sent successfully!";
-          formFeedback.style.color = "#3fb950";
-          requestForm.reset();
-          startCooldown();
-        } else {
-          formFeedback.textContent = "❌ Failed to send request.";
-          formFeedback.style.color = "#f85149";
-        }
-      } catch (error) {
-        formFeedback.textContent = "❌ Network error. Please try again.";
-        formFeedback.style.color = "#f85149";
-      } finally {
-        if (cooldownUntil <= Date.now()) {
-          submitRequestBtn.disabled = false;
-        }
-        submitRequestBtn.innerHTML = originalText;
-      }
-    });
-  }
-  */
 
   async function loadTrendingDownloads() {
     const grid = document.getElementById("trendingGrid");

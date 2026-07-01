@@ -173,6 +173,13 @@
   border-color: rgba(88, 166, 255, 0.4);
 }
 
+.badge-denuvo {
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
+  border-color: rgba(248, 81, 73, 0.4);
+}
+
+
 .no-results {
   text-align: center;
   color: #8b949e;
