@@ -609,7 +609,7 @@
 
 #authSection .btn-primary,
 #authSection .btn-secondary {
-  padding: 0.4rem 1rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 600;

@@ -165,16 +165,22 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (authMode === "signup") {
         const displayName =
           document.getElementById("authDisplayName")?.value || "";
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { display_name: displayName },
-          },
-        });
+        const { data: signUpData, error: signUpError } =
+          await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { display_name: displayName },
+            },
+          });
         error = signUpError;
         if (!error && signUpData && !signUpData.session) {
-          window.handleSignupConfirmation(authError, email, authSubmitBtn, supabase);
+          window.handleSignupConfirmation(
+            authError,
+            email,
+            authSubmitBtn,
+            supabase,
+          );
           return;
         }
       } else if (authMode === "forgot") {
@@ -406,16 +412,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
     async function fetchCachedJson(url, maxAgeMs = CACHE_DURATION) {
-      if (!('caches' in window)) {
+      if (!("caches" in window)) {
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       }
       try {
-        const cache = await caches.open('manifesthub-db-cache');
+        const cache = await caches.open("manifesthub-db-cache");
         const cachedResponse = await cache.match(url);
-        const lastFetch = localStorage.getItem('cache-time-' + url);
-        if (cachedResponse && lastFetch && (Date.now() - parseInt(lastFetch) < maxAgeMs)) {
+        const lastFetch = localStorage.getItem("cache-time-" + url);
+        if (
+          cachedResponse &&
+          lastFetch &&
+          Date.now() - parseInt(lastFetch) < maxAgeMs
+        ) {
           return await cachedResponse.json();
         }
       } catch (e) {
@@ -424,9 +434,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       try {
-        const cache = await caches.open('manifesthub-db-cache');
+        const cache = await caches.open("manifesthub-db-cache");
         await cache.put(url, res.clone());
-        localStorage.setItem('cache-time-' + url, Date.now().toString());
+        localStorage.setItem("cache-time-" + url, Date.now().toString());
       } catch (e) {
         console.warn("Cache write failed...", e);
       }
@@ -454,11 +464,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const [depotKeysData, games, dlcs, sw, denuvoData] = await Promise.all([
         // Source: fylsdy/ManifestHub
         // Purpose: Downloads depot keys to locally generate the .lua files.
-        fetchCachedJson("https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json"),
+        fetchCachedJson(
+          "https://raw.githubusercontent.com/fylsdy/ManifestHub/main/depotkeys.json",
+        ),
         fetchWithFallback("games_appid.json"),
         fetchWithFallback("dlc_appid.json"),
         fetchWithFallback("software_appid.json"),
-        fetch("data/denuvo-games.json").then(r => r.json()).catch(() => [])
+        fetch("data/denuvo-games.json")
+          .then((r) => r.json())
+          .catch(() => []),
       ]);
 
       depotKeys = depotKeysData;
@@ -737,7 +751,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return manifests;
       }
-    } catch (e) { }
+    } catch (e) {}
     return [];
   }
 
@@ -756,7 +770,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Check Denuvo status asynchronously
     checkDenuvoStatus(appId).then((hasDenuvo) => {
-      if (currentSelectedGame && currentSelectedGame.appId === appId && hasDenuvo) {
+      if (
+        currentSelectedGame &&
+        currentSelectedGame.appId === appId &&
+        hasDenuvo
+      ) {
         if (denuvoBadge) denuvoBadge.classList.remove("hidden");
         if (denuvoWarning) denuvoWarning.classList.remove("hidden");
       }
@@ -827,7 +845,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isExternal: true,
         });
       }
-    } catch (e) { }
+    } catch (e) {}
 
     if (files.length === 0) {
       filesList.innerHTML =
@@ -896,7 +914,7 @@ document.addEventListener("DOMContentLoaded", function () {
               const response = await fetch(file.url);
               const blob = await response.blob();
               zip.file(file.name, blob);
-            } catch (e) { }
+            } catch (e) {}
           }
         }
 
@@ -1075,7 +1093,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .order("created_at", { ascending: false });
 
       if (!error && data) {
-        activeAnnouncements = data.map(ann => ann.message);
+        activeAnnouncements = data.map((ann) => ann.message);
       }
     } catch (e) {
       console.warn("Failed to fetch announcements:", e);
@@ -1119,11 +1137,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const pollCard = document.getElementById("pollCard");
     const pollQuestionText = document.getElementById("pollQuestionText");
     const pollVoteInterface = document.getElementById("pollVoteInterface");
-    const pollOptionsContainer = document.getElementById("pollOptionsContainer");
+    const pollOptionsContainer = document.getElementById(
+      "pollOptionsContainer",
+    );
     const pollAuthWarning = document.getElementById("pollAuthWarning");
     const pollLoginBtn = document.getElementById("pollLoginBtn");
-    const pollResultsInterface = document.getElementById("pollResultsInterface");
-    const pollResultsContainer = document.getElementById("pollResultsContainer");
+    const pollResultsInterface = document.getElementById(
+      "pollResultsInterface",
+    );
+    const pollResultsContainer = document.getElementById(
+      "pollResultsContainer",
+    );
     const pollTotalVotes = document.getElementById("pollTotalVotes");
     const pollVoteReceipt = document.getElementById("pollVoteReceipt");
 
@@ -1162,9 +1186,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Map votes in memory
       const votesMap = {};
-      activePoll.options.forEach(opt => votesMap[opt] = 0);
+      activePoll.options.forEach((opt) => (votesMap[opt] = 0));
       if (votesData) {
-        votesData.forEach(v => {
+        votesData.forEach((v) => {
           votesMap[v.vote_option] = (votesMap[v.vote_option] || 0) + 1;
         });
       }
@@ -1216,7 +1240,7 @@ document.addEventListener("DOMContentLoaded", function () {
           pollAuthWarning.classList.add("hidden");
         }
 
-        poll.options.forEach(option => {
+        poll.options.forEach((option) => {
           const btn = document.createElement("button");
           btn.className = "poll-option-btn";
           btn.textContent = option;
@@ -1231,7 +1255,10 @@ document.addEventListener("DOMContentLoaded", function () {
         pollResultsInterface.classList.remove("hidden");
         pollResultsContainer.innerHTML = "";
 
-        const total = Object.values(vMap).reduce((sum, count) => sum + count, 0);
+        const total = Object.values(vMap).reduce(
+          (sum, count) => sum + count,
+          0,
+        );
 
         pollTotalVotes.textContent = `${total} vote${total === 1 ? "" : "s"}`;
         if (userVotedOption) {
@@ -1240,7 +1267,7 @@ document.addEventListener("DOMContentLoaded", function () {
           pollVoteReceipt.textContent = "";
         }
 
-        poll.options.forEach(option => {
+        poll.options.forEach((option) => {
           const count = vMap[option] || 0;
           const percent = total > 0 ? Math.round((count / total) * 100) : 0;
 
@@ -1276,7 +1303,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // 1. Submit vote to Supabase
         const { error: castError } = await supabase
           .from("poll_votes")
-          .insert([{ poll_id: pollId, user_id: currentUser.id, vote_option: option }]);
+          .insert([
+            { poll_id: pollId, user_id: currentUser.id, vote_option: option },
+          ]);
 
         if (castError) {
           console.error("Failed to cast vote in Supabase:", castError);
