@@ -20,28 +20,26 @@
 
 <body>
   <!-- Auth Gate (shown when not logged in) -->
-  <div id="authGate" class="page-wrap" style="display: block; text-align: center; padding-top: 5rem">
-    <img src="assets/manifesthub.png" alt="ManifestHub Logo"
-      style="width: 200px; height: auto; margin-bottom: 1.25rem; border-radius: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));" />
-    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #c9d1d9; font-weight: 700">
+  <div id="authGate" class="page-wrap profile-gate-wrap" style="display: block;">
+    <img src="assets/manifesthub.png" alt="ManifestHub Logo" class="profile-gate-logo" />
+    <h2 class="profile-gate-title">
       Sign in to your account
     </h2>
-    <p style="color: #8b949e; margin-bottom: 2rem">
+    <p class="profile-gate-subtitle">
       Manage your download history and account settings.
     </p>
 
-    <div style="display: flex; justify-content: center; gap: 1rem">
-      <button id="gateLoginBtn" class="btn-primary" style="padding: 0.6rem 1.5rem; font-size: 1rem">
+    <div class="profile-gate-btn-group">
+      <button id="gateLoginBtn" class="btn-primary profile-gate-btn-padding">
         Sign in
       </button>
-      <button id="gateSignupBtn" class="btn-secondary" style="padding: 0.6rem 1.5rem; font-size: 1rem">
+      <button id="gateSignupBtn" class="btn-secondary profile-gate-btn-padding">
         Create account
       </button>
     </div>
 
-    <div style="margin-top: 3rem">
-      <a href="index.html" style="color: #58a6ff; text-decoration: none; font-size: 0.9rem"><i
-          class="fas fa-arrow-left"></i> Back to Home</a>
+    <div class="profile-gate-back">
+      <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
     </div>
   </div>
 
@@ -71,37 +69,17 @@
           <i class="fas fa-lock"></i>
           <input type="password" id="authPassword" class="auth-input" placeholder="Password" required />
         </div>
-        <div id="forgotPasswordWrap"
-          style="text-align: right; margin-top: -0.5rem; margin-bottom: 1rem; font-size: 0.8rem;">
-          <button type="button" id="forgotPasswordBtn"
-            style="background: none; border: none; color: #58a6ff; cursor: pointer; padding: 0;">Forgot
-            password?</button>
+        <div id="forgotPasswordWrap" class="forgot-password-wrap">
+          <button type="button" id="forgotPasswordBtn" class="forgot-password-btn">Forgot password?</button>
         </div>
         <button type="submit" id="authSubmitBtn" class="auth-submit-btn">
           Sign In
         </button>
-        <div id="authError" class="hidden" style="
-              color: #f85149;
-              font-size: 0.875rem;
-              margin-top: 1rem;
-              text-align: center;
-            "></div>
+        <div id="authError" class="hidden auth-error-wrap"></div>
 
-        <div style="
-              margin-top: 1.5rem;
-              text-align: center;
-              font-size: 0.875rem;
-              color: #8b949e;
-            ">
+        <div class="auth-switch-wrap">
           <span id="authSwitchText">Don't have an account?</span>
-          <button type="button" id="authSwitchBtn" style="
-                background: none;
-                border: none;
-                color: #58a6ff;
-                font-weight: 600;
-                cursor: pointer;
-                padding: 0 0.25rem;
-              ">
+          <button type="button" id="authSwitchBtn" class="auth-switch-btn">
             Sign Up
           </button>
         </div>
@@ -111,8 +89,8 @@
 
   <!-- Main Profile (hidden until auth confirmed) -->
   <main id="profileContent" class="page-wrap" style="display: none">
-    <div style="margin-bottom: 2rem">
-      <a href="index.html" style="color: #8b949e; text-decoration: none; font-size: 0.9rem"><i
+    <div class="settings-back-wrap">
+      <a href="index.html" class="settings-back-link"><i
           class="fas fa-arrow-left"></i> Back to Home</a>
     </div>
 
@@ -121,13 +99,13 @@
       <div class="avatar-circle" id="avatarCircle">?</div>
       <div class="user-info">
         <h1 id="profileDisplayName">Loading...</h1>
-        <p id="profileEmail" style="color: #8b949e; font-size: 0.9rem; margin-bottom: 0.25rem">
+        <p id="profileEmail" class="profile-email-text">
           —
         </p>
         <p id="profileMeta">ManifestHub Member</p>
       </div>
-      <div style="margin-left: auto">
-        <button id="signOutBtn" class="btn-secondary" style="color: #f85149">
+      <div class="user-hero-action">
+        <button id="signOutBtn" class="btn-secondary text-danger">
           <i class="fas fa-sign-out-alt"></i> Sign out
         </button>
       </div>
@@ -172,62 +150,41 @@
     <!-- Tab: Settings -->
     <div id="tab-settings" class="tab-panel">
       <h2 class="section-heading"><i class="fas fa-user-cog"></i> Account</h2>
-      <div style="
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-          ">
-        <div style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 1rem;
-            ">
+      <div class="settings-card">
+        <div class="settings-row">
           <div>
-            <div style="font-weight: 600; margin-bottom: 0.2rem">
+            <div class="settings-label">
               Display Name
             </div>
-            <div style="color: #8b949e" id="settingsDisplayName">—</div>
+            <div class="settings-value" id="settingsDisplayName">—</div>
           </div>
-          <button id="updateNameBtn" class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.8rem">
+          <button id="updateNameBtn" class="btn-secondary settings-btn">
             Edit
           </button>
         </div>
-        <div style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 1rem;
-            ">
+        <div class="settings-row">
           <div>
-            <div style="font-weight: 600; margin-bottom: 0.2rem">Email</div>
-            <div style="color: #8b949e" id="settingsEmail">—</div>
+            <div class="settings-label">Email</div>
+            <div class="settings-value" id="settingsEmail">—</div>
           </div>
         </div>
-        <div style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            ">
+        <div class="settings-row-last">
           <div>
-            <div style="font-weight: 600; margin-bottom: 0.2rem">Password</div>
-            <div style="color: #8b949e">••••••••</div>
+            <div class="settings-label">Password</div>
+            <div class="settings-value">••••••••</div>
           </div>
-          <button id="changePasswordBtn" class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.8rem">
+          <button id="changePasswordBtn" class="btn-secondary settings-btn">
             Change
           </button>
         </div>
       </div>
 
-      <h2 class="section-heading" style="color: #f85149">
+      <h2 class="section-heading text-danger">
         <i class="fas fa-exclamation-triangle"></i> Danger Zone
       </h2>
       <div class="danger-card">
         <div>
-          <strong style="font-size: 0.9rem">Sign out everywhere</strong>
+          <strong class="danger-card-title">Sign out everywhere</strong>
           <p>This will sign you out of all active sessions.</p>
         </div>
         <button id="signOutEverywhereBtn" class="btn-danger">
@@ -255,7 +212,7 @@
 
                   <div class="admin-capsule-divider"></div>
 
-                  <div id="durationInputs" style="display: flex; gap: 0.5rem; align-items: center;">
+                  <div id="durationInputs" class="admin-duration-inputs">
                     <label class="admin-select-label">
                       <select id="announceDays" class="admin-capsule-select"></select>d
                     </label>
@@ -268,7 +225,7 @@
                   </div>
                 </div>
                 <button type="submit" id="announceSubmitBtn" class="btn-primary admin-submit-btn-circle">
-                  <i class="fas fa-plus" style="font-size: 0.8rem;"></i>
+                  <i class="fas fa-plus"></i>
                 </button>
               </div>
             </div>
@@ -276,12 +233,41 @@
         </form>
       </div>
 
-      <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem;"><i class="fas fa-list-ul"></i> Active
-        Announcements</h3>
-      <div id="announcementList" style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <div
-          style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">
-          Loading announcements...</div>
+      <h3 class="admin-section-subtitle"><i class="fas fa-list-ul"></i> Active Announcements</h3>
+      <div id="announcementList" class="admin-list-container">
+        <div class="admin-list-empty">Loading announcements...</div>
+      </div>
+
+      <!-- Admin Panel Poll Section -->
+      <h2 class="section-heading admin-section-divider">
+        <i class="fas fa-poll"></i> Poll Manager
+      </h2>
+      
+      <div class="admin-form-card">
+        <form id="adminPollForm">
+          <div class="admin-form-row">
+            <div class="admin-input-group admin-poll-input-col-2">
+              <label>Poll Question</label>
+              <input type="text" id="pollQuestionInput" placeholder="e.g., Should we implement a Lua key downloader tool?" class="admin-text-input w-full" required />
+            </div>
+            <div class="admin-input-group admin-poll-input-col-1">
+              <label>Options (comma-separated)</label>
+              <input type="text" id="pollOptionsInput" placeholder="Yes, No" value="Yes, No" class="admin-text-input w-full" required />
+            </div>
+            <div>
+              <button type="submit" id="pollSubmitBtn" class="btn-primary admin-poll-submit-btn">
+                <i class="fas fa-plus"></i> Create Poll
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <h3 class="admin-section-subtitle text-light flex-align-center-gap">
+        <i class="fas fa-list-ul"></i> Poll List & Live Results
+      </h3>
+      <div id="adminPollsList" class="admin-list-container mb-6">
+        <div class="admin-list-empty">Loading polls...</div>
       </div>
     </div>
   </main>
@@ -343,8 +329,7 @@
         <h2><i class="fas fa-key"></i> Reset Your Password</h2>
       </div>
       <div class="profile-modal-body">
-        <p style="color:#8b949e; font-size:0.875rem; margin-bottom:1rem;">Choose a strong new password for your account.
-        </p>
+        <p class="modal-text-muted">Choose a strong new password for your account.</p>
         <div class="profile-input-group">
           <label for="recoveryPasswordInput">New password</label>
           <input type="password" id="recoveryPasswordInput" class="profile-input" placeholder="Enter new password"
@@ -353,19 +338,19 @@
         <p id="recoveryModalError" class="profile-modal-error hidden"></p>
       </div>
       <div class="profile-modal-footer">
-        <button id="confirmRecoveryPasswordBtn" class="btn-primary" style="width:100%">Set New Password</button>
+        <button id="confirmRecoveryPasswordBtn" class="btn-primary modal-btn-full">Set New Password</button>
       </div>
     </div>
   </div>
 
   <!-- Confirm Dialog Modal -->
   <div id="confirmModal" class="profile-modal-overlay hidden">
-    <div class="profile-modal" style="max-width:380px;">
+    <div class="profile-modal confirm-modal-size">
       <div class="profile-modal-header">
-        <h2 id="confirmModalTitle"><i class="fas fa-exclamation-triangle" style="color:#f85149"></i> Confirm</h2>
+        <h2 id="confirmModalTitle"><i class="fas fa-exclamation-triangle text-danger"></i> Confirm</h2>
       </div>
       <div class="profile-modal-body">
-        <p id="confirmModalMessage" style="color:#8b949e; font-size:0.9rem;"></p>
+        <p id="confirmModalMessage" class="modal-confirm-msg"></p>
       </div>
       <div class="profile-modal-footer">
         <button id="confirmModalCancel" class="btn-secondary">Cancel</button>
@@ -382,6 +367,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js" defer></script>
+  <script src="js/utils.js" defer></script>
   <script src="js/profile.js" defer></script>
 </body>
 

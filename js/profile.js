@@ -1,4 +1,22 @@
+// =============================================================
+// profile.js — Profile Page Controller
+// =============================================================
+// [00]  SUPABASE SETUP
+// [01]  UI HELPERS (Toast, Modals, Confirm dialog)
+// [02]  AUTH MODAL & LOGIC
+// [03]  TAB SWITCHING
+// [04]  DOWNLOAD HISTORY
+// [05]  DISPLAY NAME MODAL
+// [06]  CHANGE PASSWORD MODAL
+// [07]  SHOW / HIDE PROFILE (Auth Gate)
+// [08]  SIGN OUT BUTTONS
+// [09]  UTILITIES
+// [10]  AUTH STATE CHANGE (Init + Recovery + Session)
+// [11]  ADMIN PANEL (Announcements + Polls)
+// =============================================================
+
 document.addEventListener("DOMContentLoaded", function () {
+  // [00] SUPABASE SETUP ==========
   const SUPABASE_URL = window.SUPABASE_URL;
   const SUPABASE_KEY = window.SUPABASE_ANON_KEY;
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -6,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentUser = null;
   let authMode = "login"; // "login", "signup", "forgot"
 
-  // ===== CUSTOM UI HELPERS =====
+  // [01] UI HELPERS ==========
 
   let toastTimer = null;
   function showToast(message, type = "success") {
@@ -80,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // ===== AUTH MODAL =====
+  // [02] AUTH MODAL & LOGIC ==========
   function openAuthModal(mode) {
     authMode = mode;
     updateAuthModalMode();
@@ -161,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btn = document.getElementById("authSubmitBtn");
     const errEl = document.getElementById("authError");
     errEl.classList.add("hidden");
+    errEl.style.color = ""; // Reset custom color if any!
     btn.disabled = true;
     btn.textContent = "Please wait...";
 
@@ -183,6 +202,10 @@ document.addEventListener("DOMContentLoaded", function () {
         options: { data: { display_name: displayName } },
       });
       error = result.error;
+      if (!error && result.data && !result.data.session) {
+        window.handleSignupConfirmation(errEl, email, btn, supabase);
+        return;
+      }
     } else if (authMode === "forgot") {
       const result = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin + "/profile",
@@ -216,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
           : "Send reset email";
   });
 
-  // ===== TAB SWITCHING =====
+  // [03] TAB SWITCHING ==========
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document
@@ -234,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector('[data-tab="history"]').click();
   }
 
-  // ===== RENDER HISTORY TABLE =====
+  // [04] DOWNLOAD HISTORY ==========
   function renderHistoryTable(items, dbErrorOccurred = false) {
     const tbody = document.getElementById("historyTableBody");
     const meta = document.getElementById("historyMeta");
@@ -262,8 +285,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ? item.game_name
         : `App ${item.app_id || "Unknown"}`;
       tr.innerHTML = `
-      <td style="font-weight:500;">${escHtml(gameLabel)}</td>
-      <td style="color:#8b949e;">${escHtml(item.type || "Download")}</td>
+      <td style="font-weight:500;">${window.escapeHtml(gameLabel)}</td>
+      <td style="color:#8b949e;">${window.escapeHtml(item.type || "Download")}</td>
       <td style="color:#8b949e;font-size:0.8rem;">${date}</td>
     `;
       tbody.appendChild(tr);
@@ -288,7 +311,8 @@ document.addEventListener("DOMContentLoaded", function () {
       renderHistoryTable(cachedData);
       meta.innerHTML = `${cachedData.length} download${cachedData.length !== 1 ? "s" : ""} total <span style="color:#8b949e; font-size:0.8rem; margin-left:8px;"><i class="fas fa-spinner fa-spin"></i> Checking for updates...</span>`;
     } else {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="3"><i class="fas fa-spinner spinner"></i> Loading...</td></tr>';
+      tbody.innerHTML =
+        '<tr class="empty-row"><td colspan="3"><i class="fas fa-spinner spinner"></i> Loading...</td></tr>';
       meta.textContent = "Loading your downloads...";
     }
 
@@ -319,7 +343,10 @@ document.addEventListener("DOMContentLoaded", function () {
         dbErrorOccurred = true;
       }
 
-      const shouldUpdate = !cachedData || JSON.stringify(cachedData) !== JSON.stringify(dbData) || dbErrorOccurred;
+      const shouldUpdate =
+        !cachedData ||
+        JSON.stringify(cachedData) !== JSON.stringify(dbData) ||
+        dbErrorOccurred;
       if (shouldUpdate) {
         renderHistoryTable(dbData, dbErrorOccurred);
       } else {
@@ -327,14 +354,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (e) {
       if (!cachedData) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="3" style="color:#f85149;">Could not load history.</td></tr>';
+        tbody.innerHTML =
+          '<tr class="empty-row"><td colspan="3" style="color:#f85149;">Could not load history.</td></tr>';
         meta.textContent = "";
       }
       console.error(e);
     }
   }
 
-  // ===== UPDATE DISPLAY NAME MODAL =====
+  // [05] DISPLAY NAME MODAL ==========
   function setupUpdateNameModal(displayName) {
     const btn = document.getElementById("updateNameBtn");
     const nameInput = document.getElementById("newDisplayNameInput");
@@ -379,7 +407,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // ===== CHANGE PASSWORD MODAL =====
+  // [06] CHANGE PASSWORD MODAL ==========
   function setupChangePasswordModal() {
     const btn = document.getElementById("changePasswordBtn");
     let confirmBtn = document.getElementById("confirmChangePasswordBtn");
@@ -430,7 +458,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ===== SHOW / HIDE PROFILE =====
+  // [07] SHOW / HIDE PROFILE ==========
   function showProfile(user) {
     currentUser = user;
     document.getElementById("authGate").style.display = "none";
@@ -447,9 +475,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const joinDate = user.created_at
       ? new Date(user.created_at).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "long",
-      })
+          year: "numeric",
+          month: "long",
+        })
       : "";
     document.getElementById("profileMeta").textContent = joinDate
       ? `Member since ${joinDate}`
@@ -485,7 +513,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("profileContent").style.display = "none";
   }
 
-  // ===== SIGN OUT BUTTONS =====
+  // [08] SIGN OUT BUTTONS ==========
   document.getElementById("signOutBtn").addEventListener("click", async () => {
     await supabase.auth.signOut();
   });
@@ -497,16 +525,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-  // ===== HELPER =====
-  function escHtml(text) {
-    return String(text)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
+  // [09] UTILITIES ==========
 
-  // ===== INIT =====
+  // [10] AUTH STATE CHANGE ==========
+  // Runs once on page load to restore an existing session,
+  // then handles login, logout, token refresh, and password recovery events.
   (async () => {
     const {
       data: { session },
@@ -560,12 +583,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // ===== ADMIN PANEL ANNOUNCEMENTS =====
+  // [11] ADMIN PANEL ==========
   async function setupAdminPanel(user) {
     const form = document.getElementById("adminAnnouncementForm");
     if (!form) return;
 
-    // Reset listener to prevent duplicates if user signs in/out
+    // Clone form node to prevent duplicate event listeners on re-entry
     const newForm = form.cloneNode(true);
     form.parentNode.replaceChild(newForm, form);
 
@@ -622,14 +645,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const h = parseInt(announceHours.value, 10) || 0;
         const m = parseInt(announceMins.value, 10) || 0;
 
-        const totalMs = (d * 24 * 60 * 60 * 1000) +
-          (h * 60 * 60 * 1000) +
-          (m * 60 * 1000);
+        const totalMs =
+          d * 24 * 60 * 60 * 1000 + h * 60 * 60 * 1000 + m * 60 * 1000;
 
         if (totalMs > 0) {
           expiresAt = new Date(Date.now() + totalMs).toISOString();
         } else {
-          showToast("Duration must be greater than 0 if not Infinite.", "error");
+          showToast(
+            "Duration must be greater than 0 if not Infinite.",
+            "error",
+          );
           submitBtn.disabled = false;
           submitBtn.innerHTML = '<i class="fas fa-plus"></i>';
           return;
@@ -661,6 +686,74 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     loadAnnouncements();
+
+    // ===== POLL MANAGER INITIALIZATION =====
+    const pollForm = document.getElementById("adminPollForm");
+    if (pollForm) {
+      // Re-create node to clear existing listeners if any
+      const newPollForm = pollForm.cloneNode(true);
+      pollForm.parentNode.replaceChild(newPollForm, pollForm);
+
+      newPollForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const submitBtn = newPollForm.querySelector("#pollSubmitBtn");
+        const questionInput = newPollForm.querySelector("#pollQuestionInput");
+        const optionsInput = newPollForm.querySelector("#pollOptionsInput");
+
+        const question = questionInput.value.trim();
+        const optionsText = optionsInput.value.trim();
+
+        if (!question || !optionsText) return;
+
+        const options = optionsText
+          .split(",")
+          .map((opt) => opt.trim())
+          .filter(Boolean);
+        if (options.length < 2) {
+          showToast("Please provide at least 2 options.", "error");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Creating...';
+
+        // 1. Deactivate other active polls first
+        const { error: deactivateError } = await supabase
+          .from("polls")
+          .update({ is_active: false })
+          .eq("is_active", true);
+
+        if (deactivateError) {
+          console.error("Failed to deactivate active polls:", deactivateError);
+        }
+
+        // 2. Insert new active poll
+        const { error: insertError } = await supabase.from("polls").insert([
+          {
+            question: question,
+            options: options,
+            is_active: true,
+            created_by: user.id,
+          },
+        ]);
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-plus"></i> Create Poll';
+
+        if (insertError) {
+          showToast("Failed to create poll: " + insertError.message, "error");
+        } else {
+          questionInput.value = "";
+          optionsInput.value = "Yes, No";
+          showToast("Poll created successfully!");
+          loadAdminPolls();
+        }
+      });
+
+      // Load initially
+      loadAdminPolls();
+    }
   }
 
   async function loadAnnouncements() {
@@ -687,17 +780,20 @@ document.addEventListener("DOMContentLoaded", function () {
       const isExpired = ann.expires_at && new Date(ann.expires_at) < new Date();
       const div = document.createElement("div");
       div.className = "announcement-item";
-      div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:0.75rem 1rem; font-size:0.875rem; margin-top: 0.5rem;";
+      div.style.cssText =
+        "display:flex; justify-content:space-between; align-items:center; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:0.75rem 1rem; font-size:0.875rem; margin-top: 0.5rem;";
 
       let expiryLabel = "Permanent";
       if (ann.expires_at) {
         const dateStr = new Date(ann.expires_at).toLocaleString();
-        expiryLabel = isExpired ? `<span style="color:#f85149">Expired at ${dateStr}</span>` : `Expires at ${dateStr}`;
+        expiryLabel = isExpired
+          ? `<span style="color:#f85149">Expired at ${dateStr}</span>`
+          : `Expires at ${dateStr}`;
       }
 
       div.innerHTML = `
         <div style="flex:1; padding-right:1rem; text-align: left;">
-          <div style="font-weight:500; color:${isExpired ? '#8b949e' : '#c9d1d9'}; margin-bottom:0.25rem;">${escHtml(ann.message)}</div>
+          <div style="font-weight:500; color:${isExpired ? "#8b949e" : "#c9d1d9"}; margin-bottom:0.25rem;">${window.escapeHtml(ann.message)}</div>
           <div style="font-size:0.75rem; color:#8b949e;">${expiryLabel}</div>
         </div>
         <div style="display:flex; align-items:center; gap:0.5rem;">
@@ -716,7 +812,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // Edit announcement inline
       div.querySelector(".edit-ann-btn").addEventListener("click", () => {
         let isPerm = !ann.expires_at;
-        let dVal = 1, hVal = 0, mVal = 0;
+        let dVal = 1,
+          hVal = 0,
+          mVal = 0;
         if (ann.expires_at) {
           const diffMs = new Date(ann.expires_at) - Date.now();
           if (diffMs > 0) {
@@ -729,20 +827,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         div.innerHTML = `
           <div style="flex:1; padding-right:1rem; text-align: left; display:flex; flex-direction:column; gap:0.5rem;">
-            <input type="text" class="edit-ann-input" value="${escHtml(ann.message)}" style="background:#0d1117; border:1px solid #30363d; border-radius:4px; color:#c9d1d9; padding:0.35rem 0.5rem; font-size:0.875rem; width:100%;" required />
+            <input type="text" class="edit-ann-input" value="${window.escapeHtml(ann.message)}" style="background:#0d1117; border:1px solid #30363d; border-radius:4px; color:#c9d1d9; padding:0.35rem 0.5rem; font-size:0.875rem; width:100%;" required />
             <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap: wrap;">
               <div class="admin-expiration-capsule" style="height: 32px; padding: 0.15rem 0.5rem; gap: 0.5rem;">
-                <button type="button" class="admin-permanent-btn edit-ann-perm-btn ${isPerm ? 'active' : ''}" title="Infinite Expiration" style="font-size: 1rem;">∞</button>
+                <button type="button" class="admin-permanent-btn edit-ann-perm-btn ${isPerm ? "active" : ""}" title="Infinite Expiration" style="font-size: 1rem;">∞</button>
                 <div class="admin-capsule-divider" style="height: 1rem;"></div>
-                <div class="edit-ann-dur-wrap" style="display:${isPerm ? 'none' : 'flex'}; gap:0.25rem; align-items:center; opacity:${isPerm ? '0.5' : '1'};">
+                <div class="edit-ann-dur-wrap" style="display:${isPerm ? "none" : "flex"}; gap:0.25rem; align-items:center; opacity:${isPerm ? "0.5" : "1"};">
                   <label class="admin-select-label" style="font-size: 0.75rem;">
-                    <select class="edit-ann-days admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? 'disabled' : ''}></select>d
+                    <select class="edit-ann-days admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? "disabled" : ""}></select>d
                   </label>
                   <label class="admin-select-label" style="font-size: 0.75rem;">
-                    <select class="edit-ann-hours admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? 'disabled' : ''}></select>h
+                    <select class="edit-ann-hours admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? "disabled" : ""}></select>h
                   </label>
                   <label class="admin-select-label" style="font-size: 0.75rem;">
-                    <select class="edit-ann-mins admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? 'disabled' : ''}></select>m
+                    <select class="edit-ann-mins admin-capsule-select" style="font-size:0.75rem;" ${isPerm ? "disabled" : ""}></select>m
                   </label>
                 </div>
               </div>
@@ -791,68 +889,80 @@ document.addEventListener("DOMContentLoaded", function () {
           loadAnnouncements();
         });
 
-        div.querySelector(".save-ann-btn").addEventListener("click", async (e) => {
-          const inputVal = div.querySelector(".edit-ann-input").value.trim();
-          if (!inputVal) {
-            showToast("Message cannot be empty.", "error");
-            return;
-          }
-
-          e.currentTarget.disabled = true;
-          e.currentTarget.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-          let expiresAt = null;
-          const isPermanent = editPermBtn.classList.contains("active");
-          if (!isPermanent) {
-            const d = parseInt(editDays.value, 10) || 0;
-            const h = parseInt(editHours.value, 10) || 0;
-            const m = parseInt(editMins.value, 10) || 0;
-            const totalMs = (d * 24 * 60 * 60 * 1000) + (h * 60 * 60 * 1000) + (m * 60 * 1000);
-
-            if (totalMs > 0) {
-              expiresAt = new Date(Date.now() + totalMs).toISOString();
-            } else {
-              showToast("Duration must be greater than 0 if not Permanent.", "error");
-              e.currentTarget.disabled = false;
-              e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Save';
+        div
+          .querySelector(".save-ann-btn")
+          .addEventListener("click", async (e) => {
+            const inputVal = div.querySelector(".edit-ann-input").value.trim();
+            if (!inputVal) {
+              showToast("Message cannot be empty.", "error");
               return;
             }
-          }
 
-          const { error } = await supabase
-            .from("announcements")
-            .update({ message: inputVal, expires_at: expiresAt })
-            .eq("id", ann.id);
+            e.currentTarget.disabled = true;
+            e.currentTarget.innerHTML =
+              '<i class="fas fa-spinner fa-spin"></i>';
 
-          if (error) {
-            showToast("Failed to update announcement: " + error.message, "error");
-            e.currentTarget.disabled = false;
-            e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Save';
-          } else {
-            showToast("Announcement updated successfully!");
-            loadAnnouncements();
-          }
-        });
+            let expiresAt = null;
+            const isPermanent = editPermBtn.classList.contains("active");
+            if (!isPermanent) {
+              const d = parseInt(editDays.value, 10) || 0;
+              const h = parseInt(editHours.value, 10) || 0;
+              const m = parseInt(editMins.value, 10) || 0;
+              const totalMs =
+                d * 24 * 60 * 60 * 1000 + h * 60 * 60 * 1000 + m * 60 * 1000;
+
+              if (totalMs > 0) {
+                expiresAt = new Date(Date.now() + totalMs).toISOString();
+              } else {
+                showToast(
+                  "Duration must be greater than 0 if not Permanent.",
+                  "error",
+                );
+                e.currentTarget.disabled = false;
+                e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Save';
+                return;
+              }
+            }
+
+            const { error } = await supabase
+              .from("announcements")
+              .update({ message: inputVal, expires_at: expiresAt })
+              .eq("id", ann.id);
+
+            if (error) {
+              showToast(
+                "Failed to update announcement: " + error.message,
+                "error",
+              );
+              e.currentTarget.disabled = false;
+              e.currentTarget.innerHTML = '<i class="fas fa-check"></i> Save';
+            } else {
+              showToast("Announcement updated successfully!");
+              loadAnnouncements();
+            }
+          });
       });
 
       // Toggle active status
-      div.querySelector(".toggle-active-btn").addEventListener("click", async (e) => {
-        const id = e.currentTarget.dataset.id;
-        const currentActive = e.currentTarget.dataset.active === "true";
-        e.currentTarget.disabled = true;
+      div
+        .querySelector(".toggle-active-btn")
+        .addEventListener("click", async (e) => {
+          const id = e.currentTarget.dataset.id;
+          const currentActive = e.currentTarget.dataset.active === "true";
+          e.currentTarget.disabled = true;
 
-        const { error } = await supabase
-          .from("announcements")
-          .update({ is_active: !currentActive })
-          .eq("id", id);
+          const { error } = await supabase
+            .from("announcements")
+            .update({ is_active: !currentActive })
+            .eq("id", id);
 
-        if (error) {
-          showToast("Failed to toggle status: " + error.message, "error");
-          e.currentTarget.disabled = false;
-        } else {
-          loadAnnouncements();
-        }
-      });
+          if (error) {
+            showToast("Failed to toggle status: " + error.message, "error");
+            e.currentTarget.disabled = false;
+          } else {
+            loadAnnouncements();
+          }
+        });
 
       // Delete announcement
       div.querySelector(".delete-ann-btn").addEventListener("click", (e) => {
@@ -875,4 +985,164 @@ document.addEventListener("DOMContentLoaded", function () {
       listEl.appendChild(div);
     });
   }
+
+  // ===== POLL MANAGER RENDER & ACTIONS =====
+  async function loadAdminPolls() {
+    const pollsListEl = document.getElementById("adminPollsList");
+    if (!pollsListEl) return;
+    pollsListEl.innerHTML =
+      '<div style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Loading polls...</div>';
+
+    try {
+      // 1. Fetch all polls
+      const { data: polls, error: pollsError } = await supabase
+        .from("polls")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (pollsError) {
+        pollsListEl.innerHTML = `<div style="color: #f85149; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Failed to load polls: ${pollsError.message}</div>`;
+        return;
+      }
+
+      if (!polls || polls.length === 0) {
+        pollsListEl.innerHTML =
+          '<div style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">No polls created yet.</div>';
+        return;
+      }
+
+      // 2. Fetch all votes to count totals in memory
+      // (Using a single select is highly efficient to prevent N+1 query problem)
+      const { data: votesData, error: votesError } = await supabase
+        .from("poll_votes")
+        .select("poll_id, vote_option");
+
+      if (votesError) {
+        console.warn("Failed to fetch votes for calculations:", votesError);
+      }
+
+      // Map votes: pollId -> { option -> count }
+      const votesCounts = {};
+      polls.forEach((p) => {
+        votesCounts[p.id] = {};
+        p.options.forEach((opt) => (votesCounts[p.id][opt] = 0));
+      });
+
+      if (votesData) {
+        votesData.forEach((v) => {
+          if (votesCounts[v.poll_id]) {
+            votesCounts[v.poll_id][v.vote_option] =
+              (votesCounts[v.poll_id][v.vote_option] || 0) + 1;
+          }
+        });
+      }
+
+      pollsListEl.innerHTML = "";
+
+      polls.forEach((poll) => {
+        const div = document.createElement("div");
+        div.className = "admin-poll-card";
+
+        const pVotes = votesCounts[poll.id] || {};
+        const totalVotes = Object.values(pVotes).reduce((a, b) => a + b, 0);
+        const optionsBreakdown = poll.options
+          .map((opt) => {
+            const votes = pVotes[opt] || 0;
+            const percent =
+              totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+            return `${opt}: ${votes} (${percent}%)`;
+          })
+          .join(" | ");
+
+        div.innerHTML = `
+          <div class="admin-poll-info">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <strong style="color: #c9d1d9; font-size: 0.95rem;">${window.escapeHtml(poll.question)}</strong>
+              <span class="badge" style="font-size: 0.65rem; border-radius: 2em; padding: 0.15rem 0.5rem; ${poll.is_active ? "background: rgba(63, 185, 80, 0.15); color: #3fb950; border-color: rgba(63, 185, 80, 0.4);" : "background: rgba(248, 81, 73, 0.15); color: #f85149; border-color: rgba(248, 81, 73, 0.4);"}">
+                ${poll.is_active ? "Active" : "Closed"}
+              </span>
+            </div>
+            <div style="font-size: 0.8rem; color: #8b949e; margin-top: 0.35rem;">
+              ${optionsBreakdown} &middot; Total: ${totalVotes} votes
+            </div>
+          </div>
+          <div class="admin-poll-actions">
+            <button class="toggle-poll-btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" data-id="${poll.id}" data-active="${poll.is_active}">
+              ${poll.is_active ? "Close" : "Activate"}
+            </button>
+            <button class="delete-poll-btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background-color: #da3637; border-color: rgba(240, 246, 252, 0.1); color: #ffffff;" data-id="${poll.id}">
+              Delete
+            </button>
+          </div>
+        `;
+
+        // Toggle active status
+        div
+          .querySelector(".toggle-poll-btn")
+          .addEventListener("click", async (e) => {
+            const id = e.currentTarget.dataset.id;
+            const isCurrentlyActive = e.currentTarget.dataset.active === "true";
+            e.currentTarget.disabled = true;
+
+            const newActiveState = !isCurrentlyActive;
+
+            // If turning active, deactivate all other polls first
+            if (newActiveState) {
+              const { error: deacError } = await supabase
+                .from("polls")
+                .update({ is_active: false })
+                .eq("is_active", true);
+
+              if (deacError) {
+                console.error("Failed to deactivate polls:", deacError);
+              }
+            }
+
+            const { error: activeError } = await supabase
+              .from("polls")
+              .update({ is_active: newActiveState })
+              .eq("id", id);
+
+            if (activeError) {
+              showToast(
+                "Failed to toggle status: " + activeError.message,
+                "error",
+              );
+              e.currentTarget.disabled = false;
+            } else {
+              showToast(newActiveState ? "Poll activated!" : "Poll closed!");
+              loadAdminPolls();
+            }
+          });
+
+        // Delete poll
+        div.querySelector(".delete-poll-btn").addEventListener("click", (e) => {
+          const id = e.currentTarget.dataset.id;
+          openCustomConfirm("Delete this poll?", async () => {
+            const { error: deleteError } = await supabase
+              .from("polls")
+              .delete()
+              .eq("id", id);
+
+            if (deleteError) {
+              showToast(
+                "Failed to delete poll: " + deleteError.message,
+                "error",
+              );
+            } else {
+              showToast("Poll deleted!");
+              loadAdminPolls();
+            }
+          });
+        });
+
+        pollsListEl.appendChild(div);
+      });
+    } catch (err) {
+      console.error("Error in loadAdminPolls:", err);
+      pollsListEl.innerHTML = `<div style="color: #f85149; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Error loading polls: ${err.message || err}</div>`;
+    }
+  }
+
+
 });

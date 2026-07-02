@@ -1,17 +1,21 @@
-// ========== SCRIPT MAP ==========
+// =============================================================
+// script.js — Homepage Controller
+// =============================================================
 // [00]  SUPABASE SETUP + LIVE VIEWER COUNT
 // [01]  AUTH MODAL & LOGIC
-// [02]  MODALS (Disclaimer, Unsupported, Requested)
-// [03]  LOAD FAQ
-// [04]  GLOBAL DATA & TRACKING
-// [05]  LOAD DATA (Apps, Names, Trending)
+// [02]  DISCLAIMER MODAL
+// [03]  FAQ ACCORDION
+// [04]  GLOBAL DATA & UTILITIES
+// [05]  DATABASE INIT (Apps, Names, Depot Keys, Trending)
 // [06]  SEARCH ENGINE SWITCHER
 // [07]  DISPLAY GAME FILES + DOWNLOAD BUTTONS
 // [08]  ZIP DOWNLOAD
-// [09]  LEGACY ARCHIVE CHECK LOGIC
-// [10]  REQUEST FORM HANDLING
-// [11]  INIT
-// =========================================
+// [09]  LEGACY ARCHIVE CHECK
+// [10]  TRENDING DOWNLOADS
+// [10.5] ANNOUNCEMENT ROTATOR
+// [11]  COMMUNITY POLL WIDGET
+// [12]  INIT
+// =============================================================
 
 document.addEventListener("DOMContentLoaded", function () {
   // [00] SUPABASE SETUP ==========
@@ -144,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     authForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       authError.classList.add("hidden");
+      authError.style.color = ""; // Reset to default error color before each attempt
       authSubmitBtn.disabled = true;
       authSubmitBtn.textContent = "Please wait...";
 
@@ -160,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (authMode === "signup") {
         const displayName =
           document.getElementById("authDisplayName")?.value || "";
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -168,6 +173,10 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         });
         error = signUpError;
+        if (!error && signUpData && !signUpData.session) {
+          window.handleSignupConfirmation(authError, email, authSubmitBtn, supabase);
+          return;
+        }
       } else if (authMode === "forgot") {
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(
           email,
@@ -204,6 +213,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Registered once — closes the user dropdown when clicking anywhere outside it.
+  // Uses AbortController so the old listener is removed if auth state changes.
+  let _dropdownListenerController = null;
+
   function updateAuthUI() {
     const authSection = document.getElementById("authSection");
 
@@ -214,17 +227,17 @@ document.addEventListener("DOMContentLoaded", function () {
         "User";
       const initials = displayName[0].toUpperCase();
       authSection.innerHTML = `
-        <div class="user-menu-wrap" style="position:relative;">
-          <button id="userMenuBtn" style="display:flex;align-items:center;gap:0.5rem;background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.3rem 0.6rem;cursor:pointer;color:#c9d1d9;font-size:0.875rem;font-weight:600;">
-            <div style="width:20px;height:20px;background:#238636;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:white;">${initials}</div>
+        <div class="user-menu-wrap">
+          <button id="userMenuBtn" class="user-menu-btn">
+            <div class="user-menu-avatar">${initials}</div>
             <span>${displayName}</span>
-            <i class="fas fa-chevron-down" style="font-size:0.7rem;color:#8b949e;"></i>
+            <i class="fas fa-chevron-down user-menu-chevron"></i>
           </button>
           <div id="userDropdown" class="user-dropdown hidden">
-            <div style="padding:0.75rem 1rem;border-bottom:1px solid #30363d;font-size:0.8rem;color:#8b949e;">Signed in as<br><strong style="color:#c9d1d9;">${currentUser.email}</strong></div>
-            <a href="profile" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#c9d1d9;text-decoration:none;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-user" style="width:1rem;"></i> Your Profile</a>
-            <div style="border-top:1px solid #30363d;">
-              <button id="logoutBtn" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;font-size:0.875rem;color:#f85149;background:none;border:none;cursor:pointer;width:100%;text-align:left;" onmouseover="this.style.backgroundColor='#21262d'" onmouseout="this.style.backgroundColor=''"><i class="fas fa-sign-out-alt" style="width:1rem;"></i> Sign out</button>
+            <div class="user-dropdown-header">Signed in as<br><strong class="user-dropdown-email">${currentUser.email}</strong></div>
+            <a href="profile" class="user-dropdown-link"><i class="fas fa-user user-dropdown-icon"></i> Your Profile</a>
+            <div class="user-dropdown-divider">
+              <button id="logoutBtn" class="user-dropdown-btn"><i class="fas fa-sign-out-alt user-dropdown-icon"></i> Sign out</button>
             </div>
           </div>
         </div>
@@ -233,14 +246,19 @@ document.addEventListener("DOMContentLoaded", function () {
         e.stopPropagation();
         document.getElementById("userDropdown").classList.toggle("hidden");
       });
+
+      // Remove any previous document-level listener before adding a new one
+      if (_dropdownListenerController) _dropdownListenerController.abort();
+      _dropdownListenerController = new AbortController();
       document.addEventListener(
         "click",
         () => {
           const dd = document.getElementById("userDropdown");
           if (dd) dd.classList.add("hidden");
         },
-        { once: false },
+        { signal: _dropdownListenerController.signal },
       );
+
       document
         .getElementById("logoutBtn")
         .addEventListener("click", async () => {
@@ -248,8 +266,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     } else {
       authSection.innerHTML = `
-        <button id="loginBtn" class="btn-secondary" style="padding:0.25rem 0.75rem;border-radius:6px;font-size:0.875rem;font-weight:600;">Sign in</button>
-        <button id="signupBtn" class="btn-primary" style="padding:0.25rem 0.75rem;border-radius:6px;font-size:0.875rem;font-weight:600;">Sign up</button>
+        <button id="loginBtn" class="btn-secondary auth-btn-small">Sign in</button>
+        <button id="signupBtn" class="btn-primary auth-btn-small">Sign up</button>
       `;
       document
         .getElementById("loginBtn")
@@ -260,16 +278,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Listen to auth changes
+  // Re-render UI and poll widget on every auth state change (login, logout, token refresh)
   supabase.auth.onAuthStateChange((event, session) => {
     currentUser = session?.user || null;
     updateAuthUI();
+    initializePollWidget();
   });
 
   // [02] MODALS ==========
   const disclaimerModal = document.getElementById("disclaimerModal");
 
-  // Check LocalStorage for disclaimer
+  // Show disclaimer on first visit; suppressed permanently if user checks "Don't show again"
   if (!localStorage.getItem("disclaimerAccepted")) {
     disclaimerModal.classList.remove("hidden");
   }
@@ -296,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
           item.className = "faq-item";
           item.innerHTML = `
             <div class="faq-question">
-              <span>${escapeHtml(faq.question)}</span>
+              <span>${window.escapeHtml(faq.question)}</span>
               <i class="fas fa-chevron-down text-github-muted transition-transform"></i>
             </div>
             <div class="faq-answer">${faq.answer}</div>
@@ -332,8 +351,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // [04] GLOBAL DATA & TRACKING ==========
-  const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/"; // Trimed query parameter string
+  // [04] GLOBAL DATA & UTILITIES ==========
+  const WORKER_URL = "https://manifesthub-bridge.trionine.workers.dev/";
   const REPO_OWNER = "SSMGAlt";
 
   let depotKeys = {};
@@ -343,13 +362,17 @@ document.addEventListener("DOMContentLoaded", function () {
   let searchable = [];
   let denuvoAppIds = new Set();
 
+  // Debounce window: ignore repeated download signals for the same item within 30 seconds.
+  // Prevents double-counting when a user clicks a download button multiple times rapidly.
+  const TRACK_DEBOUNCE_MS = 30_000;
+
   const _debounceMap = JSON.parse(sessionStorage.getItem("_dm") || "{}");
 
   async function trackEvent(appId, name) {
     const now = Date.now();
     const key = `${appId}:${name}`;
     const last = _debounceMap[key];
-    if (last && now - last < 30000) return;
+    if (last && now - last < TRACK_DEBOUNCE_MS) return;
     _debounceMap[key] = now;
     sessionStorage.setItem("_dm", JSON.stringify(_debounceMap));
 
@@ -358,14 +381,6 @@ document.addEventListener("DOMContentLoaded", function () {
       `${WORKER_URL}?download=${appId}&name=${encodeURIComponent(name)}&uid=${sessionUserId}`,
       { method: "GET", mode: "no-cors" },
     ).catch((err) => console.error("Worker signal error:", err));
-  }
-
-  function escapeHtml(text) {
-    return String(text)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
   }
 
   function updateStatus(message, isError = false) {
@@ -384,7 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // [05] LOAD DATA ==========
+  // [05] DATABASE INIT ==========
   async function initializeDatabase() {
     updateStatus("Initializing database...");
 
@@ -478,7 +493,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function buildMapping() {
     updateStatus("Building app mapping...");
-    const MAX_DISTANCE = 100;
+    // Max numeric distance between a depot ID and its parent AppID in the Steam catalog.
+    // Steam depot IDs are always numerically close to their parent AppID (empirically within 100).
+    const DEPOT_MAP_MAX_DISTANCE = 100;
     const sortedAppids = Object.keys(appNames)
       .map(Number)
       .sort((a, b) => a - b);
@@ -495,14 +512,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       if (left < sortedAppids.length) {
         const appId = sortedAppids[left];
-        if (appId - depotId <= MAX_DISTANCE && appId >= depotId) {
+        if (appId - depotId <= DEPOT_MAP_MAX_DISTANCE && appId >= depotId) {
           if (!raw[appId]) raw[appId] = new Set();
           raw[appId].add(depotId);
         }
       }
       if (right >= 0) {
         const appId = sortedAppids[right];
-        if (depotId - appId <= MAX_DISTANCE && depotId >= appId) {
+        if (depotId - appId <= DEPOT_MAP_MAX_DISTANCE && depotId >= appId) {
           if (!raw[appId]) raw[appId] = new Set();
           raw[appId].add(depotId);
         }
@@ -630,9 +647,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const div = document.createElement("div");
         div.className = "result-item";
         div.innerHTML = `
-          <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
+          <img class="result-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg" alt="${window.escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'">
           <div class="result-info">
-            <strong>${escapeHtml(name)}</strong>
+            <strong>${window.escapeHtml(name)}</strong>
             <div class="result-sub">
               <span class="badge badge-${type}">${type}</span>
               <span class="badge badge-depot">${depotCount} depot${depotCount !== 1 ? "s" : ""}</span>
@@ -828,7 +845,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="file-info">
           <i class="${file.icon} ${file.iconColor} file-icon"></i>
           <div class="file-details">
-            <span class="file-name">${escapeHtml(file.name)}</span>
+            <span class="file-name">${window.escapeHtml(file.name)}</span>
             <span class="file-meta">${file.type}${file.size ? ` · ${file.size}` : ""}</span>
           </div>
         </div>
@@ -973,8 +990,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   legacyCheckBtn.addEventListener("click", legacyCheckManifest);
 
-
-
+  // [10] TRENDING DOWNLOADS ==========
   async function loadTrendingDownloads() {
     const grid = document.getElementById("trendingGrid");
     if (!grid) return;
@@ -1007,7 +1023,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (name) {
-          name = escapeHtml(name);
+          name = window.escapeHtml(name);
         } else {
           name = "App ID " + item.appId;
         }
@@ -1043,7 +1059,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // ===== ANNOUNCEMENT ROTATOR =====
+  // [10.5] ANNOUNCEMENT ROTATOR ==========
+  // Cycles between the "Ready!" status and active Supabase announcements every 6 seconds.
   async function startStatusAnnouncementCarousel(supportedCount) {
     const statusText = document.getElementById("statusText");
     if (!statusText) return;
@@ -1092,7 +1109,213 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 6000); // Cycle every 6 seconds
   }
 
-  // [11] INIT ==========
+  // [11] COMMUNITY POLL WIDGET ==========
+  /**
+   * Fetches the active poll from Supabase, checks if the current user has
+   * already voted, and renders either the voting interface or results view.
+   * Re-called on every auth state change.
+   */
+  async function initializePollWidget() {
+    const pollCard = document.getElementById("pollCard");
+    const pollQuestionText = document.getElementById("pollQuestionText");
+    const pollVoteInterface = document.getElementById("pollVoteInterface");
+    const pollOptionsContainer = document.getElementById("pollOptionsContainer");
+    const pollAuthWarning = document.getElementById("pollAuthWarning");
+    const pollLoginBtn = document.getElementById("pollLoginBtn");
+    const pollResultsInterface = document.getElementById("pollResultsInterface");
+    const pollResultsContainer = document.getElementById("pollResultsContainer");
+    const pollTotalVotes = document.getElementById("pollTotalVotes");
+    const pollVoteReceipt = document.getElementById("pollVoteReceipt");
+
+    if (!pollCard) return;
+
+    try {
+      // 1. Fetch the active poll from Supabase
+      const { data: activePoll, error: pollError } = await supabase
+        .from("polls")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (pollError) {
+        console.warn("Failed to fetch active poll from Supabase:", pollError);
+        pollCard.classList.add("hidden");
+        return;
+      }
+
+      if (!activePoll) {
+        pollCard.classList.add("hidden");
+        return;
+      }
+
+      // 2. Fetch all votes for this active poll to calculate totals
+      const { data: votesData, error: votesError } = await supabase
+        .from("poll_votes")
+        .select("vote_option")
+        .eq("poll_id", activePoll.id);
+
+      if (votesError) {
+        console.warn("Failed to fetch poll votes:", votesError);
+      }
+
+      // Map votes in memory
+      const votesMap = {};
+      activePoll.options.forEach(opt => votesMap[opt] = 0);
+      if (votesData) {
+        votesData.forEach(v => {
+          votesMap[v.vote_option] = (votesMap[v.vote_option] || 0) + 1;
+        });
+      }
+
+      // 3. Check if the current user has already voted on this poll
+      let userVotedOption = null;
+      if (currentUser) {
+        const { data: userVoteData, error: userVoteError } = await supabase
+          .from("poll_votes")
+          .select("vote_option")
+          .eq("poll_id", activePoll.id)
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
+
+        if (!userVoteError && userVoteData) {
+          userVotedOption = userVoteData.vote_option;
+        }
+      }
+
+      // Render active poll UI
+      pollCard.classList.remove("hidden");
+      pollQuestionText.textContent = activePoll.question;
+
+      if (userVotedOption) {
+        renderPollResults(activePoll, votesMap, userVotedOption);
+      } else {
+        renderPollVoting(activePoll);
+      }
+
+      // Setup sign-in warning trigger
+      if (pollLoginBtn) {
+        pollLoginBtn.onclick = (e) => {
+          e.preventDefault();
+          if (typeof openAuthModal === "function") {
+            openAuthModal("login");
+          }
+        };
+      }
+
+      function renderPollVoting(poll) {
+        pollVoteInterface.classList.remove("hidden");
+        pollResultsInterface.classList.add("hidden");
+        pollOptionsContainer.innerHTML = "";
+
+        // Show login warning if guest
+        if (!currentUser) {
+          pollAuthWarning.classList.remove("hidden");
+        } else {
+          pollAuthWarning.classList.add("hidden");
+        }
+
+        poll.options.forEach(option => {
+          const btn = document.createElement("button");
+          btn.className = "poll-option-btn";
+          btn.textContent = option;
+          btn.disabled = !currentUser; // disabled for guests
+          btn.onclick = () => castVote(poll.id, option);
+          pollOptionsContainer.appendChild(btn);
+        });
+      }
+
+      function renderPollResults(poll, vMap, userVotedOption) {
+        pollVoteInterface.classList.add("hidden");
+        pollResultsInterface.classList.remove("hidden");
+        pollResultsContainer.innerHTML = "";
+
+        const total = Object.values(vMap).reduce((sum, count) => sum + count, 0);
+
+        pollTotalVotes.textContent = `${total} vote${total === 1 ? "" : "s"}`;
+        if (userVotedOption) {
+          pollVoteReceipt.textContent = `You voted: ${userVotedOption}`;
+        } else {
+          pollVoteReceipt.textContent = "";
+        }
+
+        poll.options.forEach(option => {
+          const count = vMap[option] || 0;
+          const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+
+          const row = document.createElement("div");
+          row.className = "poll-result-row";
+          if (option === userVotedOption) {
+            row.classList.add("user-voted");
+          }
+
+          row.innerHTML = `
+            <div class="poll-result-header">
+              <span>${window.escapeHtml(option)}</span>
+              <strong>${percent}% (${count})</strong>
+            </div>
+            <div class="poll-result-bar-bg">
+              <div class="poll-result-bar-fill" style="width: 0%;"></div>
+            </div>
+          `;
+
+          pollResultsContainer.appendChild(row);
+
+          // Animate the bar width with a small timeout for render completion
+          setTimeout(() => {
+            const fill = row.querySelector(".poll-result-bar-fill");
+            if (fill) fill.style.width = `${percent}%`;
+          }, 50);
+        });
+      }
+
+      async function castVote(pollId, option) {
+        if (!currentUser) return;
+
+        // 1. Submit vote to Supabase
+        const { error: castError } = await supabase
+          .from("poll_votes")
+          .insert([{ poll_id: pollId, user_id: currentUser.id, vote_option: option }]);
+
+        if (castError) {
+          console.error("Failed to cast vote in Supabase:", castError);
+          if (typeof showToast === "function") {
+            showToast("Failed to cast vote: " + castError.message, "error");
+          }
+          return;
+        }
+
+        if (typeof showToast === "function") {
+          showToast(`Vote cast for: ${option}!`, "success");
+        }
+
+        // 2. Re-initialize widget to fetch latest counts and display results
+        initializePollWidget();
+      }
+    } catch (err) {
+      console.error("Error initializing poll widget:", err);
+      pollCard.classList.add("hidden");
+    }
+  }
+
+  // [12] INIT ==========
   loadFAQ();
   initializeDatabase();
+  // Note: initializePollWidget() is intentionally NOT called here.
+  // It is invoked by onAuthStateChange (above), which fires immediately
+  // on page load with the current session, ensuring correct auth context.
+
+  // Wire up the donate address copy button
+  const donateCopyBtn = document.getElementById("donateCopyBtn");
+  if (donateCopyBtn) {
+    donateCopyBtn.addEventListener("click", () => {
+      navigator.clipboard
+        .writeText("TFErnymvTdBtw9g79QHfuRojjwwA6HEc6B")
+        .then(() => {
+          donateCopyBtn.textContent = "Copied!";
+          setTimeout(() => (donateCopyBtn.textContent = "Copy"), 2000);
+        });
+    });
+  }
 });

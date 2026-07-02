@@ -694,3 +694,575 @@
   margin-bottom: 8px;
 }
 
+/* Community Poll Custom Styles */
+.poll-option-btn {
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  min-width: 100px;
+  text-align: center;
+  outline: none;
+}
+
+.poll-option-btn:hover:not(:disabled) {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+.poll-option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.poll-result-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.poll-result-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #c9d1d9;
+}
+
+.poll-result-bar-bg {
+  background: #21262d;
+  border-radius: 4px;
+  height: 8px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.poll-result-bar-fill {
+  background: #58a6ff;
+  height: 100%;
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.poll-result-row.user-voted .poll-result-bar-fill {
+  background: #3fb950; /* Highlight option the user voted for */
+}
+
+/* Admin Poll Manager items */
+.admin-poll-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.admin-poll-info {
+  flex: 1;
+}
+
+.admin-poll-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Homepage Poll Layout classes */
+.poll-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.poll-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.poll-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #c9d1d9;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.poll-status-badge {
+  background: rgba(56, 139, 253, 0.15);
+  color: #58a6ff;
+  border-color: rgba(56, 139, 253, 0.4);
+  font-size: 0.7rem;
+  border-radius: 2em;
+  padding: 0.15rem 0.5rem;
+  font-weight: 600;
+}
+
+.poll-question {
+  font-size: 1rem;
+  color: #e6edf3;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.poll-vote-interface {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.poll-options-container {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.poll-auth-warning {
+  font-size: 0.8rem;
+  color: #8b949e;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.poll-auth-warning button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: #58a6ff;
+}
+
+.poll-auth-warning button:hover {
+  text-decoration: underline;
+}
+
+.poll-results-interface {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.poll-results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.poll-results-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #8b949e;
+  margin-top: 0.5rem;
+  border-top: 1px solid #21262d;
+  padding-top: 0.75rem;
+}
+
+.poll-vote-receipt {
+  color: #58a6ff;
+}
+
+/* Extracted Layout & Styling Utilities */
+
+/* Game Info / Panel Header Classes */
+.game-info-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.game-info-name {
+  margin: 0;
+}
+
+.game-info-id {
+  margin: 0.25rem 0 0 0;
+}
+
+/* Denuvo warning classes */
+.denuvo-warning-wrap {
+  margin: 1rem 0 1.5rem 0;
+}
+
+.warning-box-no-margin {
+  margin-bottom: 0;
+}
+
+.warning-title-margin {
+  margin-bottom: 0.5rem;
+}
+
+.warning-text {
+  font-size: 0.85rem;
+  color: #c9d1d9;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Profile Gate (Auth Screen) Classes */
+.profile-gate-wrap {
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.profile-gate-logo {
+  width: 200px;
+  height: auto;
+  margin-bottom: 1.25rem;
+  border-radius: 0;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
+}
+
+.profile-gate-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #c9d1d9;
+  font-weight: 700;
+}
+
+.profile-gate-subtitle {
+  color: #8b949e;
+  margin-bottom: 2rem;
+}
+
+.profile-gate-btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.profile-gate-btn-padding {
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+}
+
+.profile-gate-back {
+  margin-top: 3rem;
+}
+
+.profile-gate-back a {
+  color: #58a6ff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* Auth Modal Specific Classes */
+.forgot-password-wrap {
+  text-align: right;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #58a6ff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.auth-error-wrap {
+  color: #f85149;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-switch-wrap {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #8b949e;
+}
+
+.auth-switch-btn {
+  background: none;
+  border: none;
+  color: #58a6ff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+/* Account Settings Panel Classes */
+.settings-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.settings-row-last {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-label {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.settings-value {
+  color: #8b949e;
+}
+
+.settings-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.danger-card-title {
+  font-size: 0.9rem;
+}
+
+/* Admin Management Dashboard Helpers */
+.admin-duration-inputs {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-list-empty {
+  color: #8b949e;
+  text-align: center;
+  padding: 1.5rem;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+}
+
+.admin-poll-input-col-2 {
+  flex: 2;
+}
+
+.admin-poll-input-col-1 {
+  flex: 1;
+}
+
+.admin-poll-submit-btn {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Modal text / layout adjustments */
+.modal-text-muted {
+  color: #8b949e;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.modal-btn-full {
+  width: 100%;
+}
+
+.modal-confirm-msg {
+  color: #8b949e;
+  font-size: 0.9rem;
+}
+
+.settings-back-wrap {
+  margin-bottom: 2rem;
+}
+
+.settings-back-link {
+  color: #8b949e;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.profile-email-text {
+  color: #8b949e;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.user-hero-action {
+  margin-left: auto;
+}
+
+.text-danger {
+  color: #f85149 !important;
+}
+
+.admin-section-subtitle {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.admin-section-divider {
+  margin-top: 2.5rem;
+  border-top: 1px solid #21262d;
+  padding-top: 1.5rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem !important;
+}
+
+.text-light {
+  color: #c9d1d9 !important;
+}
+
+.flex-align-center-gap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.confirm-modal-size {
+  max-width: 380px;
+}
+
+.admin-submit-btn-circle i {
+  font-size: 0.8rem;
+}
+
+/* User menu dropdown classes */
+.user-menu-wrap {
+  position: relative;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  color: #c9d1d9;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.user-menu-avatar {
+  width: 20px;
+  height: 20px;
+  background: #238636;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: white;
+}
+
+.user-menu-chevron {
+  font-size: 0.7rem;
+  color: #8b949e;
+}
+
+.user-dropdown-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #30363d;
+  font-size: 0.8rem;
+  color: #8b949e;
+}
+
+.user-dropdown-email {
+  color: #c9d1d9;
+}
+
+.user-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  color: #c9d1d9;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.user-dropdown-link:hover {
+  background-color: #21262d;
+}
+
+.user-dropdown-divider {
+  border-top: 1px solid #30363d;
+}
+
+.user-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  color: #f85149;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.user-dropdown-btn:hover {
+  background-color: #21262d;
+}
+
+.user-dropdown-icon {
+  width: 1rem;
+}
+
+.auth-btn-small {
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+
+
+
+
+
