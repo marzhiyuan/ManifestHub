@@ -1,12 +1,12 @@
 // =============================================================
 // faq.js — FAQ Accordion Loader
 // =============================================================
-// Fetches FAQ data from /data/faq.json and renders an interactive
-// accordion in the #faqContainer element.
+// Reads FAQ data from window.FAQ_DATA (data/faq.js) and renders 
+// an interactive accordion in the #faqContainer element.
 // =============================================================
 
 /**
- * Loads FAQ entries from a JSON file and renders them as an
+ * Loads FAQ entries from a JS data array and renders them as an
  * accordion widget with open/close toggle behavior.
  */
 window.MH_initFAQ = function () {

@@ -54,17 +54,24 @@ ManifestHub/
 │   ├── layout.css             # Layout utilities, footer, media queries, profile/auth forms
 │   └── profile-styles.css     # User profile page specific styling
 ├── data/
-│   ├── faq.json               # Frequently Asked Questions catalog
+│   ├── faq.js                 # Frequently Asked Questions native JS data array
 │   └── trending-data.json     # Cached daily trending downloads statistics
 ├── extras/
 │   ├── maindatabase.html      # Legacy database search view
 │   ├── oglegacy.html          # Original legacy app design fallback
 │   └── split_bloated_data.py  # Python utility for splitting large databases
 ├── js/
-│   ├── config.js              # Supabase API URL and anonymous key configuration
-│   ├── profile.js             # User account settings, caching & Supabase history logic
-│   ├── script.js              # Core search client, Steam API & Cache API logic
-│   └── utils.js               # Shared auth helpers (e.g. email confirmation resend)
+│   ├── config.js              # Supabase API credentials configuration
+│   ├── utils.js               # Shared helper functions (e.g. resending confirmation mail)
+│   ├── presence.js            # Realtime online presence tracking
+│   ├── auth.js                # Authentication UI, forms, and session listeners
+│   ├── database.js            # Depot keys/App lists fetching and mapping builder
+│   ├── search.js              # Search indexing, download handlers, ZIP generator
+│   ├── trending.js            # Popular files rendering and announcements carousel
+│   ├── poll.js                # Active community voting poll widget
+│   ├── faq.js                 # FAQ interactive accordion rendering
+│   ├── profile.js             # Profile history dashboard, settings, and cache management
+│   └── main.js                # Shared namespace initializer & orchestrator
 ├── scripts/
 │   └── update-trending.js     # Fetches trending data from Google Sheets API
 ├── _headers                   # Netlify custom HTTP headers (Cache-Control)

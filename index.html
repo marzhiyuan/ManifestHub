@@ -257,32 +257,36 @@
           <div id="pollCard" class="hidden poll-card">
             <div class="poll-header">
               <h2 class="poll-title">
-                <i class="fas fa-chart-bar text-link"></i>
+                <i class="fa-solid fa-square-poll-horizontal" style="color: #58a6ff;"></i>
                 Community Poll
               </h2>
-              <span id="pollStatusBadge" class="badge poll-status-badge">Active</span>
+              <button id="pollMinimizeBtn" class="poll-minimize-btn" title="Minimize Poll">
+                <i class="fas fa-chevron-up"></i>
+              </button>
             </div>
             
-            <p id="pollQuestionText" class="poll-question"></p>
-            
-            <!-- Voting interface -->
-            <div id="pollVoteInterface" class="hidden poll-vote-interface">
-              <div id="pollOptionsContainer" class="poll-options-container">
-                <!-- Dynamically generated option buttons -->
+            <div id="pollBody" class="poll-body">
+              <p id="pollQuestionText" class="poll-question"></p>
+              
+              <!-- Voting interface -->
+              <div id="pollVoteInterface" class="hidden poll-vote-interface">
+                <div id="pollOptionsContainer" class="poll-options-container">
+                  <!-- Dynamically generated option buttons -->
+                </div>
+                <p id="pollAuthWarning" class="hidden poll-auth-warning">
+                  <i class="fas fa-info-circle"></i> Please <button id="pollLoginBtn" class="text-link">sign in</button> to cast your vote.
+                </p>
               </div>
-              <p id="pollAuthWarning" class="hidden poll-auth-warning">
-                <i class="fas fa-info-circle"></i> Please <button id="pollLoginBtn" class="text-link">sign in</button> to cast your vote.
-              </p>
-            </div>
-            
-            <!-- Results interface -->
-            <div id="pollResultsInterface" class="hidden poll-results-interface">
-              <div id="pollResultsContainer" class="poll-results-container">
-                <!-- Dynamically generated result progress bars -->
-              </div>
-              <div class="poll-results-footer">
-                <span id="pollTotalVotes">0 votes</span>
-                <span id="pollVoteReceipt" class="poll-vote-receipt"></span>
+              
+              <!-- Results interface -->
+              <div id="pollResultsInterface" class="hidden poll-results-interface">
+                <div id="pollResultsContainer" class="poll-results-container">
+                  <!-- Dynamically generated result progress bars -->
+                </div>
+                <div class="poll-results-footer">
+                  <span id="pollTotalVotes">0 votes</span>
+                  <span id="pollVoteReceipt" class="poll-vote-receipt"></span>
+                </div>
               </div>
             </div>
           </div>

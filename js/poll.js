@@ -25,6 +25,28 @@ window.MH_initPollWidget = async function (supabase) {
   if (!pollCard) return;
 
   const currentUser = window.MH.currentUser;
+  const pollMinimizeBtn = document.getElementById("pollMinimizeBtn");
+  const pollBody = document.getElementById("pollBody");
+
+  // Load and apply the minimize state immediately to prevent layout flickering
+  if (pollMinimizeBtn && pollBody) {
+    const isMinimized = localStorage.getItem("MH_poll_minimized") === "true";
+    if (isMinimized) {
+      pollCard.classList.add("minimized");
+      pollBody.classList.add("collapsed");
+    } else {
+      pollCard.classList.remove("minimized");
+      pollBody.classList.remove("collapsed");
+    }
+
+    // Bind toggle click handler
+    pollMinimizeBtn.onclick = (e) => {
+      e.preventDefault();
+      const currentlyMinimized = pollCard.classList.toggle("minimized");
+      pollBody.classList.toggle("collapsed");
+      localStorage.setItem("MH_poll_minimized", currentlyMinimized);
+    };
+  }
 
   try {
     // 1. Fetch the active poll from Supabase
@@ -128,46 +150,99 @@ window.MH_initPollWidget = async function (supabase) {
       pollResultsInterface.classList.remove("hidden");
       pollResultsContainer.innerHTML = "";
 
-      const total = Object.values(vMap).reduce(
-        (sum, count) => sum + count,
-        0,
-      );
+      // Hide total votes count element
+      pollTotalVotes.textContent = "";
+      pollTotalVotes.style.display = "none";
 
-      pollTotalVotes.textContent = `${total} vote${total === 1 ? "" : "s"}`;
       if (userVotedOpt) {
         pollVoteReceipt.textContent = `You voted: ${userVotedOpt}`;
       } else {
         pollVoteReceipt.textContent = "";
       }
 
-      poll.options.forEach((option) => {
+      const total = Object.values(vMap).reduce(
+        (sum, count) => sum + count,
+        0,
+      );
+
+      // Create segmented bar container
+      const barContainer = document.createElement("div");
+      barContainer.style.display = "flex";
+      barContainer.style.width = "100%";
+      barContainer.style.height = "10px";
+      barContainer.style.borderRadius = "5px";
+      barContainer.style.overflow = "hidden";
+      barContainer.style.background = "#21262d";
+      barContainer.style.marginTop = "0.75rem";
+      barContainer.style.marginBottom = "1rem";
+
+      // Create legend container
+      const legendContainer = document.createElement("div");
+      legendContainer.style.display = "flex";
+      legendContainer.style.flexWrap = "wrap";
+      legendContainer.style.gap = "0.75rem 1.25rem";
+      legendContainer.style.marginTop = "0.5rem";
+
+      const colors = [
+        "#58a6ff", // Blue
+        "#d29922", // Yellow
+        "#a371f7", // Purple
+        "#ff7b72", // Coral/Salmon
+        "#79c0ff", // Light Blue
+        "#56d364"  // Green
+      ];
+
+      poll.options.forEach((option, idx) => {
         const count = vMap[option] || 0;
         const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+        const color = colors[idx % colors.length];
 
-        const row = document.createElement("div");
-        row.className = "poll-result-row";
-        if (option === userVotedOpt) {
-          row.classList.add("user-voted");
+        // 1. Add segment to the bar if percentage > 0
+        if (percent > 0) {
+          const segment = document.createElement("div");
+          segment.style.height = "100%";
+          segment.style.backgroundColor = color;
+          segment.style.width = "0%";
+          segment.style.transition = "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+          barContainer.appendChild(segment);
+
+          // Animate the segment width
+          setTimeout(() => {
+            segment.style.width = `${percent}%`;
+          }, 50);
         }
 
-        row.innerHTML = `
-          <div class="poll-result-header">
-            <span>${window.escapeHtml(option)}</span>
-            <strong>${percent}% (${count})</strong>
-          </div>
-          <div class="poll-result-bar-bg">
-            <div class="poll-result-bar-fill" style="width: 0%;"></div>
-          </div>
-        `;
+        // 2. Add legend item
+        const legendItem = document.createElement("div");
+        legendItem.style.display = "flex";
+        legendItem.style.alignItems = "center";
+        legendItem.style.gap = "0.4rem";
+        legendItem.style.fontSize = "0.85rem";
+        legendItem.style.color = "#c9d1d9";
 
-        pollResultsContainer.appendChild(row);
+        const dot = document.createElement("span");
+        dot.style.width = "8px";
+        dot.style.height = "8px";
+        dot.style.borderRadius = "50%";
+        dot.style.backgroundColor = color;
 
-        // Animate the bar width with a small timeout for render completion
-        setTimeout(() => {
-          const fill = row.querySelector(".poll-result-bar-fill");
-          if (fill) fill.style.width = `${percent}%`;
-        }, 50);
+        const textSpan = document.createElement("span");
+        textSpan.textContent = option;
+
+        const pctStrong = document.createElement("strong");
+        pctStrong.style.color = "#8b949e";
+        pctStrong.style.marginLeft = "2px";
+        pctStrong.textContent = `${percent}%`;
+
+        legendItem.appendChild(dot);
+        legendItem.appendChild(textSpan);
+        legendItem.appendChild(pctStrong);
+
+        legendContainer.appendChild(legendItem);
       });
+
+      pollResultsContainer.appendChild(barContainer);
+      pollResultsContainer.appendChild(legendContainer);
     }
 
     async function castVote(pollId, option) {

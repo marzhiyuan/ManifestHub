@@ -6,7 +6,10 @@
   padding: 0;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
@@ -23,20 +26,18 @@ body {
   padding: 0;
 }
 
-/* Global Link Styles */
+/* Global Link Styles 
 a {
   color: #58a6ff;
   text-decoration: none;
 }
-
 a:hover {
   text-decoration: underline;
 }
-
 a:visited {
   color: #a5d6ff;
 }
-
+*/
 
 /* GitHub Typography & Colors */
 .text-github-fg {
@@ -92,10 +93,18 @@ a:visited {
   box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
   outline: none;
 }
+
 /* view count */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* Auth bar */
@@ -141,4 +150,3 @@ a:visited {
 .resend-confirm-btn:hover {
   color: #79c0ff;
 }
-
