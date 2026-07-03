@@ -7,4 +7,3 @@ graphify-out/
 backend/tmp-push.sql
 forum/
 .agents/
-branch_diff.diff

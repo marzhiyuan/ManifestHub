@@ -23,6 +23,21 @@ body {
   padding: 0;
 }
 
+/* Global Link Styles */
+a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #a5d6ff;
+}
+
+
 /* GitHub Typography & Colors */
 .text-github-fg {
   color: #c9d1d9;

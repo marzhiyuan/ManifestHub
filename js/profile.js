@@ -848,7 +848,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         div.innerHTML = `
           <div class="ann-edit-form-wrap">
-            <input type="text" class="edit-ann-input" value="${window.escapeHtml(ann.message)}" required />
+            <input type="text" class="edit-ann-input ann-edit-input" value="${window.escapeHtml(ann.message)}" required />
             <div class="ann-edit-dur-flex">
               <div class="admin-expiration-capsule admin-expiration-capsule-small">
                 <button type="button" class="admin-permanent-btn edit-ann-perm-btn ${isPerm ? "active" : ""}" title="Infinite Expiration" style="font-size: 1rem;">∞</button>
