@@ -3,8 +3,9 @@ window.handleUnconfirmedEmail = function (errEl, emailInputId, supabase) {
   if (errEl.dataset.resendHandled) return;
   errEl.dataset.resendHandled = "true";
 
-  errEl.innerHTML = `Please verify your email before signing in. Check your inbox for a confirmation link. <em>(Also check your spam/junk folder.)</em>
-    <button type="button" class="resend-confirm-btn">Resend email</button>`;
+  errEl.innerHTML = `Please verify your email before signing in. Check your inbox/spam for a confirmation link.
+    <button type="button" class="resend-confirm-btn">Resend</button>`;
+  errEl.classList.add("text-success");
   errEl.classList.remove("hidden");
 
   errEl
@@ -28,8 +29,8 @@ window.handleUnconfirmedEmail = function (errEl, emailInputId, supabase) {
  * @param {object}      supabase  - The Supabase client instance.
  */
 window.handleSignupConfirmation = function (errEl, email, submitBtn, supabase) {
-  errEl.innerHTML = `Registration successful! Check your inbox for a confirmation link. <em>(Also check your spam/junk folder.)</em> <button type="button" class="resend-confirm-btn">Resend email</button>`;
-  errEl.style.color = "#3fb950";
+  errEl.innerHTML = `Registration successful! Check your inbox/spam for a confirmation link. <button type="button" class="resend-confirm-btn">Resend</button>`;
+  errEl.classList.add("text-success");
   errEl.classList.remove("hidden");
 
   errEl
@@ -72,9 +73,9 @@ try {
 if (!storage) {
   storage = {
     getItem: () => null,
-    setItem: () => {},
-    removeItem: () => {},
-    clear: () => {}
+    setItem: () => { },
+    removeItem: () => { },
+    clear: () => { }
   };
 }
 window.safeStorage = storage;

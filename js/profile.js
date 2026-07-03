@@ -58,11 +58,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const okBtn = document.getElementById("confirmModalOk");
     const cancelBtn = document.getElementById("confirmModalCancel");
+    const controller = new AbortController();
+
+    closeCustomConfirm = () => {
+      controller.abort();
+      closeProfileModal("confirmModal");
+    };
 
     const cleanup = () => {
-      okBtn.removeEventListener("click", handleOk);
-      cancelBtn.removeEventListener("click", handleCancel);
-      closeProfileModal("confirmModal");
+      closeCustomConfirm();
     };
     const handleOk = () => {
       cleanup();
@@ -70,14 +74,19 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     const handleCancel = () => cleanup();
 
-    okBtn.addEventListener("click", handleOk);
-    cancelBtn.addEventListener("click", handleCancel);
+    okBtn.addEventListener("click", handleOk, { signal: controller.signal });
+    cancelBtn.addEventListener("click", handleCancel, { signal: controller.signal });
   }
+
+  let closeCustomConfirm = () => {};
 
   // Close modals by clicking the backdrop or the × button
   document.querySelectorAll(".profile-modal-overlay").forEach((overlay) => {
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.classList.add("hidden");
+      if (e.target === overlay) {
+        if (overlay.id === "confirmModal") closeCustomConfirm();
+        else overlay.classList.add("hidden");
+      }
     });
   });
   document
@@ -85,7 +94,10 @@ document.addEventListener("DOMContentLoaded", function () {
     .forEach((btn) => {
       btn.addEventListener("click", () => {
         const id = btn.dataset.close;
-        if (id) closeProfileModal(id);
+        if (id) {
+          if (id === "confirmModal") closeCustomConfirm();
+          else closeProfileModal(id);
+        }
       });
     });
   document.addEventListener("keydown", (e) => {
@@ -93,7 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
       document
         .querySelectorAll(".profile-modal-overlay:not(.hidden)")
         .forEach((el) => {
-          el.classList.add("hidden");
+          if (el.id === "confirmModal") closeCustomConfirm();
+          else el.classList.add("hidden");
         });
     }
   });
@@ -179,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btn = document.getElementById("authSubmitBtn");
     const errEl = document.getElementById("authError");
     errEl.classList.add("hidden");
-    errEl.style.color = ""; // Reset custom color if any!
+    errEl.classList.remove("text-success"); // Reset custom color if any!
     btn.disabled = true;
     btn.textContent = "Please wait...";
 
@@ -341,6 +354,16 @@ document.addEventListener("DOMContentLoaded", function () {
       } catch (dbErr) {
         console.error("Failed to load production Supabase history:", dbErr);
         dbErrorOccurred = true;
+      }
+
+      if (dbErrorOccurred) {
+        if (!cachedData) {
+          renderHistoryTable([], true);
+          return;
+        }
+
+        meta.textContent = `${cachedData.length} download${cachedData.length !== 1 ? "s" : ""} total (cached)`;
+        return;
       }
 
       const shouldUpdate =

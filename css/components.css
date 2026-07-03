@@ -179,6 +179,19 @@
   border-color: rgba(248, 81, 73, 0.4);
 }
 
+.badge-active {
+  background: rgba(63, 185, 80, 0.15);
+  color: #3fb950;
+  border-color: rgba(63, 185, 80, 0.4);
+}
+
+.badge-closed {
+  background: rgba(248, 81, 73, 0.15);
+  color: #f85149;
+  border-color: rgba(248, 81, 73, 0.4);
+}
+
+
 
 .no-results {
   text-align: center;
@@ -750,7 +763,8 @@
 }
 
 .poll-result-row.user-voted .poll-result-bar-fill {
-  background: #3fb950; /* Highlight option the user voted for */
+  background: #3fb950;
+  /* Highlight option the user voted for */
 }
 
 /* Admin Poll Manager items */
@@ -1127,6 +1141,10 @@
   color: #f85149 !important;
 }
 
+.text-success {
+  color: #58a6ff !important;
+}
+
 .admin-section-subtitle {
   font-weight: 600;
   margin-bottom: 0.75rem;
@@ -1433,11 +1451,3 @@
   padding: 0.15rem 0.5rem !important;
   gap: 0.5rem !important;
 }
-
-
-
-
-
-
-
-

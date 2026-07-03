@@ -522,6 +522,13 @@
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
+/* ===== UTILITY CLASSES ===== */
+.text-fg { color: #c9d1d9; }
+.bg-subtle { background-color: #161b22; }
+.bg-canvas { background-color: #0d1117; }
+.border-subtle { border: 1px solid #30363d; }
+
+
 /* Admin Panel Custom Styles */
 .admin-form-card {
   background: #161b22;

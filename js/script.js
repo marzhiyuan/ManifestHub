@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     authForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       authError.classList.add("hidden");
-      authError.style.color = ""; // Reset to default error color before each attempt
+      authError.classList.remove("text-success"); // Reset to default error color before each attempt
       authSubmitBtn.disabled = true;
       authSubmitBtn.textContent = "Please wait...";
 
@@ -232,15 +232,17 @@ document.addEventListener("DOMContentLoaded", function () {
         currentUser.email?.split("@")[0] ||
         "User";
       const initials = displayName[0].toUpperCase();
+      const safeDisplayName = window.escapeHtml(displayName);
+      const safeEmail = window.escapeHtml(currentUser.email || "");
       authSection.innerHTML = `
         <div class="user-menu-wrap">
           <button id="userMenuBtn" class="user-menu-btn">
             <div class="user-menu-avatar">${initials}</div>
-            <span>${displayName}</span>
+            <span>${safeDisplayName}</span>
             <i class="fas fa-chevron-down user-menu-chevron"></i>
           </button>
           <div id="userDropdown" class="user-dropdown hidden">
-            <div class="user-dropdown-header">Signed in as<br><strong class="user-dropdown-email">${currentUser.email}</strong></div>
+            <div class="user-dropdown-header">Signed in as<br><strong class="user-dropdown-email">${safeEmail}</strong></div>
             <a href="profile" class="user-dropdown-link"><i class="fas fa-user user-dropdown-icon"></i> Your Profile</a>
             <div class="user-dropdown-divider">
               <button id="logoutBtn" class="user-dropdown-btn"><i class="fas fa-sign-out-alt user-dropdown-icon"></i> Sign out</button>
@@ -751,7 +753,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return manifests;
       }
-    } catch (e) {}
+    } catch (e) { }
     return [];
   }
 
@@ -845,7 +847,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isExternal: true,
         });
       }
-    } catch (e) {}
+    } catch (e) { }
 
     if (files.length === 0) {
       filesList.innerHTML =
@@ -914,7 +916,7 @@ document.addEventListener("DOMContentLoaded", function () {
               const response = await fetch(file.url);
               const blob = await response.blob();
               zip.file(file.name, blob);
-            } catch (e) {}
+            } catch (e) { }
           }
         }
 
@@ -1049,13 +1051,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const formattedCount = parseInt(item.count).toLocaleString();
 
         const card = document.createElement("div");
-        card.className =
-          "flex items-center gap-3 bg-[#161b22] border border-[#30363d] rounded-md p-2 cursor-pointer hover:border-[#8b949e] transition-all hover:scale-[1.02] duration-200";
+        card.className = "trending-card";
         card.innerHTML = `
-          <img class="w-[60px] h-[35px] object-cover rounded bg-[#0d1117] flex-shrink-0" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/header.jpg" alt="${name}">
-          <div class="flex flex-col min-w-0 flex-grow">
-            <strong class="text-xs font-semibold text-light truncate" title="${name}">${name}</strong>
-            <span class="text-[0.65rem] text-github-muted flex items-center gap-1 mt-0.5">
+          <img class="trending-card-img" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/header.jpg" alt="${name}">
+          <div class="trending-card-info">
+            <strong class="text-xs font-semibold text-fg truncate" title="${name}">${name}</strong>
+            <span class="trending-card-meta">
               <i class="fas fa-download"></i> ${formattedCount}
             </span>
           </div>
