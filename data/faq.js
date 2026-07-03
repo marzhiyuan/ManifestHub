@@ -1,8 +1,4 @@
-// =============================================================
-// FAQ Data Storage
-// =============================================================
-// Contains all FAQ questions and answers formatted in clean HTML.
-// =============================================================
+// Frequently Asked Questions (FAQ)
 
 window.FAQ_DATA = [
   {
