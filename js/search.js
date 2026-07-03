@@ -21,13 +21,13 @@ const TRACK_DEBOUNCE_MS = 30_000;
 async function trackEvent(appId, name) {
   const now = Date.now();
   const key = `${appId}:${name}`;
-  
+
   // Dynamically pull the freshest map state right when the event fires
   const activeDebounceMap = JSON.parse(sessionStorage.getItem("_dm") || "{}");
-  
+
   const last = activeDebounceMap[key];
   if (last && now - last < TRACK_DEBOUNCE_MS) return;
-  
+
   activeDebounceMap[key] = now;
   sessionStorage.setItem("_dm", JSON.stringify(activeDebounceMap));
 
@@ -161,8 +161,8 @@ window.MH_displayGameFiles = async function (appId, gameName) {
   for (const manifest of liveManifests) {
     files.push({
       name: `${manifest.depotId}_${manifest.manifestId}.manifest`,
-      type: "Manifest (Live)",
-      icon: "fas fa-file-archive",
+      type: "Manifest file",
+      icon: "fas fa-file-invoice",
       iconColor: "text-blue-400",
       url: manifest.downloadUrl,
       isExternal: true,
@@ -179,7 +179,7 @@ window.MH_displayGameFiles = async function (appId, gameName) {
       files.push({
         name: `${appId}.zip`,
         type: "Legacy Zip",
-        icon: "fas fa-database",
+        icon: "fas fa-file-zipper",
         iconColor: "text-purple-400",
         // Source: SSMGAlt/ManifestHub2 (Legacy Archive)
         // Purpose: Direct URL to download the branch as a ZIP file.
