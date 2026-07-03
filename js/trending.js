@@ -107,9 +107,8 @@ window.MH_startStatusAnnouncementCarousel = async function (supportedCount, supa
 
   if (activeAnnouncements.length === 0) return;
 
-  const defaultMsg = `Ready! ${supportedCount.toLocaleString()} supported apps.`;
-  const messages = [defaultMsg, ...activeAnnouncements];
-  let currentIndex = 0;
+  const messages = [...activeAnnouncements];
+  let currentIndex = messages.length - 1;
 
   setInterval(() => {
     // Don't cycle if the status box is showing an error (red text)
