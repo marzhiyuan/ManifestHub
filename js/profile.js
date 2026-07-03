@@ -268,7 +268,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (items.length === 0) {
       if (dbErrorOccurred) {
         tbody.innerHTML =
-          '<tr class="empty-row"><td colspan="3" style="color:#f85149;">Could not load history.</td></tr>';
+          '<tr class="empty-row"><td colspan="3" class="text-danger">Could not load history.</td></tr>';
         meta.textContent = "";
       } else {
         tbody.innerHTML =
@@ -282,12 +282,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const tr = document.createElement("tr");
       const date = new Date(item.created_at).toLocaleString();
       const gameLabel = item.game_name
-        ? item.game_name
-        : `App ${item.app_id || "Unknown"}`;
+          ? item.game_name
+          : `App ${item.app_id || "Unknown"}`;
       tr.innerHTML = `
-      <td style="font-weight:500;">${window.escapeHtml(gameLabel)}</td>
-      <td style="color:#8b949e;">${window.escapeHtml(item.type || "Download")}</td>
-      <td style="color:#8b949e;font-size:0.8rem;">${date}</td>
+      <td class="fw-500">${window.escapeHtml(gameLabel)}</td>
+      <td class="text-muted">${window.escapeHtml(item.type || "Download")}</td>
+      <td class="text-muted text-xs">${date}</td>
     `;
       tbody.appendChild(tr);
     });
@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const cacheKey = `download_history_${user.id}`;
     let cachedData = null;
     try {
-      const rawCache = localStorage.getItem(cacheKey);
+      const rawCache = window.safeStorage.getItem(cacheKey);
       if (rawCache) cachedData = JSON.parse(rawCache);
     } catch (err) {
       console.error("Cache load error:", err);
@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (cachedData && Array.isArray(cachedData)) {
       renderHistoryTable(cachedData);
-      meta.innerHTML = `${cachedData.length} download${cachedData.length !== 1 ? "s" : ""} total <span style="color:#8b949e; font-size:0.8rem; margin-left:8px;"><i class="fas fa-spinner fa-spin"></i> Checking for updates...</span>`;
+      meta.innerHTML = `${cachedData.length} download${cachedData.length !== 1 ? "s" : ""} total <span class="text-muted text-xs ml-2"><i class="fas fa-spinner fa-spin"></i> Checking for updates...</span>`;
     } else {
       tbody.innerHTML =
         '<tr class="empty-row"><td colspan="3"><i class="fas fa-spinner spinner"></i> Loading...</td></tr>';
@@ -337,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
           game_name: row.game_name || null,
         }));
 
-        localStorage.setItem(cacheKey, JSON.stringify(dbData));
+        window.safeStorage.setItem(cacheKey, JSON.stringify(dbData));
       } catch (dbErr) {
         console.error("Failed to load production Supabase history:", dbErr);
         dbErrorOccurred = true;
@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (e) {
       if (!cachedData) {
         tbody.innerHTML =
-          '<tr class="empty-row"><td colspan="3" style="color:#f85149;">Could not load history.</td></tr>';
+          '<tr class="empty-row"><td colspan="3" class="text-danger">Could not load history.</td></tr>';
         meta.textContent = "";
       }
       console.error(e);
@@ -766,12 +766,12 @@ document.addEventListener("DOMContentLoaded", function () {
       .order("created_at", { ascending: false });
 
     if (error) {
-      listEl.innerHTML = `<div style="color: #f85149; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Failed to load announcements: ${error.message}</div>`;
+      listEl.innerHTML = `<div class="status-msg-box status-msg-error">Failed to load announcements: ${error.message}</div>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      listEl.innerHTML = `<div style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">No announcements configured.</div>`;
+      listEl.innerHTML = `<div class="status-msg-box status-msg-info">No announcements configured.</div>`;
       return;
     }
 
@@ -780,30 +780,28 @@ document.addEventListener("DOMContentLoaded", function () {
       const isExpired = ann.expires_at && new Date(ann.expires_at) < new Date();
       const div = document.createElement("div");
       div.className = "announcement-item";
-      div.style.cssText =
-        "display:flex; justify-content:space-between; align-items:center; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:0.75rem 1rem; font-size:0.875rem; margin-top: 0.5rem;";
 
       let expiryLabel = "Permanent";
       if (ann.expires_at) {
         const dateStr = new Date(ann.expires_at).toLocaleString();
         expiryLabel = isExpired
-          ? `<span style="color:#f85149">Expired at ${dateStr}</span>`
+          ? `<span class="text-danger">Expired at ${dateStr}</span>`
           : `Expires at ${dateStr}`;
       }
 
       div.innerHTML = `
-        <div style="flex:1; padding-right:1rem; text-align: left;">
-          <div style="font-weight:500; color:${isExpired ? "#8b949e" : "#c9d1d9"}; margin-bottom:0.25rem;">${window.escapeHtml(ann.message)}</div>
-          <div style="font-size:0.75rem; color:#8b949e;">${expiryLabel}</div>
+        <div class="ann-item-body">
+          <div class="ann-item-message ${isExpired ? "expired" : "active"}">${window.escapeHtml(ann.message)}</div>
+          <div class="ann-item-expiry">${expiryLabel}</div>
         </div>
-        <div style="display:flex; align-items:center; gap:0.5rem;">
-          <button class="edit-ann-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}" title="Edit announcement">
+        <div class="ann-actions-wrap">
+          <button class="edit-ann-btn btn-secondary ann-action-btn-small" data-id="${ann.id}" title="Edit announcement">
             <i class="fas fa-edit"></i>
           </button>
-          <button class="toggle-active-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}" data-active="${ann.is_active}">
+          <button class="toggle-active-btn btn-secondary ann-action-btn-small" data-id="${ann.id}" data-active="${ann.is_active}">
             ${ann.is_active ? '<i class="fas fa-eye"></i> Active' : '<i class="fas fa-eye-slash"></i> Inactive'}
           </button>
-          <button class="delete-ann-btn btn-danger" style="padding:0.25rem 0.5rem; font-size:0.75rem; color:#fff;" data-id="${ann.id}">
+          <button class="delete-ann-btn btn-danger ann-action-btn-small" data-id="${ann.id}">
             <i class="fas fa-trash-alt"></i>
           </button>
         </div>
@@ -826,10 +824,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         div.innerHTML = `
-          <div style="flex:1; padding-right:1rem; text-align: left; display:flex; flex-direction:column; gap:0.5rem;">
-            <input type="text" class="edit-ann-input" value="${window.escapeHtml(ann.message)}" style="background:#0d1117; border:1px solid #30363d; border-radius:4px; color:#c9d1d9; padding:0.35rem 0.5rem; font-size:0.875rem; width:100%;" required />
-            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap: wrap;">
-              <div class="admin-expiration-capsule" style="height: 32px; padding: 0.15rem 0.5rem; gap: 0.5rem;">
+          <div class="ann-edit-form-wrap">
+            <input type="text" class="edit-ann-input" value="${window.escapeHtml(ann.message)}" required />
+            <div class="ann-edit-dur-flex">
+              <div class="admin-expiration-capsule admin-expiration-capsule-small">
                 <button type="button" class="admin-permanent-btn edit-ann-perm-btn ${isPerm ? "active" : ""}" title="Infinite Expiration" style="font-size: 1rem;">∞</button>
                 <div class="admin-capsule-divider" style="height: 1rem;"></div>
                 <div class="edit-ann-dur-wrap" style="display:${isPerm ? "none" : "flex"}; gap:0.25rem; align-items:center; opacity:${isPerm ? "0.5" : "1"};">
@@ -846,11 +844,11 @@ document.addEventListener("DOMContentLoaded", function () {
               </div>
             </div>
           </div>
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-            <button class="save-ann-btn btn-primary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}">
+          <div class="ann-actions-wrap">
+            <button class="save-ann-btn btn-primary ann-action-btn-small" data-id="${ann.id}">
               <i class="fas fa-check"></i> Save
             </button>
-            <button class="cancel-ann-btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-id="${ann.id}">
+            <button class="cancel-ann-btn btn-secondary ann-action-btn-small" data-id="${ann.id}">
               <i class="fas fa-times"></i> Cancel
             </button>
           </div>
@@ -991,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const pollsListEl = document.getElementById("adminPollsList");
     if (!pollsListEl) return;
     pollsListEl.innerHTML =
-      '<div style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Loading polls...</div>';
+      '<div class="status-msg-box status-msg-info">Loading polls...</div>';
 
     try {
       // 1. Fetch all polls
@@ -1001,13 +999,13 @@ document.addEventListener("DOMContentLoaded", function () {
         .order("created_at", { ascending: false });
 
       if (pollsError) {
-        pollsListEl.innerHTML = `<div style="color: #f85149; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Failed to load polls: ${pollsError.message}</div>`;
+        pollsListEl.innerHTML = `<div class="status-msg-box status-msg-error">Failed to load polls: ${pollsError.message}</div>`;
         return;
       }
 
       if (!polls || polls.length === 0) {
         pollsListEl.innerHTML =
-          '<div style="color: #8b949e; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">No polls created yet.</div>';
+          '<div class="status-msg-box status-msg-info">No polls created yet.</div>';
         return;
       }
 
@@ -1056,21 +1054,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         div.innerHTML = `
           <div class="admin-poll-info">
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-              <strong style="color: #c9d1d9; font-size: 0.95rem;">${window.escapeHtml(poll.question)}</strong>
-              <span class="badge" style="font-size: 0.65rem; border-radius: 2em; padding: 0.15rem 0.5rem; ${poll.is_active ? "background: rgba(63, 185, 80, 0.15); color: #3fb950; border-color: rgba(63, 185, 80, 0.4);" : "background: rgba(248, 81, 73, 0.15); color: #f85149; border-color: rgba(248, 81, 73, 0.4);"}">
+            <div class="poll-item-header">
+              <strong class="poll-item-question">${window.escapeHtml(poll.question)}</strong>
+              <span class="badge poll-item-badge ${poll.is_active ? "active" : "inactive"}">
                 ${poll.is_active ? "Active" : "Closed"}
               </span>
             </div>
-            <div style="font-size: 0.8rem; color: #8b949e; margin-top: 0.35rem;">
+            <div class="poll-item-meta">
               ${optionsBreakdown} &middot; Total: ${totalVotes} votes
             </div>
           </div>
           <div class="admin-poll-actions">
-            <button class="toggle-poll-btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" data-id="${poll.id}" data-active="${poll.is_active}">
+            <button class="toggle-poll-btn btn-secondary poll-action-btn-small" data-id="${poll.id}" data-active="${poll.is_active}">
               ${poll.is_active ? "Close" : "Activate"}
             </button>
-            <button class="delete-poll-btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background-color: #da3637; border-color: rgba(240, 246, 252, 0.1); color: #ffffff;" data-id="${poll.id}">
+            <button class="delete-poll-btn btn-danger poll-action-btn-small" data-id="${poll.id}">
               Delete
             </button>
           </div>
@@ -1140,7 +1138,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } catch (err) {
       console.error("Error in loadAdminPolls:", err);
-      pollsListEl.innerHTML = `<div style="color: #f85149; text-align: center; padding: 1.5rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px;">Error loading polls: ${err.message || err}</div>`;
+      pollsListEl.innerHTML = `<div class="status-msg-box status-msg-error">Error loading polls: ${err.message || err}</div>`;
     }
   }
 

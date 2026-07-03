@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const disclaimerModal = document.getElementById("disclaimerModal");
 
   // Show disclaimer on first visit; suppressed permanently if user checks "Don't show again"
-  if (!localStorage.getItem("disclaimerAccepted")) {
+  if (!window.safeStorage.getItem("disclaimerAccepted")) {
     disclaimerModal.classList.remove("hidden");
   }
 
@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("click", function () {
       const dontShow = document.getElementById("dontShowAgain").checked;
       if (dontShow) {
-        localStorage.setItem("disclaimerAccepted", "true");
+        window.safeStorage.setItem("disclaimerAccepted", "true");
       }
       disclaimerModal.classList.add("hidden");
     });
@@ -412,15 +412,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
     async function fetchCachedJson(url, maxAgeMs = CACHE_DURATION) {
-      if (!("caches" in window)) {
+      if (typeof window === "undefined" || !("caches" in window) || !window.caches) {
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       }
       try {
-        const cache = await caches.open("manifesthub-db-cache");
+        const cache = await window.caches.open("manifesthub-db-cache");
         const cachedResponse = await cache.match(url);
-        const lastFetch = localStorage.getItem("cache-time-" + url);
+        const lastFetch = window.safeStorage.getItem("cache-time-" + url);
         if (
           cachedResponse &&
           lastFetch &&
@@ -434,9 +434,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       try {
-        const cache = await caches.open("manifesthub-db-cache");
+        const cache = await window.caches.open("manifesthub-db-cache");
         await cache.put(url, res.clone());
-        localStorage.setItem("cache-time-" + url, Date.now().toString());
+        window.safeStorage.setItem("cache-time-" + url, Date.now().toString());
       } catch (e) {
         console.warn("Cache write failed...", e);
       }
@@ -1054,7 +1054,7 @@ document.addEventListener("DOMContentLoaded", function () {
         card.innerHTML = `
           <img class="w-[60px] h-[35px] object-cover rounded bg-[#0d1117] flex-shrink-0" src="https://cdn.akamai.steamstatic.com/steam/apps/${item.appId}/header.jpg" alt="${name}">
           <div class="flex flex-col min-w-0 flex-grow">
-            <strong class="text-xs font-semibold truncate" style="color: #c9d1d9;" title="${name}">${name}</strong>
+            <strong class="text-xs font-semibold text-light truncate" title="${name}">${name}</strong>
             <span class="text-[0.65rem] text-github-muted flex items-center gap-1 mt-0.5">
               <i class="fas fa-download"></i> ${formattedCount}
             </span>

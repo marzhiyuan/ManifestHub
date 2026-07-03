@@ -1261,6 +1261,181 @@
   font-weight: 600;
 }
 
+/* Extracted Admin Panel, Polls & Table Utilities */
+
+.fw-500 {
+  font-weight: 500 !important;
+}
+
+.text-muted {
+  color: #8b949e !important;
+}
+
+.text-xs {
+  font-size: 0.75rem !important;
+}
+
+.text-sm {
+  font-size: 0.85rem !important;
+}
+
+.ml-2 {
+  margin-left: 8px !important;
+}
+
+.status-msg-box {
+  text-align: center;
+  padding: 1.5rem;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+}
+
+.status-msg-error {
+  color: #f85149;
+}
+
+.status-msg-info {
+  color: #8b949e;
+}
+
+/* Announcement Editor and List styling */
+.ann-item-body {
+  flex: 1;
+  padding-right: 1rem;
+  text-align: left;
+}
+
+.ann-item-message {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.ann-item-message.expired {
+  color: #8b949e;
+}
+
+.ann-item-message.active {
+  color: #c9d1d9;
+}
+
+.ann-item-expiry {
+  font-size: 0.75rem;
+  color: #8b949e;
+}
+
+.ann-actions-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ann-action-btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.ann-edit-form-wrap {
+  flex: 1;
+  padding-right: 1rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ann-edit-input {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  color: #c9d1d9;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.ann-edit-dur-flex {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ann-edit-dur-wrap {
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.ann-select-label-small {
+  font-size: 0.75rem;
+}
+
+.ann-select-small {
+  font-size: 0.75rem;
+}
+
+/* Admin Poll Management Classes */
+.poll-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.poll-item-question {
+  color: #c9d1d9;
+  font-size: 0.95rem;
+}
+
+.poll-item-badge {
+  font-size: 0.65rem;
+  border-radius: 2em;
+  padding: 0.15rem 0.5rem;
+}
+
+.poll-item-badge.active {
+  background: rgba(63, 185, 80, 0.15);
+  color: #3fb950;
+  border-color: rgba(63, 185, 80, 0.4);
+}
+
+.poll-item-badge.inactive {
+  background: rgba(248, 81, 73, 0.15);
+  color: #f85149;
+  border-color: rgba(248, 81, 73, 0.4);
+}
+
+.poll-item-meta {
+  font-size: 0.8rem;
+  color: #8b949e;
+  margin-top: 0.35rem;
+}
+
+.poll-action-btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.announcement-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.admin-expiration-capsule-small {
+  height: 32px !important;
+  padding: 0.15rem 0.5rem !important;
+  gap: 0.5rem !important;
+}
+
+
+
 
 
 
